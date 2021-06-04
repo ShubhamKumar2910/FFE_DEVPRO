@@ -1,0 +1,57 @@
+<apex:page standardController="Donor_Balance__c" extensions="DonorAdminCostEdit" showHeader="false" sidebar="false" docType="html-5.0">
+<head>
+        <title>Fund Transfer</title>
+    </head>
+    <style>
+        .bPageBlock {
+        	background-color: #fff !important;
+        	border:none !important;
+        }
+    </style>
+    <script>
+    function inputLimiter(e,allow) {
+            var AllowableCharacters = '';
+
+            if (allow == 'Numbers'){AllowableCharacters='1234567890';}
+
+            var k = document.all?parseInt(e.keyCode): parseInt(e.which);
+            if (k!=13 && k!=8 && k!=0){
+                if ((e.ctrlKey==false) && (e.altKey==false)) {
+                return (AllowableCharacters.indexOf(String.fromCharCode(k))!=-1);
+                } else {
+                return true;
+                }
+            } else {
+                return true;
+            }
+        } 
+    	 
+    function closeCurrentPopup(){  
+        window.opener.location.href="/{!donorBalanceId}";
+        self.close();        
+    }
+
+    </script>
+    <apex:form >     
+        <div style="margin: 9px 136px 0px 139px;"><apex:pageMessages ></apex:pageMessages></div>
+        <apex:pageBlock rendered="{!isDisplay}" id="thePBlock">            
+            <apex:pageBlockSection columns="1">
+                <!--<apex:outputText ><b style="margin-left: 50%;">Source</b></apex:outputText>
+                <apex:outputText ><b style="margin-left: 50%;">Destination</b></apex:outputText>-->
+                <apex:outputField label="Donor" value="{!Donor_Balance__c.Donor_Name__c}"/>
+                <!--<apex:inputField label="Donor" value="{!dbBalance.Donor_Name__c}" html-placeholder="Select Donor"/> -->       
+                <apex:outputField label="GAU" value="{!Donor_Balance__c.GAU_Name__c}"/>
+                <!--<apex:inputField label="GAU" value="{!dbBalance.GAU_Name__c}" required="true" html-placeholder="Select GAU"/> -->
+                <apex:outputField label="Current Balance" value="{!Donor_Balance__c.Current_Balance__c}"/>
+                <apex:inputField label="Add Funds" value="{!dbBalance.Current_Balance__c}" html-placeholder="Enter amount" onkeypress="return inputLimiter(event,'Numbers');"/>
+                <apex:inputField label="Reduce Funds" value="{!dbBalancereduce.Current_Balance__c}" html-placeholder="Enter amount" onkeypress="return inputLimiter(event,'Numbers');"/>
+                <apex:inputField label="Short Comments" value="{!dbBalance.Short_Comments__c}" required="true" html-placeholder="Enter Comment"/>
+            </apex:pageBlockSection>  <br/>
+            <apex:commandButton Id="fundTransfer" action="{!donorAdminCostEditDetails}" value="Save" style="margin-left: 300px;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;">
+            </apex:commandButton><br/>
+        </apex:pageBlock>
+        <br/>
+        <apex:commandButton Id="completed" value="Close" style="margin-left: 300px;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;" oncomplete="closeCurrentPopup();"  rendered="{!!isDisplay}">
+            </apex:commandButton><br/>
+    </apex:form>
+</apex:page>

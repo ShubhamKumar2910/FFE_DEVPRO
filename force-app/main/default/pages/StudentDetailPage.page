@@ -1,0 +1,211 @@
+<apex:page standardController="Contact" readOnly="true" sidebar="false" showHeader="false" >
+    <apex:form >
+        <apex:image url="{!$Resource.FFEbanner}" width="300px" height="100px"/>
+        <apex:pageBlock title="Student Detail" mode="edit">
+            <apex:pageBlockSection title="Student Basic Info" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.RecordTypeId}"/>
+                <apex:outputField value="{!contact.Facilitator_Name__c}" />
+                <apex:outputField value="{!contact.Name}" />
+                <apex:outputField value="{!contact.ScholarshipAmount__c}" />
+                <apex:outputField value="{!contact.FFE_ID__c}" />
+                <apex:outputField value="{!contact.Internal_Status__c}" />
+                <apex:outputField value="{!contact.Current_year__c}" />
+                <apex:outputField value="{!contact.Active_Scholarship_Application__c}" />
+                <apex:outputField value="{!contact.AccountId}" />
+                <apex:outputField value="{!contact.Rejection_Reason__c}" />
+                <apex:outputField value="{!contact.Gender__c}" />
+                <apex:outputField value="{!contact.Financial_year__c}" />
+                <apex:outputField value="{!contact.Birthdate}" />
+                <apex:outputField value="{!contact.MobilePhone}" />
+                <apex:outputField value="{!contact.Previous_FFE_ID__c}" />
+                <apex:outputField value="{!contact.Aadhar_number__c}" />
+                <apex:outputField value="{!contact.Email_Invite_Sent__c}" />
+                <apex:outputField value="{!contact.AWS_Link__c}" />
+                <apex:outputField value="{!contact.Email_Invite_Sent_Date__c}" />
+                <apex:outputField value="{!contact.Total_Point_s__c}" />
+                <apex:outputField value="{!contact.Salesforce_ID__c}" />
+                <apex:outputField value="{!contact.Comments__c}" />
+                <apex:outputField value="{!contact.Mentoring_Required_del__c}" />
+                <apex:outputField value="{!contact.Facilitator_Assigned_Date__c}" />
+                <apex:outputField value="{!contact.Academic_start_year__c}" />
+                <apex:outputField value="{!contact.LDAP_ID__c}" />
+                <apex:outputField value="{!contact.From_IITBAA__c}" />
+                <apex:outputField value="{!contact.Is_KYC_Verified__c}" />
+                <apex:outputField value="{!contact.Has_Mentor__c}" />
+                <apex:outputField value="{!contact.Priority__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Placement Information" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Company_Name__c}" />
+                <apex:outputField value="{!contact.Placement_Info__c}" />
+                <apex:outputField value="{!contact.Designation__c}" />
+                <apex:outputField value="{!contact.Other__c}" />
+                <apex:outputField value="{!contact.CTC__c}" />
+                <apex:outputField value="{!contact.Location__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" Referred by facilitator" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Refered_by_Facilitator_Name__c}" />
+                <apex:outputField value="{!contact.Refered_by_Facilitator_Id__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Previous Academic Details" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.X10th_Year_Passed__c}" />
+                <apex:outputField value="{!contact.X12th_Year_Passed__c}" />
+                <apex:outputField value="{!contact.Xth_ExamBoard__c}" />
+                <apex:outputField value="{!contact.X12th_ExamBoard__c}" />
+                <apex:outputField value="{!contact.X10th_Marks_Obtained__c}" />
+                <apex:outputField value="{!contact.X12th_Marks_Obtained__c}" />
+                <apex:outputField value="{!contact.X10th_Maximum_Marks__c}" />
+                <apex:outputField value="{!contact.X10th__c}" />
+                <apex:outputField value="{!contact.X12th__c}" />
+                <apex:outputField value="{!contact.X10th_Medium_Of_Instruction__c}" />
+                <apex:outputField value="{!contact.X12th_Medium_Of_Instruction__c}" />
+                <apex:outputField value="{!contact.X10th_Type__c}" />
+                <apex:outputField value="{!contact.X12th_Type__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" Entrance Test information" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Entrance_Test_Name__c}" />
+                <apex:outputField value="{!contact.Entrance_Exam_Maximum_Marks__c}" />
+                <apex:outputField value="{!contact.Entrance_Exam_Taken_In_Year__c}" />
+                <apex:outputField value="{!contact.Entrance_Test_Rank__c}" />
+                <apex:outputField value="{!contact.Entrance_Test_Marks__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="AMCAT Baseline" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Aptitude_Analytical_Score__c}" />
+                <apex:outputField value="{!contact.Aptitude_Logical_Score__c}" />
+                <apex:outputField value="{!contact.English_Written_Score__c}" />
+                <apex:outputField value="{!contact.English_Spoken_Score__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="AMCAT Midline" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Aptitude_Analytical_Score_post__c}" />
+                <apex:outputField value="{!contact.Aptitude_Logical_Score_post__c}" />
+                <apex:outputField value="{!contact.English_Written_Score_post__c}" />
+                <apex:outputField value="{!contact.English_Spoken_Score_post__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="AMCAT Endline" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Endline_Aptitude_Analytical_Score__c}" />
+                <apex:outputField value="{!contact.Endline_Aptitude_Logical_Score__c}" />
+                <apex:outputField value="{!contact.Endline_English_Written_Score__c}" />
+                <apex:outputField value="{!contact.Endline_English_Spoken_Score__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" Engineering Academic Score" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Endline_Aptitude_Analytical_Score__c}" />
+                <apex:outputField value="{!contact.Semester1__c}" />
+                <apex:outputField value="{!contact.Semester2__c}" />
+                <apex:outputField value="{!contact.Semester3__c}" />
+                <apex:outputField value="{!contact.Semester4__c}" />
+                <apex:outputField value="{!contact.Semester5__c}" />
+                <apex:outputField value="{!contact.Semester6__c}" />
+                <apex:outputField value="{!contact.Semester7__c}" />
+                <apex:outputField value="{!contact.Semester8__c}" />
+                <apex:outputField value="{!contact.Semester9__c}" />
+                <apex:outputField value="{!contact.Semester10__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Medical Academic Scores" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.MBBS_Year_1__c}" />
+                <apex:outputField value="{!contact.MBBS_Year_2__c}" />
+                <apex:outputField value="{!contact.MBBS_Year_3_Part_1__c}" />
+                <apex:outputField value="{!contact.MBBS_Year_3_Part_2__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Course/College Particulars" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.College_Name__c}" />
+                <apex:outputField value="{!contact.College_Other__c}" />
+                <apex:outputField value="{!contact.College_City__c}" />
+                <apex:outputField value="{!contact.Course__c}" />
+                <apex:outputField value="{!contact.College_State__c}" />
+                <apex:outputField value="{!contact.Branch_Stream__c}" />
+                <apex:outputField value="{!contact.College_Type__c}" />
+                <apex:outputField value="{!contact.Branch_Other__c}" />
+                <apex:outputField value="{!contact.College_Rating__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Family Information" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Father_Name__c}" />
+                <apex:outputField value="{!contact.Mother_Name__c}" />
+                <apex:outputField value="{!contact.Father_Age__c}" />
+                <apex:outputField value="{!contact.Mother_Age__c}" />
+                <apex:outputField value="{!contact.Father_Education__c}" />
+                <apex:outputField value="{!contact.Mother_Education__c}" />
+                <apex:outputField value="{!contact.Father_Occupation__c}" />
+                <apex:outputField value="{!contact.Mother_Occupation__c}" />
+                <apex:outputField value="{!contact.Parent_Mobile__c}" />
+                <apex:outputField value="{!contact.Parent_Phone__c}" />
+                <apex:outputField value="{!contact.Annual_Family_Income__c}" />
+                <apex:outputField value="{!contact.Certificate_Expiry_Date__c}" />
+                <apex:outputField value="{!contact.Current_Annual_Family_Income__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" Bank Information" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Bank_Account_Holder_s_Name__c}" />
+                <apex:outputField value="{!contact.X11_character_IFSC_Code_of_the_Branch__c}" />
+                <apex:outputField value="{!contact.Full_Bank_Account_No_With_all_digits__c}" />
+                <apex:outputField value="{!contact.Is_IFSC_Code_Verified__c}" />
+                <apex:outputField value="{!contact.Bank_Name__c}" />
+                <apex:outputField value="{!contact.IFSC_Service_Error__c}" />
+                <apex:outputField value="{!contact.Branch_Address__c}" />
+                <apex:outputField value="{!contact.Bank_State__c}" />
+                <apex:outputField value="{!contact.Bank_City__c}" />
+                <apex:outputField value="{!contact.Bank_Pincode__c}" />
+                <apex:outputField value="{!contact.Type_Of_Bank_Account__c}" />
+                <apex:outputField value="{!contact.Bank_Branch_Phone_No__c}" />
+                <apex:outputField value="{!contact.Other_Type_Bank_Account__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" About Student and Family" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.What_is_your_ambition_in_life__c}" />
+                <apex:outputField value="{!contact.Tell_us_some_things_about_yourself__c}" />
+                <apex:outputField value="{!contact.Who_has_inspired_you_the_most_until_now__c}" />
+                <apex:outputField value="{!contact.Describe_your_family_s_income__c}" />
+                <apex:outputField value="{!contact.When_you_start_earning_how_you_help__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" COVID-19 Relief Disbursement (Parents Bank Details)" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Parents_Bank_Account_Holders_Name__c}" />
+                <apex:outputField value="{!contact.Par_Full_Bank_Account_No_With_all_digits__c}" />
+                <apex:outputField value="{!contact.Parents_Bank_Name__c}" />
+                <apex:outputField value="{!contact.Parents_Bank_City__c}" />
+                <apex:outputField value="{!contact.Parents_Bank_State__c}" />
+                <apex:outputField value="{!contact.P_IFSC_Code_11_Char__c}" />
+                <apex:outputField value="{!contact.P_Branch_Address__c}" />
+                <apex:outputField value="{!contact.Parents_Type_of_Bank_Account__c}" />
+                <apex:outputField value="{!contact.Parents_Bank_Pincode__c}" />
+                <apex:outputField value="{!contact.Parents_Bank_Branch_Phone__c}" />
+                <apex:outputField value="{!contact.Parents_Account_Verified__c}" />
+                <apex:outputField value="{!contact.Relief_Amount_Disbursed__c}" />
+                <apex:outputField value="{!contact.Date_of_Relief_Disbursement__c}" />
+                <apex:outputField value="{!contact.COVID_19_Relief_Donor__c}" />
+                <apex:outputField value="{!contact.Relief_Donation_Remarks__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" Tell Your Story" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.TYS_Video_Link__c}" />
+                <apex:outputField value="{!contact.TYS_FFE_Scholarship_and_Impact__c}" />
+                <apex:outputField value="{!contact.TYS_SchoolLife__c}" />
+                <apex:outputField value="{!contact.TYS_Future_Plans__c}" />
+                <apex:outputField value="{!contact.TYS_GuidanceProvider__c}" />
+                <apex:outputField value="{!contact.TYS_Dreams_and_Responsibilities__c}" />
+                <apex:outputField value="{!contact.TYS_How_would_you_help_other_Students__c}" />
+                <apex:outputField value="{!contact.TYS_CollegeAssessment__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="  Other Information" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.Do_you_have_Facebook_login__c}" />
+                <apex:outputField value="{!contact.Do_you_have_Google_login__c}" />
+                <apex:outputField value="{!contact.Facebook_login_ID__c}" />
+                <apex:outputField value="{!contact.Google_login_ID__c}" />
+                <apex:outputField value="{!contact.Linkedin_Profile_Link__c}" />
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title=" System Information" columns="2" collapsible="true">
+                <apex:outputField value="{!contact.CreatedById}" />
+                <apex:outputField value="{!contact.LastModifiedById}" />
+                <apex:outputField value="{!contact.Login_Hash_Code__c}" />
+                <apex:outputField value="{!contact.External_Id_dm__c}" />
+                <apex:outputField value="{!contact.Student_ID__c}" />
+                <apex:outputField value="{!contact.IsMapped__c}" />
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:relatedList list="Applications__r" />
+    <apex:relatedList list="Donor_Application_Mappings1__r" />
+    <apex:relatedList list="Student_Trainings__r" />
+   
+
+    <!--<apex:relatedList list="Student__r" />-->
+    <apex:relatedList list="OpenActivities" />
+    <apex:relatedList list="ActivityHistories" />
+    <apex:relatedList subject="{!contact}" list="CombinedAttachments" />
+    <apex:relatedList list="EmailStatuses" />
+    <apex:relatedList list="Opportunities" />
+</apex:page>

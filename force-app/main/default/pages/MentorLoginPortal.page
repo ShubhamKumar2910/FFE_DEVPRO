@@ -1,0 +1,855 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MSigninHelper">
+    
+    <html>
+        <head>
+            <c:MentorshipScripts />
+            <style>
+                
+                body {
+                font-family: Arial, Helvetica, sans-serif;
+                }
+                
+                * {
+                box-sizing: border-box;
+                }
+                /* style the container */
+                
+                .loginSwitch {
+                    background: #2e3192;
+                    color: white !important; 
+                    text-decoration: none !important;
+                    font-size: 12pt;
+                    cursor: pointer;
+                }
+
+                .loginSwitchInactive {
+                    background: #b3b3b3;
+                    color: black;
+                    text-decoration: none !important;
+                    font-size: 12pt;
+                    cursor: pointer;
+                }
+
+                .loadingBackground {
+                    position: fixed;
+                    height: 100%;
+                    width: 100%;
+                    background: #F6F6F6;
+                    z-index: 11111;
+                    opacity: 0.7;
+                    top: 0px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                }
+
+                .loading {
+                    top: 50%;
+                    left: 50%;
+                    margin: -50px 0px 0px -50px;
+                    z-index: 111111;
+                    position: fixed;
+                }
+                /* style inputs and link buttons */
+                input,
+                .btn {
+                width: 100%;
+                padding: 12px;
+                border: none;
+                border-radius: 4px;
+                margin: 5px 0;
+                opacity: 0.85;
+                display: inline-block;
+                font-size: 17px;
+                line-height: 20px;
+                text-decoration: none; /* remove underline from anchors */
+                }
+                
+                input:hover,
+                .btn:hover {
+                opacity: 1;
+                }
+                
+                /* add appropriate colors to fb, twitter and google buttons */
+                .fb {
+                background-color: #3B5998;
+                color: white;
+                }
+                
+                .twitter {
+                background-color: #55ACEE;
+                color: white;
+                }
+                
+                .google {
+                background-color: #dd4b39;
+                color: white;
+                }
+                
+                /* style the submit button */
+                input[type=submit] {
+                background-color: #4CAF50;
+                color: white;
+                cursor: pointer;
+                }
+                
+                input[type=submit]:hover {
+                background-color: #45a049;
+                }
+                
+                /* Two-column layout */
+                .col {
+                float: left;
+                width: 50%;
+                margin: auto;
+                padding: 0 50px;
+                margin-top: 6px;
+                }
+                
+                /* Clear floats after the columns */
+                .row:after {
+                content: "";
+                display: table;
+                clear: both;
+                }
+                
+                /* vertical line */
+                .vl {
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%);
+                border: 2px solid #ddd;
+                height: 175px;
+                }
+                
+                /* text inside the vertical line */
+                .vl-innertext {
+                position: absolute;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #f1f1f1;
+                border: 1px solid #ccc;
+                border-radius: 50%;
+                padding: 8px 10px;
+                }
+                
+                /* hide some text on medium and large screens */
+                .hide-md-lg {
+                display: none;
+                }
+                
+                
+                /* Responsive layout - when the screen is less than 650px wide, make the two columns stack on top of each other instead of next to each other */
+                @media screen and (max-width: 650px) {
+                .col {
+                width: 100%;
+                margin-top: 0;
+                }
+                /* hide the vertical line */
+                .vl {
+                display: none;
+                }
+                /* show the hidden text on small screens */
+                .hide-md-lg {
+                display: block;
+                text-align: center;
+                }
+                }
+                
+                body {font-family: Arial, Helvetica, sans-serif;}
+                form {border: 3px solid #f1f1f1;}
+                
+                
+                input[type=text], input[type=password] {
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+                }
+                
+                button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                }
+                
+                button:hover {
+                opacity: 0.8;
+                }
+                
+               
+                .cancelbtn {
+                width: auto;
+                padding: 10px 18px;
+                background-color: #f44336;
+                }
+                
+                .signup {
+                width: auto;
+                padding: 10px 18px;
+                background-color: #2e3192;
+                color:white;
+                }
+                .imgcontainer {
+                text-align: center;
+                margin: 24px 0 12px 0;
+                }
+                
+                img.avatar {
+                width: 40%;
+                border-radius: 50%;
+                }
+                
+                
+                span.psw {
+                float: right;
+                padding-top: 16px;
+                }
+                
+                /* Change styles for span and cancel button on extra small screens */
+                @media screen and (max-width: 300px) {
+                span.psw {
+                display: block;
+                float: none;
+                }
+                
+                }
+                
+                * {box-sizing: border-box;}
+                
+                body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                }
+                
+                .topnav {
+                overflow: hidden;
+                background-color: #e9e9e9;
+                }
+                
+                .topnav a {
+                float: left;
+                display: block;
+                color: black;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+                font-size: 17px;
+                }
+                
+                .topnav a:hover {
+                background-color: #ddd;
+                color: black;
+                }
+                
+                .topnav a.active {
+                background-color: #2196F3;
+                color: white;
+                }
+                
+                .topnav .login-container {
+                float: right;
+                }
+                
+                .topnav input[type=text] {
+                padding: 6px;
+                margin-top: 8px;
+                font-size: 17px;
+                border: none;
+                width:120px;
+                }
+                
+                .topnav .login-container button {
+                float: right;
+                padding: 6px 10px;
+                margin-top: 8px;
+                margin-right: 16px;
+                background-color: #555;
+                color: white;
+                font-size: 17px;
+                border: none;
+                cursor: pointer;
+                }
+                
+                .topnav .login-container button:hover {
+                background-color: green;
+                }
+                
+                @media screen and (max-width: 600px) {
+                    .topnav .login-container {
+                        float: none;
+                    }
+                }
+                .topnav a, .topnav input[type=text], .topnav .login-container button {
+                    float: none;
+                    display: block;
+                    text-align: left;
+                    width: 100%;
+                    margin: 0;
+                    padding: 14px;
+                }
+                .topnav input[type=text] {
+                    border: 1px solid #ccc;  
+                }   
+
+                .download {
+                    background-color: #F39C12;
+                    color: white;
+                    padding: 5px 20px;
+                    cursor: pointer;
+                }
+
+                .download:hover {
+                    opacity: 0.7;
+                }            
+            </style>
+        </head>
+        
+        <script>
+        var isLogin = '{!$CurrentPage.parameters.login}';
+        window.onload = function(){
+            var a = document.getElementById('googleUrlId');
+            a.href = "https://accounts.google.com/AccountChooser?continue=https://accounts.google.com/o/oauth2/auth?redirect_uri="+"{!$Setup.Google_API_Details__c.Mentor_Mentee_redirect_uri__c}"+"%26prompt%3Dconsent%26response_type%3Dcode%26client_id="+"{!$Setup.Google_API_Details__c.Client_Id__c}"+"%26scope%3Dhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.me%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.me%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.me%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/userinfo.email%26access_type%3Doffline%26from_login%3D1%26as%3D-270badd61a3e150b&btmpl=authsub&scc=1&oauth=1";
+            
+            var fb	= document.getElementById('facebookUrlId');
+            fb.href = "https://www.facebook.com/v2.8/dialog/oauth?client_id="+"{!$Setup.Facebook_API_Details__c.App_Id__c}"+"&response_type=code&redirect_uri="+"{!$Setup.Facebook_API_Details__c.Mentorship_Site_URL__c}"+"&scope=public_profile,email&&auth_type=rerequest";
+            
+        }
+        
+        
+        var app = angular.module('mentorshipApp', []);
+        app.controller('mentorshipCtrl', function($scope) {
+            $scope.showSpinner = false;
+            $scope.showLoginRegister = false;
+            $scope.showHomepage = true;
+            $scope.showMenteeregistration = false;
+            $scope.showMentorMenteeSignIn = true;
+            $scope.showMentorRegistration = false;
+            if(isLogin !== undefined && isLogin === 'true') {
+                $scope.showLoginRegister = true;
+                $scope.showHomepage = false;
+                 Swal.fire({
+                    icon: 'error',
+                    title: 'Sign-in',
+                    text: 'You have already registered with us, please login to continue.',
+                    confirmButtonText: `ok`,
+
+                }) .then((result) => {
+                     if (result.value) {
+                     let mainURL = window.location.origin+'/mentorship';
+                     window.location.replace(mainURL);
+                 } 
+                                })
+                
+            }  
+            $scope.menteeSignin = function(){
+                     if($scope.MenteeName == undefined || $scope.MenteePswrd == undefined) {
+                     Swal.fire({
+                     icon: 'error',
+                     title: 'Invalid creds',
+                     text: 'Please enter valid loginId',
+                 })
+                 return;
+            }
+           
+                $scope.showSpinner = true;
+                MSigninHelper.menteeLogin($scope.MenteeName,$scope.MenteePswrd, function(result, event) {
+                    if(event.status) {
+                        
+                        if(result.length == 23){
+                        	 let mainURL = window.location.origin+'/mentorship';
+                            window.location.replace(mainURL + "/"+"menteePortal?id="+result);  
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Sign-up',
+                                text: 'You are not enrolled as Mentee Please SignUp',
+                            })
+                        }
+                    }
+                    else if(event.type==='exception'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Internal error',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Internal error',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }
+                    $scope.showSpinner = false;
+                    $scope.$apply();
+                });
+                
+            }
+            
+            $scope.mentorSignin = function(){
+                if($scope.MentorName == undefined || $scope.Mentorpswrd == undefined) {
+                    alert('Please fill in the details');
+                    return;
+                }
+                $scope.showSpinner = true;
+                MSigninHelper.mentorLogin($scope.MentorName, $scope.Mentorpswrd, function(result, event) {
+                    if(event.status){
+                        if(result.length == 23){
+                                let mainURL = window.location.origin+'/mentorship';
+                            window.location.replace(mainURL + "/"+"mentorPortal?id="+result);  
+                            /*  Swal.fire(
+                            '',
+                            'Temporary URL sent successfully to your registered email!',
+                            'success'
+                        )  */
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'You are not enrolled as Mentor Please SignUp',
+                            })
+                        }
+                    }
+                    else if(event.type==='exception'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }
+                    $scope.showSpinner = false;
+                    $scope.$apply();
+                });
+            }
+
+            $scope.showRegisterForm = function(){
+                $scope.showLoginRegister = true;
+                $scope.showHomepage = false;  
+                $scope.showMentorRegistration = false;
+            }
+            
+            $scope.menteeRegistration = function(){
+                $scope.showMenteeregistration = true;
+                $scope.showMentorMenteeSignIn = false;
+                $scope.showMentorRegistration = false;
+            }
+            
+             $scope.mentorRegistration = function(){
+                $scope.showMenteeregistration = false;
+                $scope.showMentorMenteeSignIn = false;
+                 $scope.showMentorRegistration = true;
+            }
+            
+             $scope.backToMentorSignin = function(){
+                $scope.showMenteeregistration = false;
+                $scope.showMentorMenteeSignIn = true;
+                 $scope.showMentorRegistration = false;
+            }
+            
+            $scope.registerMentee = function (){
+                if($scope.MenteePswrdToVerify == undefined || $scope.MenteeNameToVerify == undefined) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please enter valid loginId',
+                    })
+                    return;
+                }
+                if($scope.MenteePswrdToVerify.length != 12) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid creds',
+                        text: 'Please enter 12 digits FFEUID',
+                    })
+                    return;
+                }
+                $scope.showSpinner = true;
+                 MSigninHelper.menteeRegistration($scope.MenteePswrdToVerify,$scope.MenteeNameToVerify, function(result, event) {
+                    if(event.status) {
+                        if(result != null || result != undefined){
+                            
+                            if(result == "Temporary URL sent successfully to your registered email."){
+                                Swal.fire(
+                                    '',
+                                    'Temporary URL sent successfully to your registered email!',
+                                    'success'
+                                )
+                                $scope.showLoginRegister = false;
+                                $scope.showHomepage = true;  
+                                $scope.showMentorRegistration = false;
+                            }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'You have already registered as a Mentee, please login to continue.',
+                            })
+                        }
+                            }else if(result == null){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Please enter valid UserName and FFEID.',
+                        })
+                    }
+                    }else if(result == 'alreadyRegistered'){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'You are already registered, please Login.',
+                        })
+                    }
+                     
+                        else if(event.type==='exception'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }
+                    $scope.showSpinner = false;
+                    $scope.$apply();
+                });
+                
+                
+            }
+
+            $scope.registerMentor = function (){
+                if($scope.MentorPswrdToVerify.length < 7) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '',
+                    text: 'Password length should not be less then 8 characters',
+                })
+                return;
+            }
+                if($scope.MentorPswrdToVerify == undefined || $scope.MentorNameToVerify == undefined) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Please enter valid loginId',
+                    })
+                    return;
+                }
+              
+                $scope.showSpinner = true;
+                 MSigninHelper.mentorRegistration($scope.MentorPswrdToVerify,$scope.MentorNameToVerify, function(result, event) {
+                    if(event.status) {
+                        if(result != null || result != undefined){
+                            if(result == "Temporary URL sent successfully to your registered email."){
+                                Swal.fire(
+                                    '',
+                                    'Temporary URL sent successfully to your registered email!',
+                                    'success'
+                                )
+                                 $scope.showLoginRegister = false;
+                                $scope.showHomepage = true;  
+                                $scope.showMentorRegistration = false;
+                            }else{
+                                Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong please try again.',
+                            })
+                        }
+                            }else if(result == null){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong please try again.',
+                        })
+                    }
+                    }
+                     
+                        else if(event.type==='exception'){
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Someting went Wrong Please refresh the page',
+                            })
+                    }
+                    $scope.showSpinner = false;
+                    $scope.$apply();
+                });
+                
+                
+            }
+
+            $scope.mentorLogin = true;
+            $scope.menteeLogin = false;
+            $scope.showMentor = function() {
+                var x = document.getElementById("Mentor");
+                var y = document.getElementById("Mentee");
+                x.style.display = "block";
+                y.style.display = "none";
+                $scope.mentorLogin = true;
+                $scope.menteeLogin = false;
+
+            }
+            $scope.showMentee =  function() {
+                var x = document.getElementById("Mentee");
+                var y = document.getElementById("Mentor");
+                x.style.display = "block";
+                y.style.display = "none";
+                $scope.mentorLogin = false;
+                $scope.menteeLogin = true;
+            }
+            
+        });
+        
+        </script>
+        
+        
+        <body ng-controller="mentorshipCtrl"  ng-app="mentorshipApp">
+            <div class="loadingSection" id="spinner" ng-if="showSpinner">
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+             <nav class="navbar fixed-top navbar-light bg-light navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <apex:image url="{!$Resource.FFEbanner}" width="50%" height="50%"/>
+                    </a>
+                    <a  class="btn-user  media align-items-center"  data-sidebar="true" aria-expanded="false">
+                        <button class="download btn btn-lg p-2" ng-click="showRegisterForm()" style="color:white"> SignIn/Register</button>    
+                    </a>
+                </div>
+            </nav>
+            
+            
+            
+            <div ng-show="showLoginRegister">
+                <div class="row" style="margin-top: 7%;">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                        <div class="card w-100" ng-show="showMentorMenteeSignIn">
+                            <div class="card-header d-flex justify-content-center">
+                                <a ng-class="{ loginSwitch: mentorLogin, loginSwitchInactive: menteeLogin }" ng-click="showMentor()" style="padding:2%;">MENTOR-LOGIN</a>
+                                <a ng-class="{ loginSwitch: menteeLogin, loginSwitchInactive: mentorLogin }" ng-click="showMentee()" style="padding:2%;">MENTEE-LOGIN</a>
+                            </div>
+                            <div class="card-body" style="margin-left:7%;">
+                                <div class="row">
+                                    <div class="col-sm-1"/>
+                                    <div class="col-sm-10">
+                                        <div style="width:90%;margin-top: 7%" id="Mentor" >
+                                            <form >
+                                                <div class="imgcontainer">
+                                                    <div class="container" style="width:100%;text-align: left;">
+                                                        <label for="uname" ><b>Email</b></label>
+                                                        <input type="text" placeholder="Enter Email" ng-model="MentorName" />
+                                                        <label for="psw" ><b>Password</b></label>
+                                                        <input id="psw" type="password" placeholder="Enter Password" ng-model="Mentorpswrd"/>
+                                                        <button class="regbutton " ng-click="mentorSignin()">Login</button>
+                                                        <button type="button" class="signup" style="color:white;" ng-click="mentorRegistration()">
+                                                        Signup
+                                                    </button>
+                                                    </div>
+                                                </div>
+                                                <div class="container" style="width: 90%;margin-bottom: 2%;">
+                                                    <div style="width: 100%;" >
+                                                        <a id="facebookUrlId" href = "#" class="fb btn">
+                                                            <i class="fa fa-facebook fa-fw"></i> Signup with Facebook
+                                                        </a>
+                                                    </div>
+                                                    <div style="width: 100%;" >
+                                                        <a  id="googleUrlId" href="#" class="google btn"><i class="fa fa-google fa-fw">
+                                                            </i> Signup with Google+
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div style="width:90%;margin-top: 7%;display:none;" id="Mentee" >
+                                            
+                                            <form >
+                                                <div class="imgcontainer">
+                                                    
+                                                </div>
+                                                
+                                                <div class="container" style="width:100%;">
+                                                    <label for="uname"><b>Email</b></label>
+                                                    <input type="text" placeholder="Enter Email" ng-model="MenteeName"  />
+                                                    
+                                                    <label for="psw"><b>Password</b></label>
+                                                    <input id="psw" type="password" placeholder="Enter FFEUID" ng-model="MenteePswrd"  />
+                                                    
+                                                    <button ng-click="menteeSignin()" >Login</button>
+                                                    <button type="button" class="signup" style="color:white;" ng-click="menteeRegistration()">
+                                                        Signup
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div> 
+                                        
+                                    </div>
+                                    <div class="col-sm-1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card w-100" ng-show="showMenteeregistration">
+                           
+                            <div class="card-body" style="margin-left:7%;">
+                                <div class="row">
+                                    <div class="col-sm-1"/>
+                                    <div class="col-sm-10">
+                                        <div style="width:90%;margin-top: 7%;">
+                                            
+                                            <form >
+                                                <div class="imgcontainer">
+                                                    
+                                                </div>
+                                                
+                                                <div class="container" style="width:100%;">
+                                                    <label for="uname"><b>Email</b></label>
+                                                    <input type="text" placeholder="Enter Email" ng-model="MenteeNameToVerify"  />
+                                                    
+                                                    <label for="psw"><b>FFEUID</b></label>
+                                                    <input id="psw" type="password" placeholder="Enter FFEUID" ng-model="MenteePswrdToVerify"  />
+                                                    
+                                                    <button ng-click="registerMentee()" >Register As Mentee</button>
+                                                    <button type="button" class="signup" style="color:white;" ng-click="backToMentorSignin()">
+                                                        Back
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div> 
+                                        
+                                    </div>
+                                    <div class="col-sm-1"/>
+                                </div>
+                            </div>
+                        </div>
+                          
+                        <div class="card w-100" ng-show="showMentorRegistration">
+                           
+                            <div class="card-body" style="margin-left:7%;">
+                                <div class="row">
+                                    <div class="col-sm-1"/>
+                                    <div class="col-sm-10">
+                                        <div style="width:90%;margin-top: 7%;">
+                                            
+                                            <form >
+                                                <div class="imgcontainer">
+                                                    
+                                                </div>
+                                                
+                                                <div class="container" style="width:100%;">
+                                                    <label for="uname"><b>Email</b></label>
+                                                    <input type="text" placeholder="Enter Email" ng-model="MentorNameToVerify"  />
+                                                    
+                                                    <label for="psw"><b>Password</b></label>
+                                                    <input id="psw" type="password" placeholder="Set your password" ng-model="MentorPswrdToVerify"  />
+                                                    
+                                                    <button ng-click="registerMentor()" >Register As Mentor</button>
+                                                    <button type="button" class="signup" style="color:white;" ng-click="backToMentorSignin()">
+                                                        Back
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div> 
+                                        
+                                    </div>
+                                    <div class="col-sm-1"/>
+                                </div>
+                            </div>
+                        </div>
+                         
+                         
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </div>
+            
+            
+            <!-- homepage -->
+            <div ng-if="showHomepage">                
+                <div class="container-fluid mt-5">
+                    <h3 style="text-align: center;">
+                        Foundation For Excellence-Mentoring Program
+                    </h3>  <br/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>
+                                About FFE:
+                            </h4> 
+                            <p>
+                                The Foundation For Excellence (FFE) is a registered, US based non-profit -organization founded by the renowned serial entrepreneur, Dr. Prabhu Goel and Mrs. Poonam Goel. The Foundation for Excellence India Trust (FFEIT) is a registered, public Charitable Trust in India and works in association with FFE.
+                            </p>
+                            <p>
+                                The mission of FFE is to transform the lives of academically brilliant but financially needy students in India by awarding merit cum means scholarships. In the twenty three years since its inception in 1994, FFE has already helped over 20,300 scholars across India awarding over 50,449 scholarships in excess of ~Rs.160 Crores. 
+                            </p>
+                            <p>
+                                FFE currently supports close to 4000 Engineering students enrolled in different Engineering degree courses across India through merit cum means scholarships. FFE is committed to the overall well-being, skill development and employability of its scholars.
+                            </p>
+                            <p>
+                                To meet these objectives, Skill Development/Training programs (for 1st and 2nd year scholars)  and a Mentoring Program (for 3rd year scholars) are  being offered to FFE scholars.  FFE is striving to make our scholars more confident individuals who can  transition from “Campus to Corporate” smoothly .
+                            </p>
+                            <apex:image url="{!$Resource.MentorMenteeChart}" style="width:525px;"/>
+                            <p>
+                                * AY 2009-10 onwards FFE started including engineering and medicine and the focused more on these professions in the following years.* Data is from the start of the FFE India trust.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>
+                                MENTORING PROGRAM OVERVIEW:
+                            </h4> 
+                            <p>
+                                <em>
+                                    Mentoring is to support and encourage people to manage their own learning in order that they may maximise their potential, develop their skills, improve their performance and become the person they want to be.
+                                </em>
+                                " Eric Parsloe, The Oxford School of Coaching and Mentoring.
+                            </p>
+                            <p>
+                                FFE has identified key skill gaps and mentoring needs of its Engineering scholars, designed a curriculum to address those needs and through mentors, plans to implement the curriculum. We are confident that Mentors who are experienced, senior professionals from industry, through this program can enable scholars succeed in acquiring confidence, skills and other attributes, towards job-readiness.  
+                            </p>
+                            <p>
+                                FFE scholars are currently pursuing degrees in more than 300 Engineering colleges across India.  In order to maximize its reach, the mentoring program will be offered in two forms:
+                            </p>
+                            <ol>
+                                <li>
+                                    
+                                    In-Person Mentoring Program for mentors and mentees from a common geographical location. Meetings can be held at the mentor’s office or at a convenient location.
+                                </li>
+                                <li>
+                                    
+                                    Remote Mentoring Program which will allow mentors and mentees located in different cities/towns to connect. Meetings will be conducted over skype/ phone call.
+                                </li>
+                            </ol>
+                            <p>
+                                The program can be a hybrid model with some face to face sessions and many more remote modules. The curriculum provides the framework and guidelines for the sessions to be conducted but also allows some flexibility.   
+                            </p>
+                            <p>
+                                Thank you for your interest in this Program. 
+                            </p>
+                        </div>
+                    </div>
+                </div> 
+            </div>            
+        </body>
+    </html>
+</apex:page>

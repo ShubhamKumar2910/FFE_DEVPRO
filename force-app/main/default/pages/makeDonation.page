@@ -1,0 +1,75 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0">
+    <style>
+        .sweet-alert p{
+        float: left;
+        width: 100%;
+        }
+         .sweet-alert h2{
+        margin:2px 0;
+        }
+        .historyTable{
+            margin-top: 0;
+        }
+    </style>
+    <div align="center" ng-init="loadProgramInfo();showTabcontent(3)" >        
+        <table class="historyTable" ng-if="currency">
+            <thead>
+                <tr class="rowsHistory thRow">
+                    <th>Program</th>
+                    <th>Frequency</th> 
+                    <th>No. of Students</th>
+                    <th ng-show="donor.DN_Citizenship__c == indian">Amount [INR]</th>
+                    <th ng-show="donor.DN_Citizenship__c == nonindian">Amount [INR]</th>
+                    <th ng-show="donor.DN_Citizenship__c != indian && donor.DN_Citizenship__c != nonindian"></th>
+                </tr>
+            </thead>
+            <tbody> 
+                <tr align="center" class="rowsHistory" ng-repeat="don in makeDonations">
+                    <td align="left"><a style="text-decoration: underline;color:#0000ff;cursor: pointer;" ng-mouseover="showDesc(don);">{{don.Program__c}}</a></td>
+                    <td>
+                        <select class="tdInput tdInputSelection" ng-model="values" ng-disabled="(don.Display_for_Scholar__c==false && donor.DN_Donor_Category__c=='Scholar')" ng-change="amtEM(values, $index);" ng-options="values as values.Name for values in don.Program_Frequencys__r">      
+                            <option value="" label="--Select Frequency--" selected="true"/>
+                        </select>
+                    </td>
+                    <td ng-if="amountFixed[$index]">
+                        <input class="tdInput" type="number" ng-disabled="(values==undefined || values=='')" ng-model="don.nstudents" min="0" maxlength="4" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"/>    
+                    </td >
+                    <td ng-if="!amountFixed[$index]">
+                        <input class="tdInput" type="number" ng-model="don.nstudents" min="0"  ng-disabled="true" />    
+                    </td>
+                    <td ng-if="amountFixed[$index]">
+                        <input class="tdInput" style="text-align:right"  type="text" ng-value="calc(don.nstudents, values, $index)"  min="0" ng-disabled="true" /> 
+                    </td>
+                    <td ng-if="!amountFixed[$index]">
+                        <input class="tdInput" style="text-align:right" type="text" maxlength="14" ng-disabled="(values==undefined || values=='' || values=='?'  )" ng-model="don.totalLineAmount" ng-change="amtNonEM(don.totalLineAmount,values,$index)" min="minAmount" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"/> 
+                    </td>
+                </tr>
+                <!--tr align="center" class="rowsHistory" ng-repeat="donNon in makeDonationsNonEM">
+<td align="left"><a style="text-decoration: underline;color:blue" >{{donNon.Program__c}}</a></td>
+<td>
+<select   class="tdInput tdInputSelection" ng-model="donNonamount" ng-change="selectedFreq(donNonamount)"> 
+<option value="?" selected="">Select Frequency</option>
+<option ng-repeat="valueNon in donNon.Program_Frequencys__r" value="{{valueNon.Name}}"> {{valueNon.Name}}</option>
+</select>
+</td>
+<td>
+<input class="tdInput" style="text-align:right" type="text" maxlength="14" ng-disabled="(donNonamount==undefined || donNonamount=='' || donNonamount=='?'  )" ng-model="donNon.totalLineAmount" ng-change="amtNonEM(donNon.totalLineAmount,donNonamount,$index)" min="0" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"/> 
+</td>
+</tr-->
+                <tr align="center" class="rowsHistory">
+                    <td>&nbsp;</td>
+                    <td>Total</td>
+                    <td>
+                        <input class="tdInput"  type="number" ng-model="getNoOfstudents();" ng-readonly="true"/>    
+                    </td>
+                    <td>
+                        <input class="tdInput" style="text-align:right"  type="text" ng-value="getTotalAmount();" ng-readonly="true"/>    
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="buttonsdiv" align="right" style="margin-top:25px;">
+            <input type="button" value="Donate" class="buttons"  ng-click="donate(getTotalAmount(),getNoOfstudents(),currency);" ng-disabled="!totalAmountForDonate || !minAmountRequired"/>
+        </div>
+    </div>
+</apex:page>

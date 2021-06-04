@@ -1,0 +1,259 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+    <style>
+        .activetabs a{
+        color: #fff !important; 
+        }
+        .headersHistory{
+        margin-top:155px;
+        border: 1px solid #032559;
+        background: #fff;
+        width: 89.85% !important;
+        }
+        .activetabs { 
+        background: #ff793c;
+        } 
+        .headersHistory ul li a{
+        font-size: 14px;
+        color: #032559;
+        }
+        .activetabs a{
+        color: #fff !important; 
+        }
+        @media screen and (max-width: 600px){
+        
+        }
+    </style>
+    <div class="headermenuSelection">
+        <ul style="width:100%">
+            <li ng-click="showTabcontent(0);moveToTop()" onclick="openDiv('Basic')" ng-class="{active: 0 == selected}" ><a  ng-click="moveToTop();">Profile</a></li>
+            <li ng-click="showTabcontent(1);moveToTop();getAttStudents();" onclick="openDiv('listings')" ng-class="{active: 1 == selected}" ><a  ng-click="moveToTop();">Student Listings</a></li>
+        </ul>
+    </div>    
+    <ng-form name="basicInfo" novalidate="true" class="switchDiv">
+        <div id="Basic" class="city switchPages" ng-init="tabs();">
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    Basic Information    
+                </h4>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        First Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="fName" ng-model="Facilitator.FirstName"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true' ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.fName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.fName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Last Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="userLastName" ng-model="Facilitator.LastName"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true' ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.userLastName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.userLastName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Email:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="userEmail" ng-model="Facilitator.Email"  class="inputfileds" ng-change="valid(Facilitator.Email)" required='true' ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.userEmail.$invalid" class="error">This is required.</span>
+                    <span class="error" ng-show="(!(basicInfo.userEmail.$invalid) && invalidEmail)">Invalid email address</span>
+                    <span ng-show="!(formInvalid && basicInfo.userEmail.$invalid) && !(!(basicInfo.userEmail.$invalid) && invalidEmail) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Mobile No:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="userMobile" ng-model="Facilitator.MobilePhone"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="11" minlength="10" ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.userMobile.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.userMobile.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Facilitator Id:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="id" ng-model="Facilitator.FFE_ID__c"  class="inputfileds readInput" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' ng-readonly='true'/>              
+                    <span ng-show="formInvalid && basicInfo.id.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.id.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Working Mode:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <select class="inputfiledsSelect" name="Working" ng-model="Facilitator.Working_Mode__c" required='true' ng-disabled='editFileds'>
+                        <option  value='Online'>Online</option>
+                        <option  value='Offline'>Offline</option>
+                    </select>
+                    <span ng-show="formInvalid && basicInfo.Working.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.Working.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+            </div>
+            <div class="formDiv" >
+                <h4 class="formheadings" align="center">
+                    Communication Information    
+                </h4>
+                <div class="row" style="width:91.5%">
+                    <h4 class="formTags" >
+                        Address:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <textarea  name="Permanent" class="inputfileds"  ng-model="Facilitator.MailingStreet" style="min-height:98px;width:100%" ng-readonly="editFileds" required="true" ng-class="{readInput: editFileds}"></textarea>
+                    <span ng-show="formInvalid && basicInfo.Permanent.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.Permanent.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                
+                <div class="row">
+                    <h4 class="formTags">
+                        State:<span style="color:#ff0000">*</span>
+                    </h4>
+                     <select class="inputfiledsSelect" name="State" ng-model="Facilitator.MailingState" required='true' ng-disabled="editFileds" ng-change="getCities(Facilitator.MailingState)">
+                        <option ng-repeat="listOfState in listOfStates" value='{{listOfState.Label}}'>{{listOfState.Label}}</option>
+                    </select>
+                     <span ng-show="formInvalid && basicInfo.State.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.State.$invalid) && showSpace" class="error">&nbsp;</span>
+                
+                    <!--input type="text" name="State" onpaste="return isChar(event)" onkeypress="return isChar(event)" class="inputfileds"  ng-model="Facilitator.MailingState"  ng-readonly='editFileds'/-->
+                </div>
+                 <div class="row">
+                    <h4 class="formTags" >
+                        City:<span style="color:#ff0000">*</span>
+                    </h4>
+                       <select class="inputfiledsSelect" name="city" ng-model="Facilitator.MailingCity" required='true' ng-disabled="Facilitator.MailingState==undefined || Facilitator.MailingState=='' || editFileds">
+                           <option ng-repeat="listOfCitie in listOfCities" value='{{listOfCitie.City__c}}'>{{listOfCitie.City__c}}</option>
+                       </select>
+                       <span ng-show="formInvalid && basicInfo.city.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.city.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="formTags" >
+                        Country:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="country"  onpaste="return isChar(event)" onkeypress="return isChar(event)" class="inputfileds"   ng-model="Facilitator.MailingCountry" required="true" ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.country.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.country.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="formTags" >
+                        Zip:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input style="text-align:left" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" type="text" name="zip" class="inputfileds"  ng-model="Facilitator.MailingPostalCode" maxlength='10' required="true" ng-readonly="editFileds" ng-class="{readInput: editFileds}"/ >
+                  <span ng-show="formInvalid && basicInfo.zip.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.zip.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+            </div>
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    Login Information
+                </h4>
+                <div style="width:100%;float:left">
+                        <div class="row">
+                            <h4 class="formTags" >
+                                Do you have Google login:
+                            </h4>
+                            <div class="radioInputs" ng-disabled='editFileds'>
+                                <input type="radio" name="Glogin" ng-model="Facilitator.Do_you_have_Google_login__c" ng-value="true" class="" ng-change='gValue(Facilitator.Do_you_have_Google_login__c)' ng-disabled='editFileds'/>Yes
+                                <input type="radio" name="Glogin" ng-model="Facilitator.Do_you_have_Google_login__c" ng-value="false" class="" ng-change='gValue(Facilitator.Do_you_have_Google_login__c)' ng-disabled='editFileds'/>No
+                            </div>
+                        </div>
+                        <div class="row" ng-if="Facilitator.Do_you_have_Google_login__c">
+                            <h4 class="formTags" >
+                                Google Email Id:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="gmail" class="inputfileds" ng-model="Facilitator.Google_login_ID__c" ng-change="valid(Facilitator.Google_login_ID__c)" required="true" ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                            <span ng-show="formInvalid && basicInfo.gmail.$invalid" class="error">This is required.</span>
+                            <span class="error" ng-show="(!(basicInfo.gmail.$invalid) && invalidGmail) ">Invalid Email address</span>
+                            <span class="error" ng-show="notGmail">Please Enter your gmail Id</span>
+                        </div>
+                </div>
+                <div style="width:100%;float:left">
+                        <div class="row">
+                            <h4 class="formTags" >
+                                Do you have Facebook login:
+                            </h4>
+                            <div class="radioInputs" >
+                                <input type="radio" name="Flogin" ng-model="Facilitator.Do_you_have_Facebook_login__c" ng-value="true" class="" ng-change='fbValue(Facilitator.Do_you_have_Facebook_login__c)' ng-disabled='editFileds'/>Yes
+                                <input type="radio" name="Flogin" ng-model="Facilitator.Do_you_have_Facebook_login__c" ng-value="false" class="" ng-change='fbValue(Facilitator.Do_you_have_Facebook_login__c)' ng-disabled='editFileds'/>No
+                            </div>
+                        </div> 
+                        <div class="row" ng-if="Facilitator.Do_you_have_Facebook_login__c">
+                            <h4 class="formTags" >
+                                Email Id used for Facebook:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="fmail" class="inputfileds" ng-model="Facilitator.Facebook_login_ID__c" ng-change="valid(Facilitator.Facebook_login_ID__c)" required="true" ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                            <span ng-show="formInvalid && basicInfo.fmail.$invalid" class="error">This is required.</span>
+                            <span class="error" ng-show="(!(basicInfo.fmail.$invalid) && invalidFEmail)">Invalid email address</span>
+                        </div>
+                </div>
+            </div>
+            <div class="searchRow" align="center" style="width: 95%;margin-bottom:45px">
+                <input type="button" value="Edit" class="buttons"  ng-click="edit();" ng-if="editFileds"/>
+                <input type="button" value="Save" class="buttons"  ng-click="save();" ng-if="!editFileds"/>
+                <input type="button" value="Cancel" class="buttons"  ng-click="cancelChanges();" ng-if="!editFileds"/>
+            </div>
+        </div>
+        <div id="listings" class="city switchPages">
+                <div class="headermenuSelection headersHistory" style="margin-top: 148px;">
+                <ul style="width:100%">
+                    <li ng-click="switchInternal(0,0)" ng-class="{activetabs: 0 == selectedtabsInternal}" ng-if="tobeProcessedList.length>0"><a  ng-click="moveToTop();" style=" font-size: 14px;">To Be Processed</a></li>
+                    <li ng-click="switchInternal(1,1)" ng-class="{activetabs: 1 == selectedtabsInternal}" ng-if="completedList.length>0"><a  ng-click="moveToTop();" style=" font-size: 14px;">Completed</a></li>
+                </ul>
+            </div>
+            <div ng-switch='indexValueInternal' style="margin-top: 40px;">
+                <div ng-switch-when='0'>
+                    <table class="historyTable" >
+                        <thead>
+                            <tr class="rowsHistory thRow" >
+                                <th>Student Name</th>
+                                <th>Student ID</th> 
+                                <th>Student Location</th>
+                                <th>View Student Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <tr align="center" class="rowsHistory" ng-repeat="studentListing in tobeProcessedList">
+                                <td>{{studentListing.Name}}</td>
+                                <td>{{studentListing.FFE_ID__c}}</td>
+                                <td>{{studentListing.MailingCity}}</td>
+                                <td>
+                                    <a href="#/viewStudentProfile" ng-click="currentStudent(studentListing.Id);" class="material-icons"  style="text-decoration:none;font-size:19px">
+                                        <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div ng-switch-when='1'>
+                    <table class="historyTable" >
+                        <thead>
+                            <tr class="rowsHistory thRow" >
+                                <th>Student Name</th>
+                                <th>Student ID</th> 
+                                <th>Student Location</th>
+                                <th>Year of Study</th>
+                                <th>Internal Status</th>
+                                <th>Application Type</th>
+
+                                <th>View Student Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody> 
+                            <tr align="center" class="rowsHistory" ng-repeat="studentListing in completedList">
+                                <td>{{studentListing.Name}}</td>
+                                <td>{{studentListing.FFE_ID__c}}</td>
+                                <td>{{studentListing.MailingCity}}</td>
+                                <td >{{studentListing.Applications__r.records[0].Year__c}}</td>
+                                <td >{{studentListing.Applications__r.records[0].Internal_Status__c}}</td>
+                                <td >{{studentListing.Applications__r.records[0].Application_Type__c}}</td>
+                                <td>
+                                    <a href="#/viewStudentProfile" ng-click="currentStudent(studentListing.Id);" class="material-icons"  style="text-decoration:none;font-size:19px">
+                                        <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </ng-form>
+</apex:page>

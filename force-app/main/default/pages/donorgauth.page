@@ -1,0 +1,6 @@
+<!--
+@purpose : This page is used as a redirect URL for goolge login 
+			for donor profile page which is hosted on Sites
+-->
+<apex:page sidebar="false" showHeader="false" controller="DN_DonorProfile_CTRL" action="{!redirectDonorPage}">
+</apex:page>

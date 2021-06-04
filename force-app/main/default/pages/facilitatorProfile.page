@@ -1,0 +1,145 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="AP_Application_CTRL" action="{!checkUserAuth}">
+    <html ng-app="Facilitator">
+        <title>Facilitator Profile</title>
+        <head>
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.facilitatorProfileJs}">
+            </script>
+            <script>
+            
+            var facilitatorId ="{!currentUserId}";
+            var facilitatorUpload	= "{!JSENCODE($Label.Uploaded_for_Facilitator)}";
+            var studentUpload		= "{!JSENCODE($Label.Uploaded_for_Scholar)}";
+            var listOfStates		= {!listOfStates};
+            
+            function openDiv(cityName) {
+                var i;
+                var x = document.getElementsByClassName("city");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                document.getElementById(cityName).style.display = "block";
+            }
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                 
+                return true;
+            }
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+            </script>
+            <style>
+                .tdInput {
+                max-width: 100%;
+                min-height: 25px;
+                border: 1px solid rgba(99, 97, 121, 0.49);
+                border-radius: 5px;
+                min-width: 75%;
+                }
+                .active a{
+                color: #fff !important; 
+                }
+                .headersHistory{
+                margin-top:155px;
+                border: 1px solid #032559;
+                background: #fff;
+                }
+                .active { 
+                background: #ff793c;
+                } 
+                .headersHistory ul li a{
+                font-size: 14px;
+                color: #032559;
+                }
+                .active a{
+                color: #fff !important; 
+                }
+                .switchDiv{
+                top: 170px;
+                position: relative;
+                }
+            </style>
+            
+        </head>
+        <body ng-controller="FacilitatorProfile" id="myContainerDiv">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                <div class="logout" ng-if="!viewStudent">
+                    <input type="button" class="buttons" value="Sign out" name="Log out" style="margin-top:10px;" onclick="logOut();"/>
+                    <apex:form >             
+                        <apex:actionFunction action="{!logOutUser}" name="logOut"></apex:actionFunction>
+                    </apex:form>
+                </div>
+                <div style="float:right;position: relative;top: 35px;cursor:pointer" ng-if="viewStudent">
+                    <a ng-click="previous();">
+                        <apex:image url="{!$Resource.Previous}" styleClass="logo"/>
+                    </a>
+                </div> 
+            </div>
+            <div class="headermenuSelection" ng-if="viewStudent">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                    Please review scholar details and give your comments
+                </h3>
+            </div>
+            <ng-view>
+            </ng-view>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

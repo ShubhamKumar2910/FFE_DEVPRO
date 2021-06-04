@@ -1,0 +1,34 @@
+<apex:component >
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular.min.js')}"/>    
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-material.min.js')}"/>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <apex:stylesheet value="{!URLFOR($Resource.mentorship_resource, '/styles/angular-material.min.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/ps-input-time.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.mentorship_resource, '/styles/bootstrap.min.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/jquery.slim.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/pooper.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/sweetalert2.all.min.js')}"/>
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script data-require="angular.js@*" data-semver="1.5.0" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"/>    
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.5/angular-material.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+    
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://rawgithub.com/randallmeeker/ps-input-time/master/ps-input-time.js"/>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js"> 
+    </script>--> 
+
+</apex:component>

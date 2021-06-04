@@ -1,0 +1,109 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+    <style>
+        .ts-container{
+        padding:1% 3%;
+        }
+        .perque{
+        margin: 0;
+        padding: 10px 0;
+        background: #f2f2f2; 
+        padding-left: 5px;
+        border: 1px solid #ccc;
+        }
+        .historyTable {
+        margin-top: 0px;
+        }
+    </style>
+    <!-- List of all students for a particular donor -->
+    <div class="container" style=" margin-top: 30px;" >
+        <h4 class="tagnames" >
+            Select Financial Year:
+        </h4>
+        <select style="width: 11%;margin-bottom: 15px;" ng-model="financialYear" class="inputfiledsSelect" ng-change="getDonorSpecifiedYearStudents(financialYear);">
+            <option ng-repeat="finYear in FinancialYear" value="{{finYear}}">{{finYear}}</option>
+        </select><br/><br/><br/>
+        <h2 style="font-size:12pt;color: #032559;" ng-if="currentStudentList.length>0;">
+         Studying Scholar(s) Details:
+        </h2>
+        
+        <p ng-if="studentList.length==0;" style="margin-top: 117px;margin-left: 330px;color:OrangeRed;">
+            No students available for current financial Year. Please select any other financial year.
+        </p>
+        
+        <table class="historyTable" ng-if="currentStudentList.length>0;">
+            <thead>
+                <tr class="rowsHistory thRow">
+                    <th>Student Name</th>
+                    <th>Gender</th>
+                    <th>Course</th>
+                    <th>Course Year</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <!--th>Download Profile</th-->
+                    <th>View Profile</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr align="center" class="rowsHistory" ng-repeat="map in currentStudentList">
+                    <td><a href="">{{map.Student__r.Name}}</a></td>
+                    <td>{{map.Student__r.Gender__c}}</td>
+                    <td>{{map.Student__r.Course__c}}</td>
+                    <td>{{map.Year__c}}</td>
+                    <td>{{map.Student__r.MailingCity}}</td>
+                    <td>{{map.Student__r.MailingState}}</td>
+                    <!--td><a href="#/StudentDataInMSWord/sid={{map.ID}}" ng-click="" target="_blank">Download</a></td-->
+                    <td><a class="material-icons"  style="text-decoration:none;font-size:19px" href="#/viewStudentByDonor" ng-click="currentStudent(map.Id,map.Student__c,map.Student__r.Financial_year__c);"><apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/></a></td>
+                </tr>
+            </tbody>       
+        </table>
+     </div> 
+    <br/><br/>&nbsp;
+<h2 class="tagnames" style="margin-top:2%;font-size:12pt;" ng-if="AlumniStudentList.length>0;">
+     Alumni Scholar(s) Details:
+    </h2><br/>
+            <table class="historyTable" ng-if="AlumniStudentList.length>0;">
+                <thead>
+                    <tr class="rowsHistory thRow">
+                        <th>Student Name</th>
+                        <th>Course</th>
+                        <th>College Name</th>
+                        <th>Branch</th>
+                        <th>Sem 7 score/ Medical 3rd year part 1</th>
+                        <th>Sem 8 score/ Medical 3rd year part 2</th>
+                        <th>Placed (Yes/ No)</th>
+                        <th>Name of Company</th>
+                        <th>Designation, Location and CTC</th>
+                        <th>Higher Studies/Government Job/Entrepreneurship</th>
+                        <th>View Profile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr align="center" class="rowsHistory" ng-repeat="map in AlumniStudentList">
+                        <td><a href="">{{map.Name}}</a></td>
+                        <td>{{map.Course__c}}</td>
+                        <td>{{map.College_Name__r.Name}}</td>
+                        <td>{{map.Branch_Stream__c}}</td>
+                        
+                        <td ng-if="map.Course__c == 'BE/B.Tech'">{{map.Semester7__c}}</td><td ng-if="map.Course__c == 'BE/B.Tech'">{{map.Semester8__c}}</td>
+                        <td ng-if="map.Course__c == 'Integrated MTech'">{{map.Semester9__c}}</td><td ng-if="map.Course__c == 'Integrated MTech'">{{map.Semester10__c}}</td>
+                        <td ng-if="map.Course__c == 'MBBS'">{{map.MBBS_Year_3_Part_1__c}}</td><td ng-if="map.Course__c == 'MBBS'">{{map.MBBS_Year_3_Part_2__c}}</td>
+                        
+                        <td ng-if="map.Placement_Info__c != null && map.Placement_Info__c == 'Placed'">Yes</td>
+                        <td ng-if="map.Placement_Info__c != null && map.Placement_Info__c == 'Not Placed'">No</td>
+                        <td ng-if="map.Placement_Info__c == null || (map.Placement_Info__c != null && map.Placement_Info__c != 'Not Placed' && map.Placement_Info__c != 'Placed')">-</td>
+                        
+                        <td ng-if="map.Company_Name__c != null">{{map.Company_Name__c}}</td>
+                        <td ng-if="map.Company_Name__c == null">-</td>
+                        
+                        <td ng-if="map.Designation__c != null">{{map.Designation__c}},{{map.Location__c}},{{map.CTC__c}}</td>
+                        <td ng-if="map.Designation__c == null">-</td>
+                        
+                        <td ng-if="map.Placement_Info__c != null">{{map.Placement_Info__c}}</td>
+                        <td ng-if="map.Placement_Info__c == null">-</td>
+                        <td><a class="material-icons"  style="text-decoration:none;font-size:19px" href="#/viewStudentByDonor" ng-click="currentStudent(map.Id);"><apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/></a></td>
+                        
+                    </tr>
+                </tbody>       
+    </table> 
+</apex:page>

@@ -1,0 +1,17 @@
+<apex:component >
+    <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+    <script src="{!$Resource.angular_min}">
+    </script>
+    <script src="{!$Resource.angular_route}">
+    </script>
+    <script src="{!$Resource.angular_animate}">
+    </script>
+    <script src="{!$Resource.angular_aria}">
+    </script>
+    <script src="{!$Resource.angular_msg}">
+    </script>
+    <script src="{!$Resource.sweetalertsJs}">
+    </script>
+</apex:component>

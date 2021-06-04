@@ -1,0 +1,651 @@
+<apex:page doctype="html-5.0" showheader="false"
+           sidebar="false"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false"
+           controller="TrainingAndSkillDevelopment_CTRL" 
+           >
+    
+    <html ng-app="TrainingAndSkillDevelopment">
+        <title>Training and Skill Development</title>
+        <head>
+            <c:pageResource />
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <apex:stylesheet value="{!URLFOR($Resource.fontAwesome,'/font-awesome-4.7.0/css/font-awesome.min.css')}" />
+            <script src="{!$Resource.textAngularRangy}">
+            </script>
+            <script src="{!$Resource.textAngularSanitize}">
+            </script>
+            <script src="{!$Resource.textAngularJs}">
+            </script>
+            <script src="{!$Resource.donorProfile}">
+            </script>
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.sliderJS}">
+            </script>
+            <script src="{!$Resource.TrainingAndSkillDevelopment}">
+            </script>
+            <script>
+            var CourseBEBTechYear                   = {!CourseBEBTechYear};
+            
+            function showDescJs(){
+                document.getElementById('popUpDesc').style.display='block';
+            }
+            
+            function closeDescJs(){
+                document.getElementById('popUpDesc').style.display='none';
+            }
+            
+            
+            </script>
+            <style>
+                .headermenuSelectiontab ul li{
+                padding: 10px 2px;
+                color: white;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 0.8em;
+                cursor: pointer;
+                outline: none;
+                text-align: center;
+                display: inline-block;
+                outline: none;
+                }
+                .headermenuSelectiontab ul {
+                list-style-type: none;
+                color: #000;
+                margin: 0PX 0PX 0PX 0PX;
+                font-size:large;
+                
+                }
+                .headermenuSelectiontab {
+                float: left;
+                background: #032559;
+                width: 100%;
+                
+                }
+                .headermenuSelectiontab ul li a:hover {
+                color: #f8d308;
+                }
+                .headermenuSelectiontab ul li:hover {
+                color: #f8d308;
+                }
+                .md-select-menu-container.md-active{
+                z-index: 1111;
+                }
+            </style>
+        </head>
+        <body ng-controller="trainingSkillDevelopment">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                <div style="float:right;position: relative;top: 35px;margin-top: 16px;">
+                    <div class="searchRow" align="center" style="margin-top: 16px;margin-right: 60px;">
+                        <input type="button" style="background-color:#032559;border-radius: 0px;" value=" Back to Training Summary" class="buttons"  ng-click="backToSummary();"/>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="renewalPopup" style="width: 600px; height: 150px; margin-top:0px;margin-left:100px;display:none;" id='popUpDesc'>
+                <div class="material-icons closePopUp" onclick="closeDescJs();" ng-click="closeDescJs();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <p id='textArea' ng-repeat="val in showCoursesList track by $index"> 
+                    {{$index+1}}.&nbsp;{{val}}<br/>
+                </p>
+                
+            </div>
+            
+            
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            
+            
+            <div class="headermenuSelection">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                    Training Summary
+                </h3>
+            </div>            
+            <br/>
+            <div class="searchDiv" style="margin-bottom:10px">
+                <div class="searchRow">
+                    <div class="searchCol">
+                        <h3 class="searchTags" align="right">
+                            Select year: 
+                        </h3> 
+                        <md-input-container class="mdCont" >
+                            <md-select  ng-model="yearSelected" style="border: 1px solid #ccc;" ng-change="selectYear()" placeholder="Select Year of study">
+                                <md-optgroup >
+                                    <md-option label="--Select Year of study--" ng-repeat="yearrs in CourseBEBTechYear" value="{{yearrs.value}}">{{yearrs.value}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>                
+            </div>
+            
+            
+            
+            
+            
+            <div class="searchDiv" style="margin-top:0px;margin-left: 120px;" ng-if="yearIsSelected">
+                <div class="searchRow" style="color:#032559;font-size:14pt;font-weight: bold">
+                    2nd Year Training Cohort<br/>&nbsp;
+                </div>
+                
+                <div class="searchRow">
+                    <table style="border-collapse: collapse;border: 1px solid black;width:34%;">
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">AMCAT Baseline</th>
+                            <th style="border: 1px solid black;width:20%">{{secondYearAmcatPreandPostLenght}}</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">English APP Students</th>
+                            <th style="border: 1px solid black;">{{secondYearEnglishLength}}</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">Aptitude APP Students</th>
+                            <th style="border: 1px solid black;">{{secondYearAptitudeLength}}</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">Aspiring Students</th>
+                            <th style="border: 1px solid black;">{{secondYearAspiringLength}}</th>
+                        </tr>
+                    </table>
+                </div>
+                
+                
+                
+                <div class="searchRow" style="color:#032559;font-size:14pt;font-weight: bold">
+                    &nbsp;<br/>3rd Year Training Cohort<br/>&nbsp;
+                </div>
+                
+                <div class="searchRow">
+                    <table style="border-collapse: collapse;border: 1px solid black;width:34%;">
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">AMCAT Midline</th>
+                            <th style="border: 1px solid black;width:20%">{{midline}}</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">Hi Touch English</th>
+                            <th style="border: 1px solid black;width:20%">{{getThirdYearDataEnglish}}</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">Aspirational</th>
+                            <th style="border: 1px solid black;">{{getThirdYearDataIT}}</th>
+                        </tr>
+                        <!-- added by varun -->
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">Mock Interview</th>
+                            <th style="border: 1px solid black;">{{mockInterViewCount}}</th>
+                        </tr>
+                    </table>
+                </div>
+                
+                
+                <div class="searchRow" style="color:#032559;font-size:14pt;font-weight: bold">
+                    &nbsp;<br/>4th Year Training Cohort<br/>&nbsp;
+                </div>
+                
+                <div class="searchRow">
+                    <table style="border-collapse: collapse;border: 1px solid black;width:34%;">
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">AMCAT Endline</th>
+                            <th style="border: 1px solid black;width:20%">{{endline}}</th>
+                        </tr>
+                        
+                        <tr>
+                            <th style="border: 1px solid black;text-align: left;">Mock Interviews (HR/Tech)</th>
+                            <th style="border: 1px solid black;width:20%">{{getfourthYearDataHRAndTech}}</th>
+                        </tr>
+                        <!-- 
+<tr>
+<th style="border: 1px solid black;text-align: left;">Mock Interview (HR/Tech)  </th>
+<th style="border: 1px solid black;">{{getfourthYearDataHRAndTech}}</th>
+</tr>
+<!--   <tr>
+<th style="border: 1px solid black;text-align: left;">Mock Interview (HR/Tech)</th>
+<th style="border: 1px solid black;">{{getfourthYearDataHRAndTech}}</th>
+</tr> -->
+                        <!-- <tr>
+<th style="border: 1px solid black;text-align: left;">Placed Student's count</th>
+<th style="border: 1px solid black;">{{placedStudentsCount}}</th>
+</tr> -->
+                    </table>
+                </div>
+                
+            </div>
+            
+            <!-- for second year -->
+            <div ng-if="secondyear">      
+                <div class="headermenuSelectiontab">
+                    <ul style="width:100%">
+                        <li ng-click="showTabcontent(0);getSecondYearData()" ng-class="{active: 0 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;AMCAT Baseline&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        <li ng-click="showTabcontent(1);englishAndAptitudeAppData('English')" ng-class="{active: 1 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;English APP Students&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        <li ng-click="showTabcontent(2);englishAndAptitudeAppData('Aptitude')" ng-class="{active: 2 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Aptitude APP Students&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        <li ng-click="showTabcontent(3);englishAndAptitudeAppData('Aspiring Program')" ng-class="{active: 3 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Aspiring Students&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                    </ul>
+                </div>         
+                
+                <table class="historyTable" ng-if="preandpostAsses">
+                    <thead>
+                        <tr  class="rowsHistory thRow">
+                            <!-- added by varun -->
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <!-- <th colspan="2">Location</th> -->
+                            <th>Aptitude Analytical Score</th>
+                            <th>Aptitude Logical Score</th>
+                            <th>English Spoken Score</th>
+                            <th>English Written Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentList" >
+                            <td><!--a href="/{{map.Id}}" target="_blank"-->{{map.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.Name}}</td>
+                            <!--   <td>{{map.MailingCity}}</td>
+<td>{{map.MailingState}}</td> -->
+                            
+                            <td>{{map.Aptitude_Analytical_Score__c}}</td>
+                            <td>{{map.Aptitude_Logical_Score__c}}</td>
+                            <td>{{map.English_Spoken_Score__c}}</td>
+                            <td>{{map.English_Written_Score__c}}</td>
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                
+                
+                
+                <table class="historyTable" ng-if="displaySecondYearEnglishData">
+                    <thead>
+                        <tr  class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <!--<th colspan="2">Location</th>-->
+                            <th>Pre-Assessment Score</th>
+                            <th>Post-Assessment Score</th>
+                            <th>Vendor</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentwithTrainingList" >
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <!--  <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingState}}</td> -->
+                            <!-- <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.English_Spoken_Score__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.English_Written_Score__c}}</td> -->
+                            <td>{{map.students.Pre_assessment_Scores__c}}</td>
+                            <td>{{map.students.Marks_Obtained__c}}</td>
+                            
+                            <td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td>
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                
+                <table class="historyTable" ng-if="displaySecondYearAptitudeData">
+                    <thead>
+                        <tr  class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th>Pre-Assessment Score</th>
+                            <th>Post-Assessment Score</th>
+                            <th>Vendor</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentwithTrainingListAptitude" >
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <!--<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Aptitude_Analytical_Score__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Aptitude_Logical_Score__c}}</td>-->
+                            <td>{{map.students.Pre_assessment_Scores__c}}</td>
+                            <td>{{map.students.Marks_Obtained__c}}</td>
+                            <td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td>                    
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                
+                
+                <table class="historyTable" ng-if="displaySecondYearAllData">
+                    <thead>
+                        <tr  class="rowsHistory thRow">
+                            <th>FFE UID </th>
+                            <th>Student Name</th>
+                            <th>Aptitude Analytical</th>
+                            <th>Aptitude Logical</th>
+                            <th>English Spoken</th>
+                            <th>English Written</th>
+                            <!--th>Vendor</th-->
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentwithTrainingListAll" >
+                            <td><!--a href="/{{map.Id}}" target="_blank"-->{{map.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.Student_ID__r.Name}}</td>
+                            <td>{{map.Student_ID__r.Aptitude_Analytical_Score__c}}</td>
+                            <td>{{map.Student_ID__r.Aptitude_Logical_Score__c}}</td>
+                            <td>{{map.Student_ID__r.English_Spoken_Score__c}}</td>
+                            <td>{{map.Student_ID__r.English_Written_Score__c}}</td>
+                            <!--td><a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank">{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}</a></td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingState}}</td>
+
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Aptitude_Analytical_Score__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Aptitude_Analytical_Score_post__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Aptitude_Logical_Score__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Aptitude_Logical_Score_post__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.English_Spoken_Score__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.English_Spoken_Score_post__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.English_Written_Score__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.English_Written_Score_post__c}}</td>
+<td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td-->  
+                            <!--td><span ng-repeat="vend in map.wrpvendCode">
+<a href="{{vend.vndURL}}" target="_blank">{{vend.vndName}}</a><br/></span></td-->
+                        </tr>
+                    </tbody>       
+                </table>
+                
+            </div>          
+            
+            <!--div ng-show="true" style="margin-left: 330px;color:OrangeRed;">
+No students available for current financial Year. Please select any other financial year.
+</div-->
+            
+            <!-- for third year-->
+            <div ng-if="thirdyear">      
+                <div class="headermenuSelectiontab">
+                    <ul style="width:100%">
+                        
+                        <li ng-click="showTabcontent(0);getThirdYearData_new()" ng-class="{active: 0 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;AMCAT Midline&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        <li ng-click="showTabcontent(1);getThirdYearData('Aspiring English')" ng-class="{active: 1 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Hi Touch English&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        <li ng-click="showTabcontent(2);getThirdYearData('IT')" ng-class="{active: 2 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Aspirational</li>
+                        <li ng-click="showTabcontent(3);getThirdYearMockInterviewDetail()" ng-class="{active: 3 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Mock Interviews&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                    </ul>
+                </div>  
+                
+                <table class="historyTable" ng-if="preandpostAsses_midline">
+                    <thead>
+                        <tr  class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <!-- added by varun -->
+                            <th>Student Name</th>
+                            <!-- <th colspan="2">Location</th> -->
+                            <th>Aptitude Analytical Score</th>
+                            <th>Aptitude Logical Score</th>
+                            <th>English Spoken Score</th>
+                            <th>English Written Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentList" >
+                            <td><!--a href="/{{map.Id}}" target="_blank"-->{{map.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.Name}}</td>
+                            <!--   <td>{{map.MailingCity}}</td>
+<td>{{map.MailingState}}</td> -->
+                            
+                            <td>{{map.Aptitude_Analytical_Score_post__c}}</td>
+                            <td>{{map.Aptitude_Logical_Score_post__c}}</td>
+                            <td>{{map.English_Spoken_Score_post__c}}</td>
+                            <td>{{map.English_Written_Score_post__c}}</td>
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                <table class="historyTable" ng-if="thirdYearEng">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th> Pre-Assessment Score</th> 
+                            <th>Post Assessment Score</th>
+                            
+                            <th>Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentThirdYearEngList">
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            
+                            <td>{{map.students.Pre_assessment_Scores__c}}</td>
+                            <td>{{map.students.Marks_Obtained__c}}</td>
+                            <td>{{map.vendorName}}</td> 
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                <table class="historyTable" ng-if="tgirdYearIT">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th>Location</th>
+                            <th>Certified</th>
+                            <th>Specialization</th>
+                            <th>Courses</th> 
+                            <th>Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentThirdYearIT">
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.isCertified__c | true_false}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Specialization_Name__c}}</td>
+                            <td><a class="material-icons"  style="text-decoration: underline;color:#0000ff;cursor: pointer;"  onclick="showDescJs();"  onmouseout="" ng-click="showCoursesdetails(map.students.Student_Training_Mapping__r.Courses__c);"><apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/></a></td>
+                            <!--	<td>{{map.students.Student_Training_Mapping__r.Courses__c}}</td>  -->
+                            <td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td>
+                        </tr>
+                    </tbody>       
+                </table>
+                <table class = "historyTable" ng-if ="mocktable">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th> Location</th>                             
+                            <th>Completed</th>
+                            <th> Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in mockList">
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+                            <td>{{map.students.Completion_Flag__c}}</td>
+                            
+                            <td>{{map.vendorName}}</td>
+                        </tr>
+                    </tbody>  
+                </table>
+            </div>
+            
+            
+            
+            
+            <!-- for fourth year-->
+            <div ng-if="fourthyear">      
+                <div class="headermenuSelectiontab">
+                    <ul style="width:100%">
+                        <li ng-click="showTabcontent(0);getfourthYearData_new()" ng-class="{active: 0 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;AMCAT Endline&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        
+                        <li ng-click="showTabcontent(1);getfourthYearData('All')" ng-class="{active: 1 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Mock Interview (HR/Tech)&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                        <!--  <li ng-click="showTabcontent(2);getfourthYearData('Mock Interview Tech')" ng-class="{active: 2 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Mock Interview (Tech)&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li ng-click="showTabcontent(3);getfourthYearData('All')" ng-class="{active: 3 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Mock Interview (HR/Tech)&nbsp;&nbsp;&nbsp;&nbsp;</li> -->
+                        <!-- <li ng-click="showTabcontent(3);getPlacementInformation()" ng-class="{active: 3 == selected}">&nbsp;&nbsp;&nbsp;&nbsp;Placement Information&nbsp;&nbsp;&nbsp;&nbsp;</li> -->
+                    </ul>
+                </div>  
+                
+                <table class="historyTable" ng-if="preandpostAsses_endline">
+                    <thead>
+                        <tr  class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <!-- <th colspan="2">Location</th> -->
+                            <th>Aptitude Analytical Score</th>
+                            <th>Aptitude Logical Score</th>
+                            <th>English Spoken Score</th>
+                            <th>English Written Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentList" >
+                            <td><!--a href="/{{map.Id}}" target="_blank"-->{{map.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.Name}}</td>
+                            <!--   <td>{{map.MailingCity}}</td>
+<td>{{map.MailingState}}</td> -->
+                            
+                            <td>{{map.Endline_Aptitude_Analytical_Score__c}}</td>
+                            <td>{{map.Endline_Aptitude_Logical_Score__c}}</td>
+                            <td>{{map.Endline_English_Spoken_Score__c}}</td>
+                            <td>{{map.Endline_English_Written_Score__c}}</td>
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                
+                
+                <table class="historyTable" ng-if="fourthYearHR">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th>Location</th>
+                            <th>Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentfourthYearHRList">
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+                            <td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td> 
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                <table class="historyTable" ng-if="fourthYearTech">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th>Location</th>
+                            <th>Vendor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentfourthYearTechList">
+                            <td><!--a href="/{{map.students.Student_Training_Mapping__r.Student_ID__r.Id}}" target="_blank"-->{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+                            <td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td> 
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                <table class="historyTable" ng-if="fourthYearTechandHR">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th>Location</th>
+                            <th>Completed</th>
+                            <th>Vendors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentfourthYearHRTechList">
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+                            <td>{{map.students.Student_Training_Mapping__r.Student_ID__r.MailingCity}}</td>
+                            <td>{{map.students.Completion_Flag__c}}</td>
+                            <td><span ng-repeat="vend in map.wrpvendCode">{{vend.vndName}}
+                                <br/></span></td>
+                        </tr>
+                    </tbody>   
+                    <!-- <thead>
+<tr  class="rowsHistory thRow">
+<th>FFE UID</th>
+<th>Student Name</th>
+<th>Pre-Assessment Score</th>
+<th>Post-Assessment Score</th>
+<th>Vendor</th>
+</tr>
+
+</thead>
+<tbody>
+<tr align="center" class="rowsHistory" ng-repeat="map in studentfourthYearHRTechList" >
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.FFE_ID__c}}</td>
+<td>{{map.students.Student_Training_Mapping__r.Student_ID__r.Name}}</td>
+<td>{{map.students.Pre_assessment_Scores__c}}</td>
+<td>{{map.students.Marks_Obtained__c}}</td>
+<td><a href="{{map.vendorURL}}" target="_blank">{{map.vendorName}}</a></td>
+</tr>
+</tbody> -->
+                </table>
+                
+                <table class="historyTable" ng-if="displayPlacementData">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>FFE UID</th>
+                            <th>Student Name</th>
+                            <th>Company Name</th>
+                            <th>Location</th>
+                            <th>CTC (PA)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory" ng-repeat="map in studentPlacementList">
+                            <td><!--a href="/{{map.Id}}" target="_blank"-->{{map.FFE_ID__c}}<!--/a--></td>
+                            <td>{{map.Name}}</td>
+                            <td>{{map.Company_Name__c}}</td>
+                            <td>{{map.Location__c}}</td>
+                            <td>{{map.CTC__c}}</td>
+                        </tr>
+                    </tbody>       
+                </table>
+                
+                
+            </div>
+            
+            <p ng-show="!isemptyMessage" style="float: left;text-align: center;width: 100%;margin-top: 30px;color:OrangeRed;">
+                No students available for the selected Option.
+            </p>
+            
+        </body>
+    </html>
+</apex:page>

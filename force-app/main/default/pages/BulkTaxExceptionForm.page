@@ -1,0 +1,159 @@
+<apex:page standardController="Contributor__c"  extensions="BulkTaxExceptionForm" applyHtmlTag="false" renderAs="PDF"  standardStylesheets="false" showHeader="false" >
+    <head>
+        <style>
+            @page {
+            size: letter;
+            
+            @bottom-left {
+            content: element(footer);
+            }
+            @top-center {
+            content: element(header);
+            }
+            }
+            
+            div.footer {
+            //display: block;
+            padding-bottom: 9px;
+            position: running(footer);
+            }
+            
+            div.header {
+            padding:5px;
+            height:100px !importnat;
+            position: running(header);
+            }
+            
+            .pagenumber:before {
+            content: counter(page);
+            }
+            .pagecount:before {
+            content: counter(pages);
+            }
+            
+            
+            .page-break {
+            display:block;
+            page-break-after:always;
+            }
+            
+            .checkNum{
+            display:{!isdisply};
+            }
+            .Notcheck{
+            display:{!notCheck};
+            }
+            
+        </style>
+    </head>
+    <div class="footer"  width="100%">
+        <hr/>
+        <table  width="100%"> 
+            <tr>
+                <td align="left" width="40%" >Foundation for Excellence India Trust</td>
+                <td align="center" width="30%">Page <span class="pagenumber"/> of <span class="pagecount"/></td>
+                <td align="right"  width="30%">80G Receipt</td>
+            </tr>
+        </table>    
+    </div>
+    <div class="header" >
+        <center><img src="{!$Label.FFElogo}"/  ></center>
+    </div>
+
+    <br/><br/><br/>
+    <table  align="center">
+        <tr align="center" style="font-family:verdana;font-size:80%;"><td>(Registered as Public Charitable Trust. Regn. No:BNG(U)-JNR160/2003-2004,Bangalore)</td></tr>
+        <tr align="center" style="font-family:verdana;font-size:80%;"><td>PAN - AAATF0985D;&nbsp;&nbsp;FCRA Registration No:094421348</td></tr>
+        <!--<tr align="center" style="font-family:verdana;font-size:80%;"><td>FCRA Registration No:094421348</td></tr>-->
+        <tr align="center" style="font-family:verdana;font-size:80%;"><td>#840,"MHT HOUSE" FIRST FLOOR, 5TH MAIN, INDRANAGAR FIRST STAGE, BENGALURU, KARNATAKA, 560038</td></tr>
+        <tr align="center" style="font-family:verdana;font-size:80%;"><td>Website: www.ffe.org ; Ph: 080-25201925/42042654</td></tr>
+    </table>
+    <hr/>
+    <center><b><u>RECEIPT</u></b></center>
+    
+   <table width="100%">
+        <tr>
+            <td width="75%">No.<b>{!Contributor__c.Donation__r.Payment_Order__r.Name}</b></td>
+            <td width="23%" align="left">&nbsp;&nbsp;Date:<span style="border-bottom: 1px solid #000000;"><b>{!DAY(Contributor__c.Donation__r.Payment_Order__r.Transaction_Date__c)}-{!CASE(MONTH(Contributor__c.Donation__r.Payment_Order__r.Transaction_Date__c),1,"Jan",2,"Feb",3,"Mar",4,"Apr",5,"May",6,"Jun",7,"Jul",8,"Aug",9,"Sep",10,"Oct",11,"Nov",12,"Dec","None")}-{!YEAR(Contributor__c.Donation__r.Payment_Order__r.Transaction_Date__c)}&nbsp;</b></span></td>
+        </tr>
+    </table>
+    <table width="100%">
+        <tr>
+            <td width="75%"><p style="width:33%;float:left;"> Received with thanks from </p><p style="border-bottom: 1px solid #000000;width:65%;float:left"><b>{!Contributor__c.Name}</b></p></td>            
+            <td width="22%">PAN:<b><span style="border-bottom: 1px solid;">{!UPPER(Contributor__c.PAN__c)}</span></b></td>
+        </tr>
+    </table>
+    
+    <table style="width: 100%;">
+        <tr><td align="left" style="width:8%">Address:</td> 
+            <td style="border-bottom: 1px solid #000000;"><b>{!Contributor__c.Street__c }&nbsp;</b></td></tr>
+        <tr><td></td>
+            <td align="left" style="border-bottom: 1px solid #000000;width:86%;" >
+                <b>{!Contributor__c.City__c }&nbsp;</b>
+            </td></tr>
+        <tr><td></td><td align="left" style="border-bottom: 1px solid #000000;width:86%;"><b>{!Contributor__c.State__c }&nbsp;</b></td ></tr>
+        <tr><td></td><td align="left" style="border-bottom: 1px solid #000000;width:86%;"><b>{!Contributor__c.PostalCode__c }&nbsp;</b></td></tr>
+        <tr><td></td><td align="left" style="border-bottom: 1px solid #000000;width:86%;"><b>{!Contributor__c.Country__c }&nbsp;</b></td></tr>
+    </table>
+    <table style="width:115%;">
+        <tr>
+            <td><p style="width:17%;float:left;"> The sum of Rupees &nbsp;</p><p style="border-bottom: 1px solid #000000;width:70%;float:left"><b>{!wordText}&nbsp;Only</b></p></td>
+        </tr>
+    </table>
+    <table style="position:relative;width:100%;bottom:31px;">
+        <tr>
+            
+            <td width="78%"><p style="width:6%;float:left;">  by&nbsp; </p><p style="border-bottom: 1px solid #000000;width:91%;float:left" class="Notcheck"><b>{!Contributor__c.Payment_Method__c}&nbsp;</b></p><p style="border-bottom: 1px solid #000000;width:91%;float:left" class="checkNum"><b>{!Contributor__c.Payment_Method__c}&nbsp;&nbsp;No :&nbsp;{!Contributor__c.Cheque_No__c}</b></p></td>            
+            <td width="22%">dated&nbsp;<span style="border-bottom: 1px solid #000000;"><b>{!DAY(Contributor__c.Payment_Date__c)}-{!CASE(MONTH(Contributor__c.Payment_Date__c),1,"Jan",2,"Feb",3,"Mar",4,"Apr",5,"May",6,"Jun",7,"Jul",8,"Aug",9,"Sep",10,"Oct",11,"Nov",12,"Dec","None")}-{!YEAR(Contributor__c.Payment_Date__c)}&nbsp;</b><!--b>{!DAY(TODAY())}-{!CASE(MONTH(TODAY()),1,"Jan",2,"Feb",3,"Mar",4,"Apr",5,"May",6,"Jun",7,"Jul",8,"Aug",9,"Sep",10,"Oct",11,"Nov",12,"Dec","None")}-{!YEAR(TODAY())}&nbsp;</b--></span></td>
+        </tr>
+    </table>
+    <table style="{!IF(Contributor__c.Cheque_DD_Bank_Name__c=='','display:none','position:relative;bottom:55px;')}" width="100%">
+        <tr>
+            <td width="17%"><p style="width:22%;float:left;"> drawn on&nbsp;</p><p style="border-bottom: 1px solid #000000;width:73%;float:left;"><b>{!Contributor__c.Cheque_DD_Bank_Name__c}&nbsp;</b></p></td>
+            <td width="15%">towards </td>
+        </tr>
+    </table>
+    
+    
+    <table style="position:relative;bottom:35px;border-collapse:collapse;" width="100%" border="1" >
+        <apex:variable value="{!1}" var="rowNum"/>
+        <tr >
+            <th style="text-align:center;">SI.No</th>
+            <th style="text-align:center;">Program Name</th>
+            <th style="text-align:center;">Amount</th>
+        </tr> <tr>
+                <td style="text-align:center;width:15%"><apex:outputText value="{!FLOOR(rowNum)}"/></td>  
+                <td style="text-align:center;width:65%">{!Contributor__c.Donation__r.Donation_Program__c}</td> 
+                <td style="text-align:center;width:20%">{!Contributor__c.Donation_Amount__c}</td>
+            </tr> 
+            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+    </table>
+   
+    
+    <table  width="100%"> 
+        <tr>
+            <td align="center" width="30%" style="border-bottom: 1px solid #000000;vertical-align:bottom;"><b>Rs.&nbsp;
+                <apex:outputText value="{0, number, 00.00}">
+                    <apex:param value="{!Contributor__c.Donation_Amount__c}" />
+                </apex:outputText></b></td>
+            <td width="40%"></td>
+            <td align="center" style="border-bottom: 1px solid #000000;" width="30%"><!--apex:image url="{!$Resource.Signature_Latha}" width="230" height="90"/--><apex:image url="{!myimageurl}" width="230" height="90"/></td>
+        </tr>
+        <tr>
+            <td align="center" width="30%" ></td>
+            <td width="40%"></td> 
+            <td align="center"  width="30%">Manager - Accounts</td>
+        </tr>
+    </table><br/>
+    <hr />
+    <center><p style="font-family:courier;font-size:9px;">
+        Donations to the TRUST are exempt u/s.80G(5)(vi) of the IT Act, 1961 vide No.DIT(E)BLR/80G(R)/253/AAATF0985D/ITO(E)-1 renewed and effective till date of issue of this receipt.
+        </p></center>
+    <hr />
+    <center>
+        This is a Computer Generated Receipt.
+        
+    </center>
+    
+    
+</apex:page>

@@ -1,0 +1,548 @@
+<apex:page doctype="html-5.0" showheader="false"
+           sidebar="false"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false"
+           controller="DN_FundAllocation_CTRL">
+    <html ng-app="FundAllocation">
+        <title>Multi Donor Fund Allocation</title> 
+        <head>
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.sliderJS}">
+            </script>
+            <script src="{!$Resource.fundAllocation}">
+            </script>
+            <style>
+                /* body.md-default-theme, body, html.md-default-theme, html {
+                color: rgba(0,0,0,0.87);
+                background-color: #fff;
+                }*/
+                .md-select-menu-container{
+                z-index: 141;
+                }
+                md-backdrop.md-select-backdrop{
+                z-index:141;
+                }
+                input[type=search]{
+                width: 99%;
+                border: 1px solid #ccc;
+                height: 30px;
+                padding: 2px;
+                outline:none;
+                }
+                .mdCont {
+                margin: 0;
+                width: 60%;
+                margin-top: 0px !important;
+                padding: 9px 9px;
+                }
+                .nameField{
+                color: #5888e4;
+                text-decoration: underline;
+                cursor: pointer;
+                }
+                .searchTagsPopup {
+                float: left;
+                margin: 10px;
+                color: #032559;
+                font-size: 12pt;
+                min-width: 29%;
+                }
+                .mdContPopupchng{ 
+    margin: 0;
+    width: 60%;
+    margin-top: 0px !important;
+    padding: 2px 2px;
+}
+                .searchTagsPopupchng{
+    float:left;
+    margin-right:10px;
+    color: #032559;
+    font-size:12pt;
+    min-width: 15%;
+}
+                .md-select-menu-container{
+                z-index: 222;
+                }
+                md-backdrop.md-select-backdrop{
+                z-index:222;
+                }
+                /* .studentPopUp{
+                margin-top: -20px;
+                position: fixed;
+                z-index: 1111111;
+                background: #fff;
+                width: 92.8%;
+                }
+                .DonorPopupTable{
+                margin-top: 0;
+                margin-bottom: 0px;
+                top: 93px;
+                position: relative;
+                }
+                {
+                float: left;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                position: relative;
+                top: 92px;
+                }*/
+                .rowsHistoryDiv>.historyTable:nth-child(even) {
+                background: #fff;
+                }
+            </style>         
+            <script>
+            var applnType= {!applnType};
+            var gauDelim= {!gauDelim};
+            var gauAmtDelim= {!gauAmtDelim};
+            var studentFilterOption = {!studentFilterOption};
+            var multiDonor_studentFilterOption = {!multiDonor_studentFilterOption};
+            var gauList={!gauList};
+            var DonorCategory = {!DonorCategory};
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                
+                return true;
+            }
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+            function checkValidation(extrafunds, Current_Balance__c){
+                if(parseInt(extrafunds)>parseInt(Current_Balance__c)){
+                    return false;
+                }
+                return true;
+            }
+            </script>
+        </head>
+        <body ng-controller="fundAllocation">
+            <div class="banner" align="center"> 
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                <div style="float:right;position: relative;top: 35px;">
+                    <a href="/home/home.jsp"  >
+                        <apex:image url="{!$Resource.home}" styleClass="logo"/>
+                    </a>
+                </div>  
+            </div>
+            <div class="headermenuSelection">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                   Multi Donor Fund Allocation
+                </h3>
+            </div>
+            <div class="searchDiv">
+                <div class="searchRow">
+                    <div class="searchCol">
+                        <h3 class="searchTags" align="right">
+                            Students By
+                        </h3> 
+                        <md-input-container class="mdCont" >
+                            <md-select  ng-model="student" style="border: 1px solid #ccc;"  md-on-close="clearLocation()">
+                                <md-optgroup >
+                                    <md-option ng-value="studentselected" ng-repeat="studentselected in multiDonor_studentFilterOption">{{studentselected}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchCol" >
+                        <h3 class="searchTags" align="right"> 
+                            Application Type
+                        </h3>
+                        <md-input-container class="mdCont" >
+                            <md-select ng-model="AppType" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearGau()">
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedAppl" layout-fill='' value="all" ng-click="cours()">Select All</md-button > 
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedAppl" layout-fill='' value="all" ng-click="cours()">Deselect All</md-button> 
+                                    <md-option ng-value="apptype.Id" ng-repeat="apptype in applnType">{{apptype.Name}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div> 
+
+                <div class="searchRow" align="center" style="margin-top: 16px;">
+                    <input type="button" value="Search" class="buttons"  ng-click="search_multi(student,AppType);"/>
+                    <input type="button" value="Clear" class="buttons"  ng-click="clear();"/>
+                </div>
+            </div> 
+            
+            <div style="float: left;margin-bottom: 40px;border: 1px solid #ccc;"  ng-if='showResults'>
+                <table class="historyTable" style="margin-bottom:0px" ng-if="showResults && !hideHeader">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>Student Name</th>
+                            <th>Student Id</th>
+                            <th>Approved Scholarship Amount </th>
+                            <th>Internal Status</th>
+                            <th>Student Mailing City</th>
+                            <th>Student Mailing State</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div ng-repeat="students in studentMappingresults"  style="float:left;background: #fff;" class="rowsHistoryDiv">
+                    <table class="historyTable" style="margin:0px;background: #eee;" ng-if='showResults && students.Applications__r.records.length>0 '>
+                        <thead>
+                            <tr align="center" class="rowsHistory">
+                                <td ><a ng-click="studnetApps($index);" class="nameField">{{students.Name}}</a></td>
+                                <td ><a href="/{{students.Id}}" target="_blank">{{students.FFE_ID__c}}</a></td>
+                                <td>{{students.ScholarshipAmount__c}}</td>
+                                <td>{{students.Internal_Status__c}}</td>
+                                <td>{{students.MailingCity}}</td>
+                                <td>{{students.MailingState}}</td>
+                            </tr>
+                        </thead>
+                    </table>
+                    <h4 ng-if="show[$index] &&!(students.Applications__r.records.length >0)" align="center" style="margin-top: 22px;float: left;width: 100%;color:#ff793c">
+                        No Applications available
+                    </h4>
+                    <table class="historyTable"  style="margin:0px;width: 90%;margin: 1% 5%;" ng-if='show[$index] &&students.Applications__r.records.length>0 '>
+                        <thead>
+                            <tr class="rowsHistory thRow">
+                                <th>Bank Account Holder's Name</th>
+                                <th>Bank Name</th>
+                                <th>Bank Account #</th>
+                                <th>IFSC Code</th>
+                                <th>Bank Branch City</th>
+                                <th>Bank Address</th>
+                                <th>Passbook Copy</th>
+                            </tr>
+                        </thead>
+                        <tr align="center" class="rowsHistory">
+                            <td>{{students.Bank_Account_Holder_s_Name__c}}</td>
+                            <td>{{students.Bank_Name__c}}</td>
+                            <td>{{students.Full_Bank_Account_No_With_all_digits__c}}</td>
+                            <td>{{students.X11_character_IFSC_Code_of_the_Branch__c}}</td>
+                            <td>{{students.Bank_City__c}}</td>
+                            <td>{{students.Branch_Address__c}}</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <table class="historyTable"  style="margin:0px;width: 90%;margin: 1% 5%;" ng-if='show[$index] &&students.Applications__r.records.length>0 '>
+                        <thead>
+                            <tr class="rowsHistory thRow">
+                                <th>Application Name</th>
+                                <th>Application Type</th>
+                                <th>Application Stage</th>
+                                <th>Requested Amount</th>
+                                <th>Amount Funded</th>
+                                <th>Remaining Fund</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        
+                        <tr align="center" class="rowsHistory" ng-repeat="apps in students.Applications__r.records" ng-if="">
+                            <td><a href="/{{apps.Id}}" target="_blank">{{apps.Name}}</a></td>
+                            <td>{{apps.RecordType.Name}}</td>
+                            <td>{{apps.Application_Stage__c}}</td>
+                            <td>{{apps.Amount_Requested__c}}</td>
+                            <td>{{apps.Amount_Funded__c}}</td>
+                            <td>{{apps.Remaining_Fund__c}}</td>
+                            <td ng-if="true"><input type="button" value="Process" class="buttons" ng-click="match_multi(students,apps)"/></td>                          
+                        </tr>
+                    </table>
+                    
+                </div>   
+            </div>
+            <div class="studentAllocationPopUp" ng-if="studentPopup">
+                <div class="material-icons closePopUp" ng-click="cancel();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <table class="historyTable studentPopUp" style="margin-top: 0;margin-bottom:20px;" ng-if="studentFundsDetails.IsMapped__c">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>Student Application Type</th>
+                            <th>Student Requested Amount</th>
+                            <th>Amount Funded For Current Application</th> 
+                            <th>Selected Amount for Disburse</th>
+                            <th>Remaining Fund For Current Application</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory">
+                            <td>{{studentsMatch.ApplName}}</td>
+                            <td>{{studentsMatch.Amount_Requested__c}}</td>
+                            <td>{{studentsMatch.Amount_Funded__c}}</td>
+                            <td>{{studentsMatch.currentlyFunded}}</td>
+                            <td>{{studentsMatch.Remaining_Fund__c}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="historyTable DonorPopupTable" style="margin-top: 0;margin-bottom:0px;" ng-if="studentFundsDetails.IsMapped__c">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>Donor Name</th>
+                            <th>Donor Id</th>
+                            <th>Donor Current Balance</th>
+                            <th>Suggested Amount <br/> (By Donor Team)</th>
+                         <!--   <th>Remarks <br/> (By Donor Team)</th> -->
+                            <!--<th>Donor Blocked Fund</th>-->
+                        </tr>
+                    </thead>
+                </table>
+                <div style="float: left;margin-bottom: 10px;border: 1px solid #ccc;" ng-if="studentFundsDetails.IsMapped__c">
+                    <div ng-repeat="donors in DonorMappingresults" style="float:left" class="rowsHistoryDiv">
+                        <table class="historyTable" style="margin:0px">
+                            <thead>
+                                <tr align="center" class="rowsHistory">
+                                    <td ><a ng-click="donorsShow($index);" class="nameField">{{donors.Name}}</a></td>
+                                    <td ><a href="/{{donors.Id}}" target="_blank">{{donors.FFE_ID__c}}</a></td>
+                                    <td>{{donors.Current_Balance__c}}</td>
+                                    <td>{{donors.Temp_Funding_Amount__c}}</td>
+                                  <!--  <td>{{donors.Temp_Donor_Remark__c}}</td> -->
+                                   <!-- <td>{{donors.Blocked_Funds__c}}</td>-->
+                                </tr>
+                            </thead>
+                        </table>
+                        <table class="historyTable"  style="margin:0px;width: 90%;margin: 1% 5%;" ng-if='showDonor[$index]'>
+                            <thead>
+                               <!-- <tr class="rowsHistory thRow">
+                                    <th>GAU Name</th>
+                                    <th>Donor Name</th>
+                                    <th>Donor Id</th>
+                                    <th>Current Balance</th>
+                                    <th>Blocked Fund</th>
+                                    <th>Enter Fund to Disburse</th>
+                                </tr> -->
+                                 <tr class="rowsHistory thRow">
+                                   <th>Application Name</th>
+                                    <th>GAU Name</th>
+                                    <th>Donor Name</th>
+                                    <th>Donor Id</th>
+                                     <th>Donor Remarks</th>
+                                    <th>Fund to Disburse</th>
+                                </tr>
+                            </thead>
+                          <!--  <tr align="center" class="rowsHistory" ng-repeat="apps in donors.Donor_Balances__r.records track by $index">
+                                
+                                <td>{{apps.GAU_Name__r.Name}}</td> 
+                                <td><a href="/{{apps.Donor_Name__r.Id}}" target="_blank">{{apps.Donor_Name__r.Name}}</a></td>
+                                <td ><a href="/{{apps.Donor_Name__r.Id}}" target="_blank">{{apps.Donor_Name__r.FFE_ID__c}}</a></td>
+                                <td>{{apps.Current_Balance__c}}</td>
+                                <td>{{apps.Blocked_Funds__c}}</td>
+                                <td><input class="tdInput" type="text" style="text-align:right" ng-model="apps.extraFunds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-change="checkValidation(apps.extraFunds,apps.Current_Balance__c,$index, $parent.$index)"/></td>
+                            </tr> -->
+                              <tr align="center" class="rowsHistory" ng-repeat="apps in donors.Donor_Application_Mappings__r.records track by $index">
+                                <td><a href="/{{apps.Application__c.Id}}" target="_blank">{{apps.Application__r.Name}}</a></td>
+                                <td>{{apps.GAU_Information__c}}</td> 
+                                <td><a href="/{{apps.Donor_Name__r.Id}}" target="_blank">{{apps.Donor__r.Name}}</a></td>
+                                <td ><a href="/{{apps.Donor_Name__r.Id}}" target="_blank">{{apps.Donor__r.FFE_ID__c}}</a></td>
+                                <td>{{apps.Donor_Remark__c}}</td> 
+                                <td><input class="tdInput" type="text" style="text-align:right" ng-model="apps.Funding_amount__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-change="checkValidation(apps.extraFunds,apps.Current_Balance__c,$index, $parent.$index)" readonly="true"/></td>
+                            </tr>
+                      
+                          <!-- <tr align="center" class="rowsHistory">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total</td>
+                                <td><input class="tdInput" type="text" style="text-align:right" ng-model="getTotalDisburse(studentsMatch.currentlyFunded,studentsMatch.Remaining_Fund__c, donors.Donor_Balances__r.records, $index);" ng-readonly="true"/></td>
+                            </tr> -->
+                        </table>
+                        <div style="width:100%;margin-bottom:10px;float:left;" align="center" ng-if='showDonor[$index]'>
+                          <!--  <input type="button" value="Add Fund" class="buttons" ng-click="addExtraDonors(getTotalDisburse(studentsMatch.currentlyFunded,studentsMatch.Remaining_Fund__c, donors.Donor_Balances__r.records),studentsMatch.Remaining_Fund__c,$index,donors.Donor_Balances__r.records);" ng-if="addFundPop" ng-disabled="studentFundsDetails.Remaining_Fund__c<=0"/> -->
+                           <!-- <input type="button" value="Save" class="buttons"  ng-click="saveDonors(donors.Donor_Balances__r.records,$index);" ng-disabled="disburseDis || disburseDisValidation"/> -->
+                        </div> 
+                    </div>   
+                </div>
+                <table class="historyTable" style="margin-top: 0;margin-bottom:20px;" ng-if="!studentFundsDetails.IsMapped__c">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>Student Application Type</th>
+                            <th>Student Requested Amount</th>
+                            <th>Amount Funded For Current Application</th>
+                            <th>Selected Amount for Disburse</th>
+                            <th>Remaining Fund For Current Application</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center" class="rowsHistory">
+                            <td>{{studentsMatch.ApplName}}</td>
+                            <td>{{studentsMatch.Amount_Requested__c}}</td>
+                            <td>{{studentsMatch.Amount_Funded__c}}</td>
+                            <td>{{studentsMatch.currentlyFunded}}</td> 
+                            <td>{{studentsMatch.Remaining_Fund__c}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="historyTable" style="margin-top: 0;margin-bottom:0px;" ng-if="!studentFundsDetails.IsMapped__c">
+                    <thead>
+                        <tr class="rowsHistory thRow">
+                            <th>GAU Name</th>
+                            <th>Donor Name</th>
+                            <th>Donor Id</th>
+                            <th>Donor Current Balance</th>
+                            <th>Donor Blocked Fund</th>
+                            <th>Enter Fund to Disburse</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="Nodonors in NODonorMappingresults" align="center" class="rowsHistory">
+                            <td>{{Nodonors.GAU_Name__r.Name}}</td>
+                            <td><a href="/{{Nodonors.Donor_Name__r.Id}}" target="_blank">{{Nodonors.Donor_Name__r.Name}}</a></td>
+                            <td><a href="/{{Nodonors.Donor_Name__r.Id}}" target="_blank">{{Nodonors.Donor_Name__r.FFE_ID__c}}</a></td>
+                            <td>{{Nodonors.Current_Balance__c}}</td>
+                            <td>{{Nodonors.Blocked_Funds__c}}</td>
+                            <td><input class="tdInput" type="text" style="text-align:right" ng-model="Nodonors.extraFunds" ng-change="checkisEmpty(Nodonors);getTotalDisburseNodonors(Nodonors);"/></td>
+                        </tr>
+                        <tr align="center" class="rowsHistory">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Total</td>
+                            <td><input class="tdInput" type="text" style="text-align:right" ng-model="totalAmountNodonors" ng-readonly="true"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="width:100%;margin-top:10px;float:left;" align="center">
+                 <!--   <input type="button" value="Add Fund" class="buttons" ng-click="addFundsNoDonors();" ng-if="!studentFundsDetails.IsMapped__c && studentsMatch.Remaining_Fund__c>0" ng-disabled="addFundPop"/> 
+                    <input type="button" value="Disburse" class="buttons"  ng-click="disburse();" ng-disabled="disburseDis || disburseDisValidation" ng-if="(!(studentsMatch.Remaining_Fund__c <0) && studentsMatch.Remaining_Fund__c==0)"/> -->
+                    <input type="button" value="Cancel" class="buttons" ng-click="cancel();"/>
+                     <input type="button" value="Disburse" class="buttons" ng-click="disburse_multi();"/>
+                </div>
+            </div>
+            <div class="studentAllocationPopUpExtraDonors" ng-if="DonorExtraFunds">
+                <div class="material-icons closePopUp" ng-click="cancelExtraDonor();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="searchRow">
+                    <div class="searchCol" style="width:34% ">
+                        <h3 class="searchTagsPopup" align="right">
+                            Donor Category
+                        </h3> 
+                        <md-input-container class="mdContPopupchng" style="width=60% !important;">
+                            <md-select ng-model="addFundObj.DonorCategoryselected" style="border: 1px solid #ccc;" md-on-close="clearLocation()">
+                                <md-optgroup ><md-option ng-value="dnctry" ng-repeat="dnctry in DonorCategory">{{dnctry}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container> 
+                    </div>
+
+                    
+                    <div class="searchCol" style="width:34%">
+                        <h3 class="searchTagsPopup" align="right" style="min-width=15% !important;" >
+                            GAU
+                        </h3>
+                        <md-input-container class="mdContPopupchng" style="width=60% !important;">
+                            <md-select ng-model="addFundObj.Gauid" style="border: 1px solid #ccc;" >
+                                <md-optgroup >
+                                    <!--md-button style="width: 98%;text-transform: none;" ng-if="isSelectedGau" layout-fill='' value="all" ng-click="gau()">Select all</md-button > 
+<md-button style="width: 98%;text-transform: none;" ng-if="!isSelectedGau" layout-fill='' value="all" ng-click="gau()">Deselect all</md-button--> 
+                                    <md-option ng-value="gau.Id" ng-repeat="gau in gauList">{{gau.Name}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    
+                                        
+                    <div class="searchCol" style="width:20%">
+                        <h3 class="searchTagsPopup" align="right">
+                            Remaining Fund :
+                        </h3> <div style="font-size: 16px;margin-top: 10px;">&nbsp;&nbsp;&#8377;&nbsp;<b>{{remainingFromDonor}}</b></div>
+                        <!--input class="tdInput" type="text" style="text-align:right" ng-model="remainingFromDonor" ng-readonly='true' /-->
+                    </div>
+                    <br/><br/><br/>
+                        <div class="buttonDiv" align="center" style="margin-bottom: -21px;margin-top: 16px;">
+                            <input type="button"  value="Search" class="buttons"  ng-click="searchDonorByGau(addFundObj.Gauid,addFundObj.DonorCategoryselected)"/>
+                            <input type="button"  value="Clear" class="buttons" ng-click="clearDonorByGau()"/>
+                        </div>
+                </div>
+                <h4 ng-if='!(extraDonors.length>0) && showNoresults' align="center" style="margin-top: 20px;float: left;width: 100%;">
+                    No Results found 
+                </h4>
+                <table class="historyTable " style="margin-top: 0;margin-bottom:25px;margin-top:25px" ng-if='extraDonors.length>0'>
+                    <thead>
+                        <tr class="rowsHistory thRow" ng-if='!showNoresults'>
+                            <th>GAU Name</th>
+                            <th>Donor Name</th>
+                            <th>Donor Id</th>
+                            <th>Current Balance</th>
+                            <th>Blocked Fund</th>
+                            <th>Enter Fund to Disburse</th>
+                        </tr>
+                    </thead>
+                    <tr align="center" class="rowsHistory" ng-repeat="extraDonor in extraDonors" >
+                        <td>{{extraDonor.GAU_Name__r.Name}}</td>
+                        <td><a href="/{{extraDonor.Donor_Name__r.Id}}" target="_blank">{{extraDonor.Donor_Name__r.Name}}</a></td>
+                        <td><a href="/{{extraDonor.Donor_Name__r.Id}}" target="_blank">{{extraDonor.Donor_Name__r.FFE_ID__c}}</a></td>
+                        <td>{{extraDonor.Current_Balance__c}}</td>
+                        <td>{{extraDonor.Blocked_Funds__c}}</td>
+                        <td><input class="tdInput" type="text" style="text-align:right" ng-model="extraDonor.extraFunds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-change="validAmountExtradonor(extraDonors)"/></td>
+                    </tr> 
+                    <tr align="center" class="rowsHistory" ng-show="extraDonors.length>0">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total</td>
+                        <td><input class="tdInput" type="text" style="text-align:right" ng-model="getTotalFromExtraDonors(remainingFromDonor, extraDonors);" ng-readonly="true"/></td>
+                    </tr>
+                </table>
+                <div class="buttonDiv" align="center" style="margin-bottom:20px;">
+                    <input type="button" value="Save" class="buttons"  ng-click="saveExtraDonor(extraDonors);" ng-disabled="isMatchExtraFunds || disableSave"  ng-show="extraDonors.length>0"/>
+                    <input type="button" value="Cancel" class="buttons" ng-click="cancelExtraDonor();" ng-show="extraDonors.length>0"/>
+                </div>
+            </div> 
+            <div class="background" ng-if="studentPopup">
+            </div>
+            <div class="backgroundForExtraDonor" ng-if="DonorPopup">
+            </div>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

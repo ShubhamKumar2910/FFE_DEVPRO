@@ -1,0 +1,44 @@
+public class ccAvenueResponseWrapper {
+    
+    public static string TRACKING_ID 		= 'tracking_id';
+    public static string BANK_REF_NO		= 'bank_ref_no';
+    public static string ORDER_STATUS		= 'order_status';
+	public static string FAILURE_MSG		= 'failure_message';
+    public static string PAYMENT_MODE		= 'payment_mode';
+    public static string CARD_NAME			= 'card_name';
+    public static string STATUS_CODE		= 'status_code';
+    public static string AMOUNT				= 'amount';
+    public static string STATUS_MSG			= 'status_message';
+    public static string BILLING_NAME		= 'billing_name';
+    public static string BILLING_ADDSS		= 'billing_address';
+    public static string BILLING_CITY		= 'billing_city';
+    public static string BILLING_STATE		= 'billing_state';
+    public static string BILLING_ZIP		= 'billing_zip';
+    public static string BILLING_COUNTRY	= 'billing_country';
+    public static string BILLING_TEL		= 'billing_tel';
+    public static string BILLING_EMAIL		= 'billing_email';
+    public static string DELIVERY_NAME		= 'delivery_name';
+    public static string DELIVERY_ADDRESS	= 'delivery_address';
+    public static string DELIVERY_CITY		= 'delivery_city';
+    public static string DELIVERY_STATE		= 'delivery_state';
+    public static string DELIVERY_ZIP		= 'delivery_zip';
+    public static string DELIVERY_COUNTRY	= 'delivery_country';
+    public static string DELIVERY_TEL		= 'delivery_tel';
+    public static string MERCHANT_PARAM1	= 'merchant_param1';
+    public static string MERCHANT_PARAM2	= 'merchant_param2';
+    public static string MERCHANT_PARAM3	= 'merchant_param3';
+    public static string MERCHANT_PARAM4	= 'merchant_param4';
+    public static string MERCHANT_PARAM5	= 'merchant_param5';
+    public static string VAULT				= 'vault';
+    public static string OFFER_TYPE			= 'offer_type';
+    public static string OFFER_CODE			= 'offer_code';
+    public static string DISCOUNT_VALUE		= 'discount_value';
+    public static string MER_AMOUNT			= 'mer_amount';
+    public static string ECI_VALUE			= 'eci_value';
+    public static string RETRY				= 'retry';
+    public static string RESPONSE_CODE		= 'response_code';
+    public static string TRANS_DATE			= 'trans_date';
+    public static string BIN_COUNTRY		= 'bin_country';
+    public static string ORDER_NO			= 'orderNo';  
+    public static string CURRENCY_LABEL		= 'currency';  
+}

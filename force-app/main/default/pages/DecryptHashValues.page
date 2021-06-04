@@ -1,0 +1,18 @@
+<apex:page controller="DecryptHashValue_CTLR">
+    <apex:form id="form">
+    <apex:pageMessages ></apex:pageMessages>
+          <apex:pageBlock title="Decrypt Hash Values" >
+              <div align="center">
+                 <apex:outputLabel ><b>Enter Hash Value&nbsp;&nbsp;</b></apex:outputLabel>
+                 <apex:inputtext value="{!hashValue }"  style="width:60%"/>
+                 <div>
+                     <apex:commandButton value="Submit" action="{!decodeString}" reRender="result,form"/>
+                 </div>
+             </div>
+             <apex:outputPanel rendered="{!showResult}" id="result" title="Result">
+                 <apex:outputLabel ><b>Encrypted Value&nbsp;&nbsp;:&nbsp;&nbsp;{!encrytedValue }</b></apex:outputLabel><br/>
+                 <apex:outputLabel ><b>Decrypted Value&nbsp;&nbsp;:&nbsp;&nbsp;{!decrytedValue}</b></apex:outputLabel>
+             </apex:outputPanel>
+          </apex:pageBlock>
+    </apex:form>
+</apex:page>

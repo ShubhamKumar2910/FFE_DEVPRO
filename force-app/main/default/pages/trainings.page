@@ -1,0 +1,56 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0">
+    <head>
+        <style>
+        .nameField{
+                color: #5888e4;
+                text-decoration: underline;
+                cursor: pointer;
+                }
+        </style>
+    </head>
+    <table class="historyTable" ng-init="showTabcontent(1);getTrainings();" style="margin-top:0px;">
+        <thead>
+            <tr class="rowsHistory thRow">
+                <th>Name</th>
+                <th>Start Month</th>
+                <th>End Month</th>
+                <th>Point(s) earnedeee</th>
+            </tr>
+        </thead>
+    </table>
+        <div ng-repeat="training in trainigList" style="float:left;background: #fff;" class="rowsHistoryDiv">
+            <table class="historyTable" style="margin:0px;background: #eee;">
+                <thead>
+                    <tr  align="center" class="rowsHistory">
+                        <td ><a ng-click="trainingScore($index);" class="nameField">{{training.Training_Code__r.Name}}</a></td>
+                        <td>{{training.Training_Code__r.Start_Month__c}}</td>
+                        <td>{{training.Training_Code__r.End_Month__c}}</td>
+                        <td>{{training.Training_Code__r.Points__c}}<span style="color:#ff0000" ng-if="training.IsMandatory__c">*</span></td>
+                    </tr>
+                </thead>
+            </table>
+            
+             <h4 ng-if="show[$index] &&!(training.Training_Results__r.records.length >0)" align="center" style="margin-top: 22px;float: left;width: 100%;color:#ff793c">
+                        Training scores are not available yet
+             </h4>
+            
+                <table class="historyTable"  style="margin:0px;width: 90%;margin: 1% 5%;" ng-if='show[$index] && training.Training_Results__r.records.length>0 '>
+                        <thead>
+                            <tr class="rowsHistory thRow">
+                                <th>Time on app</th>
+                                <th>Marks Obtained</th>
+                                <th>Vendor code</th>
+                                <th>MileStone</th>
+                            </tr>
+                        </thead>
+                       
+                        <tr align="center" class="rowsHistory" ng-repeat="trainingScores in training.Training_Results__r.records" ng-if="">
+                            <td ng-if='trainingScores.Time_on_App__c!=null'>{{trainingScores.Time_on_App__c}} Hrs</td>
+                            <td ng-if='trainingScores.Time_on_App__c==null'>0 Hrs</td>
+                            <td>{{trainingScores.Marks_Obtained__c}}</td>
+                            <td>{{trainingScores.Vendor_Code__c}}</td>
+                            <td>{{trainingScores.Milestone__c}}</td>
+                        </tr>
+                    </table>
+        </div>
+</apex:page>

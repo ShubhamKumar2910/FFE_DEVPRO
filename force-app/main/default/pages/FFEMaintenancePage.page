@@ -1,0 +1,29 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" ></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style>
+        body
+        {
+        background-color:#FFFFFF;
+        }
+        .jumbotron
+        {
+        text-align: center;
+        position:relative;
+        top:150px;
+        background-color:#032559;  
+        color: #FFFFFF;
+        font-size: 45px;
+        }
+    </style>
+    <div class="container">
+        <div class="banner" align="center">
+            <a href="http://www.ffe.org/" target="_blank"  >
+                <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+            </a>
+        </div>
+        <div class="jumbotron"><p>The site is Under Maintenance.</p><p>Please come back later</p></div>
+    </div>  
+</apex:page>

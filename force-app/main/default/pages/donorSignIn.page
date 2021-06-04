@@ -1,0 +1,153 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="SignIn_CTRL">
+    <html> 
+        <title>Sign In</title>
+        <head>
+            <c:pageResource ></c:pageResource>
+            <style>
+                .loginPageType {
+                float: left;
+                min-height: 0;
+                top: 110px;
+                width: 92%;
+                left: 0;
+                border: 0;
+                position: relative;
+                font-size: 14px;
+                color: #f29b29;
+                }
+            </style>
+            <script>
+            
+            window.onload = function(){
+                var a = document.getElementById('googleUrlId');
+                a.href = "https://accounts.google.com/AccountChooser?continue=https://accounts.google.com/o/oauth2/auth?redirect_uri="+"{!$Setup.Google_API_Details__c.Redirect_URI__c}"+"%26prompt%3Dconsent%26response_type%3Dcode%26client_id="+"{!$Setup.Google_API_Details__c.Client_Id__c}"+"%26scope%3Dhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.me%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.me%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/plus.login%2Bhttps://www.googleapis.com/auth/plus.me%2Bhttps://www.googleapis.com/auth/userinfo.email%2Bhttps://www.googleapis.com/auth/userinfo.profile%2Bhttps://www.googleapis.com/auth/userinfo.email%26access_type%3Doffline%26from_login%3D1%26as%3D-270badd61a3e150b&btmpl=authsub&scc=1&oauth=1";
+            
+            	var fb	= document.getElementById('facebookUrlId');
+                fb.href = "https://www.facebook.com/v2.8/dialog/oauth?client_id="+"{!$Setup.Facebook_API_Details__c.App_Id__c}"+"&response_type=code&redirect_uri="+"{!$Setup.Facebook_API_Details__c.Redirect_URL__c}"+"&scope=public_profile,email&&auth_type=rerequest";
+            }
+            
+            function submitFFEIdRequest(){
+                var ffeid   = document.getElementById('ffeId').value;
+                if(ffeid != undefined && ffeid != null && ffeid !=''){
+                    SignIn_CTRL.generateLoginURL(ffeid,'Donor',function(result,event){
+                        if(event.status){
+                            processResponse(result);                  
+                        }
+                    },{escape:false});
+                }else{
+                    noValueError();
+                }
+            }
+            
+            function submitEmailRequest(){
+                var ffeemail   = document.getElementById('ffeEmail').value;
+                if(ffeemail != undefined && ffeemail != null && ffeemail !=''){
+                    SignIn_CTRL.generateLoginURLForEmail(ffeemail,'Donor',function(result,event){
+                        if(event.status){
+                            processResponse(result);                  
+                        }
+                    },{escape:false});
+                }else{
+                    noValueError();
+                }
+            }           
+                
+            function processResponse(result){                
+                if(result == "{!$Label.temporary_url_sent_confirmation}"){
+                    swal({
+                        title: "",
+                        text: result,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: '#DD6B55',
+                        confirmButtonText: 'Ok',
+                        closeOnConfirm: false,
+                    },
+                         function(isConfirm) {
+                             if (isConfirm) {
+                                 location.reload(true);
+                             } 
+                         });
+                    
+                }else{
+                    swal({
+                        title: "",
+                        text: result,
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonColor: '#DD6B55',
+                        confirmButtonText: 'Ok',
+                        closeOnConfirm: false,
+                    },
+                         function(isConfirm) {
+                             if (isConfirm) {
+                                 location.reload(true);
+                             } 
+                         });
+                }                
+            }
+                       
+            function noValueError(){
+                swal({
+                    title: "",
+                    text:'Please enter a value before submitting.',
+                    type: "error",
+                    showCancelButton: false,
+                    confirmButtonColor: '#DD6B55',
+                    confirmButtonText: 'Ok',
+                    closeOnConfirm: false,
+                });
+            }
+            </script>            
+            <style>
+                
+            </style>
+        </head>
+        
+        <body>
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+            </div>
+            <div align="center" class="loginPageType"><h3>DONOR LOGIN</h3></div>
+            <div class="loginDiv" style="top: 110px;">
+                <div style="width:100%">
+                    <a  id="googleUrlId" href="#">
+                        <img src="{!URLFOR($Resource.gmail)}" class="imagesLogin"/>
+                    </a>
+                    <a  id="facebookUrlId" href = "#">
+                        <img src="{!URLFOR($Resource.Facebook)}" class="imagesLogin"/>
+                    </a>
+                </div>
+                <div class="or-container">
+                    <hr class="or-hr"/>
+                    <div id="or">OR</div>
+                    <div align="center;">
+                        <h4>
+                            Enter FFE Id to get temporary access link to your registered email: 
+                        </h4>
+                    </div>
+                    <input type="text" id="ffeId"/><br/>
+                    <input type="button" class="buttons" value="Submit" name="Submit" style="margin-top:10px;" onclick="submitFFEIdRequest();"/>
+                </div>
+                
+                <div class="or-container">
+                    <hr class="or-hr"/>
+                    <div id="or">OR</div>
+                    <div align="center;">
+                        <h4>
+                            Enter your registered email address to get temporary access link: 
+                        </h4>
+                    </div>
+                    <input type="text" id="ffeEmail"/><br/>
+                    <input type="button" class="buttons" value="Submit" name="Submit" style="margin-top:10px;" onclick="submitEmailRequest();"/>
+                </div>
+                
+            </div>
+            <h5 align="center" style="float: left;top: 100px;position: relative;width: 100%;">
+                New User?&nbsp;&nbsp;<a href="{!$Setup.System_Details__c.Donor_Site_URL__c}/donorRegistration" >Click here</a>
+            </h5>
+        </body>
+    </html>
+</apex:page>

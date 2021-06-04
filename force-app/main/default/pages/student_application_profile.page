@@ -1,0 +1,323 @@
+<apex:page controller="ApplicationStudentInfoController" renderAs="pdf" applyHtmlTag="false" showHeader="false">
+    <head>
+        <style>
+            @page {
+            size: letter;
+            
+            @bottom-center {
+            content: "Page " counter(page) " of " counter(pages);
+            }           
+            }
+            .page-break {
+            display:block;
+            page-break-after:always;
+            }
+            body {
+            font-family: Arial Unicode MS;
+            }
+            table{
+            table-layout: fixed;
+            width: 650px;
+            padding-bottom:10px;
+            padding-top:10px;
+            padding-right:15px;
+            padding-left:23px;
+            font-family:Times New Roman, Times,serif;
+            -fs-table-paginate: paginate;
+            font-size:14.5px;
+            }
+            
+            div{
+            color:#032559;
+            font-size:16px;
+            font-family:Times New Roman;
+            border-width: 2px 0 0;
+            background-color:#eee;
+            padding: 4px 3px;}
+            .address{
+            background-color:white;
+            color:black;
+            position:relative;
+            left:60px;
+            bottom:19.5px;
+            font-size:15px;
+            }
+            
+        </style>
+    </head>    
+    <div>Student Information</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <apex:repeat value="{!appList}" var="a">
+                <td style="width:40%"><b>Application Number:</b>&nbsp;<apex:outputText value="{!a.Name}"/></td>
+            </apex:repeat>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>FFE ID:</b>&nbsp;<apex:outputText value="{!student.FFE_ID__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Name:</b>&nbsp;<apex:outputText value="{!student.Name}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Birthdate:</b>&nbsp;<apex:outputText value="{0,date,EEE MMM d, yyyy}">
+                <apex:param value="{!student.Birthdate}"/>
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Email:</b>&nbsp;<apex:outputText value="{!student.Email}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Mobile:</b>&nbsp;<apex:outputText value="{!student.MobilePhone}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Gender:</b>&nbsp;<apex:outputText value="{!student.Gender__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Phone:</b>&nbsp;<apex:outputText value="{!student.Phone}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%;"><b>Address:</b>&nbsp;
+                <div class="address">
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.MailingStreet))}">{!student.MailingStreet},<br/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.MailingCity))}">{!student.MailingCity},
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.MailingState))}">{!student.MailingState},<br/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.MailingPostalCode))}">{!student.MailingPostalCode},
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.MailingCountry))}">{!student.MailingCountry}
+                    </apex:outputText>  
+                </div>
+            </td>
+            <td style="width:20%"></td>
+        </tr>
+    </table>
+    <div>Facilitator's Information</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <td style="width:40%"><b>Facilitator Name:</b>&nbsp;<apex:outputText value="{!student.Facilitator_Name__r.Name}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>FFE ID:</b>&nbsp;<apex:outputText value="{!student.Facilitator_Name__r.FFE_ID__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Address:</b>&nbsp;
+                <div class="address">
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.Facilitator_Name__r.MailingStreet))}">{!student.Facilitator_Name__r.MailingStreet},<br/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.Facilitator_Name__r.MailingCity))}">{!student.Facilitator_Name__r.MailingCity},
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.Facilitator_Name__r.MailingState))}">{!student.Facilitator_Name__r.MailingState},<br/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.Facilitator_Name__r.MailingPostalCode))}">{!student.Facilitator_Name__r.MailingPostalCode},
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(ISBLANK(student.Facilitator_Name__r.MailingCountry))}">{!student.Facilitator_Name__r.MailingCountry}
+                    </apex:outputText>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div>Family Information</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <td style="width:40%"><b>Father's Name:</b>&nbsp;<apex:outputText value="{!student.Father_Name__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Mother's Name:</b>&nbsp;<apex:outputText value="{!student.Mother_Name__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Father's Education:</b>&nbsp;<apex:outputText value="{!student.Father_Education__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Mother's Education:</b>&nbsp;<apex:outputText value="{!student.Mother_Education__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Father's Age:</b>&nbsp;<apex:outputText value="{!student.Father_Age__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Mother's Age:</b>&nbsp;<apex:outputText value="{!student.Mother_Age__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Father's Occupation:</b>&nbsp;<apex:outputText value="{!student.Father_Occupation__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Mother's Occupation:</b>&nbsp;<apex:outputText value="{!student.Mother_Occupation__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Parent's Mobile:</b>&nbsp;<apex:outputText value="{!student.Parent_Mobile__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Parent's Phone:</b>&nbsp;<apex:outputText value="{!student.Parent_Phone__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Annual Family Income:</b>&nbsp;<apex:outputText value="{!student.Annual_Family_Income__c}"/></td>
+        </tr>
+    </table>
+    <br/> 
+    <div >Previous Academic Details</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <td style="width:40%"><b>10th - Year Passed:</b>&nbsp;<apex:outputText value="{!student.X10th_Year_Passed__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>12th - Year Passed:</b>&nbsp;<apex:outputText value="{!student.X12th_Year_Passed__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>10th Marks Obtained:</b>&nbsp;<apex:outputText value="{!student.X10th_Marks_Obtained__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>12th Marks Obtained:</b>&nbsp;<apex:outputText value="{!student.X12th_Marks_Obtained__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>10th Maximum Marks:</b>&nbsp;<apex:outputText value="{!student.X10th_Maximum_Marks__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>12th Maximum Marks:</b>&nbsp;<apex:outputText value="{!student.X12th_Maximum_Marks__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>10th Medium Of Instruction:</b>&nbsp;<apex:outputText value="{!student.X10th_Medium_Of_Instruction__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>12th Medium Of Instruction:</b>&nbsp;<apex:outputText value="{!student.X12th_Medium_Of_Instruction__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>10th %:</b>&nbsp;<apex:outputText value="{!student.X10th__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>12th %:</b>&nbsp;<apex:outputText value="{!student.X12th__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>10th Type:</b>&nbsp;<apex:outputText value="{!student.X10th_Type__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>12th Type:</b>&nbsp;<apex:outputText value="{!student.X12th_Type__c}"/></td>
+        </tr>
+    </table>
+    
+    <div style="page-break-after:always;background-color:#ffffff"></div>
+    <div >Entrance Test Information</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <td style="width:40%"><b>Entrance Test Name:</b>&nbsp;<apex:outputText value="{!IF(ISBLANK(student.Other_Entrance_Test__c),student.Entrance_Test_Name__c,student.Other_Entrance_Test__c)}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Entrance Exam Taken In Year:</b>&nbsp;<apex:outputText value="{!student.Entrance_Exam_Taken_In_Year__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Entrance Test Marks:</b>&nbsp;<apex:outputText value="{!student.Entrance_Test_Marks__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Entrance Exam Maximum Marks:</b>&nbsp;<apex:outputText value="{!student.Entrance_Exam_Maximum_Marks__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Entrance Test Rank:</b>&nbsp;<apex:outputText value="{!student.Entrance_Test_Rank__c}"/></td>
+        </tr>
+    </table>
+    <br/>
+    <div >Course/College Particulars</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <td style="width:40%"><b>College Name:</b>&nbsp;<apex:outputText value="{!IF(ISBLANK(student.College_Other__c),student.College_Name__r.Name,student.College_Other__c)}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>College City:</b>&nbsp;<apex:outputText value="{!IF(student.College_City__c=='Other' || ISBLANK(student.College_City__c),'N/A',student.College_City__c)}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>College State:</b>&nbsp;<apex:outputText value="{!IF(student.College_State__c=='Other' || ISBLANK(student.College_State__c),'N/A',student.College_State__c)}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Course:</b>&nbsp;<apex:outputText value="{!student.Course__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Branch/Stream:</b>&nbsp;<apex:outputText value="{!IF(ISBLANK(student.Branch_Other__c),student.Branch_Stream__c,student.Branch_Other__c)}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Course Year:</b>&nbsp;<apex:outputText value="{!student.Current_year__c}"/></td>
+        </tr>
+    </table>    
+    <br/> 
+    
+    <div >Bank Information</div>
+    <table border='0' cellspacing="2">
+        <tr>
+            <td style="width:40%"><b>Account Name:</b>&nbsp;<apex:outputText value="{!student.Bank_Account_Holder_s_Name__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>IFSC code:</b>&nbsp;<apex:outputText value="{!student.X11_character_IFSC_Code_of_the_Branch__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Bank Account No:</b>&nbsp;<apex:outputText value="{!student.Full_Bank_Account_No_With_all_digits__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Bank State:</b>&nbsp;<apex:outputText value="{!student.Bank_State__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Bank Name:</b>&nbsp;<apex:outputText value="{!student.Bank_Name__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Bank Pincode:</b>&nbsp;<apex:outputText value="{!student.Bank_Pincode__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Bank City:</b>&nbsp;<apex:outputText value="{!student.Bank_City__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"><b>Bank Branch Phone No:</b>&nbsp;<apex:outputText value="{!student.Bank_Branch_Phone_No__c}"/></td>
+        </tr>
+        <tr>
+            <td style="width:40%"><b>Branch Address:</b>&nbsp;<apex:outputText value="{!student.Branch_Address__c}"/></td>
+            <td style="width:20%"></td>
+            <td style="width:40%"></td>
+        </tr>
+    </table> 
+    
+    <br/>
+    
+    <div>Other Information</div>
+    <table border='0' cellspacing="2">
+        <apex:repeat value="{!appList}" var="a">
+            <tr>
+                <td style="width:40%"><b>Receiving Full AICTE/Fee Waiver from Gvt:</b>&nbsp;
+                    <apex:outputText rendered="{!a.Receiving_Full_AICTE_OtherTution_Fee_Wa__c==True}">Yes</apex:outputText>
+                    <apex:outputText rendered="{!a.Receiving_Full_AICTE_OtherTution_Fee_Wa__c==False}">No</apex:outputText>
+                </td>
+                <td style="width:20%"></td>
+                <td style="width:40%"><b>Scholarship/Financial Asst Other Than FFE?:</b>&nbsp;
+                    <apex:outputText rendered="{!a.SchlrShp_FinancialAsst_Other_Than_FFE__c==True}">Yes</apex:outputText>
+                    <apex:outputText rendered="{!a.SchlrShp_FinancialAsst_Other_Than_FFE__c==False}">No</apex:outputText>
+                </td>
+            </tr>
+            <tr style="display: {!IF(a.SchlrShp_FinancialAsst_Other_Than_FFE__c==False, 'none', 'table-row')};">
+                <td style="width:40%"><b>If Yes How much?(Other Source):</b>&nbsp;<apex:outputText value="{!a.If_Yes_How_much_Other_Source__c}"/></td>
+                <td style="width:20%"></td>
+                <td style="width:40%"><b>Assistance Source?:</b>&nbsp;<apex:outputText value="{!a.Assistance_Source__c}"/></td>
+            </tr>
+            <tr style="display: {!IF(a.Receiving_Full_AICTE_OtherTution_Fee_Wa__c==False, 'none', 'table-row')};">
+                <td style="width:40%"><b>If Yes How much?(AICTE/Fee from Govt):</b>&nbsp;<apex:outputText value="{!a.If_Yes_How_much_AICTE_Fee_from_Govt__c}"/></td>
+                <td style="width:20%"></td>
+                <td style="width:40%"></td>
+            </tr>
+        </apex:repeat>
+    </table>
+    <br/>
+    <div >Fee details</div>
+    <table>
+        <apex:repeat value="{!appList}" var="a">
+            <tr>
+                <td style="width:40%"><b>College Fees:</b>&nbsp;<apex:outputText value="{!a.Requested_College_Fees__c}"/></td>
+                <td style="width:20%"></td>
+                <td style="width:40%"><b>Hostel/Mess Expenses:</b>&nbsp;<apex:outputText value="{!a.Requested_Hostel_Mess_Expenses__c}"/></td>
+            </tr>
+            <tr>
+                <td style="width:40%"><b>Books Expenses:</b>&nbsp;<apex:outputText value="{!a.Requested_Books_Expenses__c}"/></td>
+                <td style="width:20%"></td>
+                <td style="width:40%"><b>Transportation Expenses:</b>&nbsp;<apex:outputText value="{!a.Requested_Transportation_Expenses__c}"/></td>
+            </tr>
+            <tr>                
+                <td style="width:40%"><b>Uniform Expenses:</b>&nbsp;<apex:outputText value="{!a.Requested_Uniform_Expenses__c}"/></td>
+                <td style="width:20%"></td>
+                <td style="width:40%"><b>Total Amount:</b>&nbsp;<apex:outputText value="{!a.Requested_Scholarship_Amount__c}"/></td>
+            </tr>
+        </apex:repeat>
+    </table>
+    <br/>
+    
+    <div style="page-break-after:always;background-color:white;"/>
+    <div style="text-align:center">About Yourself and Your Family</div>
+    <p>
+        <b>What is your ambition in life?</b></p>
+        <p style="font-size:14.5px;border:1px solid black;">&nbsp;<apex:outputText value="{!student.What_is_your_ambition_in_life__c}"/>
+    </p>
+    <p>
+        <b>Who has inspired you the most until now?</b></p>
+        <p style="font-size:14.5px;border:1px solid black;">&nbsp;<apex:outputText value="{!student.Who_has_inspired_you_the_most_until_now__c}"/>
+    </p>
+    <p>
+        <b>Tell us some thing about yourself?</b></p>
+        <p style="font-size:14.5px;border:1px solid black;">&nbsp;<apex:outputText value="{!student.Tell_us_some_things_about_yourself__c}"/>
+    </p>
+    <p>
+        <b>Describe your family's income?</b></p>
+        <p style="font-size:14.5px;border:1px solid black;">&nbsp;<apex:outputText value="{!student.Describe_your_family_s_income__c}"/>
+    </p>
+    <p >
+        <Strong>When you start earning,how you'd help?</Strong></p>
+        <p style="font-size:14.5px;border:1px solid black;">&nbsp;<apex:outputText value="{!student.When_you_start_earning_how_you_help__c}"/>
+    </p>     
+</apex:page>

@@ -1,0 +1,242 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MenteeSelfAssesmentController">
+ <head>
+         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>  
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js">
+     </script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.js">
+     </script>
+     <style>
+ 
+        
+       
+           
+       
+            
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Arimo:400,700&display=swap"/>
+           
+        .assessment,table{
+            margin:20px;
+        }
+        .mentorTable{
+            border-collapse: collapse;  
+            border: 1px solid black;
+            margin-left:25%;
+            margin-top:3%;
+        }
+        
+        th,td{
+            margin:20px;
+            padding: 20px;
+        }
+       
+        }
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1em;
+            font-family: sans-serif;
+            min-width: 200px;
+            margin-left: auto; 
+            margin-right: auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+         }
+         
+            .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+            }
+            
+            .navbar a {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            }
+         body {
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif; 
+}
+       
+     </style>
+     </head>
+     <body ng-app="mentorProgramApp" ng-controller="mentorProgramController">
+        <div class="navbar">
+                <div class="col-md-3">
+                    <a>
+                        <apex:image url="{!$Resource.FFEbanner}"  style="width:300px"/>
+                    </a>    
+                </div>
+            </div>
+                    <div style="margin-top:6%;"> 
+                        
+                        <table class="mentorTable">
+                            <thead>
+                            <th class="mentorTable">Skills</th>
+                            <th class="mentorTable">Question</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="x in selfAssessmentQuestions">
+                                    <td>{{x.templateQuestion}}</td>
+                                    <td>
+                                        <table class="mentorTable">
+                                            <thead>
+                                            </thead>
+                                        <tbody>
+                                            <tr ng-repeat="y in x.allQuestions" >
+                                                
+                                                <td >{{y.questionRec.Question__c}}</td>
+                                                <td >{{y.questionRec.Type__c}}</td>
+                                                <td >
+                                                    		<div ng-if="y.questionRec.Type__c =='Picklist'">
+                                                                <select ng-model="y.questionRec.FinalAnswer" >
+                                                                    <option ng-repeat="z in y.optionList" > {{z}}</option>
+                                                                </select>
+                                                                <p>{{optionValues}}</p>
+                                                            </div>
+                                                            <div ng-if="y.questionRec.Type__c =='Checkbox'">
+                                                                <input type="{{y.questionRec.Type__c}}" ng-model="y.questionRec.FinalAnswer" />
+                                                                    </div>
+                                                                <div ng-if="y.questionRec.Type__c =='Text'">
+                                                                    <input type="y.questionRec.Type__c" ng-model="y.questionRec.FinalAnswer" />
+                                                                        </div>
+                                                                        <div ng-if="y.questionRec.Type__c =='Date'">
+                                                                		<input type="date" ng-model="y.questionRec.FinalAnswer" />
+                                                                    </div>
+                                                                        </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                        </table>
+                                                                        </div>
+         <div style="margin-left:48%;margin-top:2%;">
+         <button type="button" class="btn btn-primary" ng-click="saveResult()"  >Save</button>
+         <button type="button" class="btn btn-primary" ng-click="redirectURL('MenteePortal')" >Back</button>    
+         </div>
+								
+
+                                                                        
+        <script>
+        var pageLoadData = JSON.parse('{!pageLoadInstanceString}');
+		
+		var app = angular.module('mentorProgramApp', []);  
+        app.controller('mentorProgramController', function($scope) {
+		$scope.selfAssessmentQuestions=	pageLoadData["selfAssessmentQuestions"]; 
+            $scope.selfAssessmentAnswers = [];
+            $scope.checkboxVal;
+            $scope.optionValues ;
+			$scope.CurrentDate = new Date();
+            menteeId = "{!$CurrentPage.parameters.id}";
+            $scope.saveResult = function(){
+                debugger;
+                console.log($scope.selfAssessmentQuestions);
+                for(var i=0; i< $scope.selfAssessmentQuestions.length;i++){
+                    debugger;
+                    for(var j=0; j< $scope.selfAssessmentQuestions[i].allQuestions.length;j++){
+                    	if($scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.FinalAnswer != null){
+                            if($scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Type__c == 'Picklist')
+                         		$scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Id,
+                                                               "AnswerPicklist":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.FinalAnswer});
+                            if($scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Type__c == 'Checkbox')
+                                $scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Id,
+                                                               "AnswerCheckbox":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.FinalAnswer});
+                            if($scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Type__c == 'Text')
+                                $scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Id,
+                                                               "AnswerText":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.FinalAnswer});
+                            if($scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Type__c == 'Date'){
+                                var dateVal = $scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.FinalAnswer;
+                                var date = dateVal.getDate();
+                                var month = dateVal.getMonth();
+                                var year = dateVal.getFullYear();
+                                $scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":$scope.selfAssessmentQuestions[i].allQuestions[j].questionRec.Id,
+                                                                   "AnswerDate":date,'AnswerMonth':month,'AnswerYear':year});
+                                }
+                        }
+                    }
+                }
+                 Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.MenteeSelfAssesmentController.insertSelfAssessmentAnswers}',
+                     $scope.selfAssessmentAnswers,menteeId,
+                        function(result,event){
+                            if(event.status){
+                                 let timerInterval
+Swal.fire({
+  title: 'Saved!',
+  html: '',
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: () => {
+    Swal.showLoading()
+    timerInterval = setInterval(() => {
+      const content = Swal.getContent()
+      if (content) {
+        const b = content.querySelector('b')
+        if (b) {
+          b.textContent = Swal.getTimerLeft()
+        }
+      }
+    }, 100)
+  },
+  willClose: () => {
+    clearInterval(timerInterval)
+  }
+}).then((result) => {
+  /* Read more about handling dismissals below */
+  if (result.dismiss === Swal.DismissReason.timer) {
+    console.log('I was closed by the timer')
+  }
+})
+                                $scope.redirectURL('MenteePortal');
+                            }
+                            else if (event.type==='exception'){
+                                alert(event.message);
+                            }else{
+                                alert(event.message);
+                            }
+                        },
+                        {escape:true}
+                    );
+            }
+            $scope.onChange = function(textVal, typeVal,nameVal){ 
+            	debugger;
+                if(typeVal == 'Picklist'){
+                	$scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":nameVal,"AnswerPicklist":textVal});
+                }
+                if(typeVal == 'Checkbox'){
+                	$scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":nameVal,"AnswerCheckbox":textVal});
+                }
+                if(typeVal == 'Text'){
+                	$scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":nameVal,"AnswerText":textVal});
+                }
+                if(typeVal == 'Date'){
+                    var date = textVal.getDate();
+                    var month = textVal.getMonth();
+                    var year = textVal.getFullYear();
+                	$scope.selfAssessmentAnswers.push({"SelfAssessmentQuestion":nameVal,"AnswerDate":date,'AnswerMonth':month,'AnswerYear':year});
+                }
+            }
+               $scope.optionValues ;
+            
+             $scope.redirectURL = function(pageName){
+                 debugger;
+                
+                let mainURL = window.location.origin+'/apex';
+                window.location.replace(mainURL + "/"+pageName+"?Id="+menteeId);
+                 
+            }
+            
+        });
+        </script>
+        </body>
+
+</apex:page>

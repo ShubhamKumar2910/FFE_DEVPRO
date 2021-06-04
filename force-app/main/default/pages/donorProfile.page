@@ -1,0 +1,130 @@
+<apex:page doctype="html-5.0" showheader="false"
+           sidebar="false"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false"
+           controller="DN_DonorProfile_CTRL" 
+           action="{!checkUserAuth}">
+    <html ng-app="DonorProfile">
+        <title>Donor Profile</title>
+        <head>
+            <c:pageResource />
+            <apex:stylesheet value="{!URLFOR($Resource.fontAwesome,'/font-awesome-4.7.0/css/font-awesome.min.css')}" />
+            <script src="{!$Resource.textAngularRangy}">
+            </script>
+            <script src="{!$Resource.textAngularSanitize}">
+            </script>
+            <script src="{!$Resource.textAngularJs}">
+            </script>
+            <script src="{!$Resource.donorProfile}">
+            </script>
+            <script>
+            var scholarResidenstilPickValues	= {!DRscholarResidenstilPickValues};
+            var CitizenIndian					= "{!CitizenIndian}";
+            var CitizenNonIndian				= "{!CitizenNonIndian}";
+            var paymentWrpString				= {!paymentWrpString};
+            var userId							= "{!currentdonorId}";
+            var successMsg						= "{!updateSuccessMsg}"
+            var medical							= '{!$Label.Medical}';
+            var engg							= '{!$Label.Engineering}';
+            var passportReqMsg					= '{!$Label.Passport_upload_message}';
+            var siteLogin						= '{!$Setup.System_Details__c.Donor_Site_URL__c}';
+            var donorCurrencType				= '{!donorCurrencyType}'; 
+            var paymentDelete					= '{!deletePayment}';
+            var paymentAborted					= '{!abortPayment}';
+            var donorCategory					= '{!donorCategory}';
+            var FinancialYear                   =  {!FinancialYear};
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                 
+                return true;
+            }
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            </script>
+           
+        </head>
+        <body ng-controller="donorProfile">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                <div class="logout" ng-if="!viewStudent">
+                    <input type="button" class="buttons" value="Sign out" name="Log out" style="margin-top:10px;" onclick="logOut();"/>
+                    <apex:form >             
+                        <apex:actionFunction action="{!logOutUser}" name="logOut"></apex:actionFunction>
+                    </apex:form>
+                </div>
+                 <div style="float:right;position: relative;top: 35px;cursor:pointer" ng-if="viewStudent">
+                    <a ng-click="previous();">
+                        <apex:image url="{!$Resource.Previous}" styleClass="logo"/>
+                    </a>
+                </div> 
+            </div>
+            
+            <div class="headermenuSelection" ng-if="!viewStudent" ng-init="toDisplayStudentTab();loadDonationHistory();pledgedDonationHistory()">
+                <ul style="width:100%">
+                    <li ng-click="showTabcontent(0)" ng-class="{active: 0 == selected}" ><a href="#/donorViewProfile" ng-click="moveToTop();">My Profile</a></li>
+                    <span ng-if="donationListStatus"><li ng-click="showTabcontent(1)" ng-class="{active: 1 == selected}"><a href="#/donationHistory" ng-click="moveToTop();">My Donations</a></li></span>
+                    <span ng-if="studentListStatus"><li ng-click="showTabcontent(2)" ng-class="{active: 2 == selected}" ><a href="#/donorStudents" ng-click="moveToTop();">My Students</a></li></span>
+                    <span ng-if="!disableEditandMakeDonationForLiveImpact"><li ng-click="showTabcontent(3);currencyType();" ng-class="{active: 3 == selected}"><a href="#/makeDonation" ng-click="moveToTop();">Make Donation</a></li></span>
+                </ul>
+            </div>  
+            <div class="headermenuSelection" ng-if="viewStudent">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                    Student Profile
+                </h3>
+            </div>
+            <div class="common" id="myContainerDiv">
+                <div class="ng-view">
+                </div>
+            </div>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            <div class="renewalPopup" ng-show="descPop">
+                <div class="material-icons closePopUp" ng-click="closeDesc();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+               <div  ta-bind="text" ng-model="description.Description__c"></div>
+            </div>
+            <div class="background" ng-show="descPop" >
+            </div>
+        </body>
+    </html>
+</apex:page>

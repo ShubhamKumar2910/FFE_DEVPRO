@@ -1,0 +1,53 @@
+<apex:page sidebar="false"
+           showHeader="false"
+           controller="DN_CCAvenueResponse_CTRL"
+           action="{!DN_CCAvenueResponse_CTRL}"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false"> 
+    <html>
+        <head>
+            <c:pageResource />           
+        </head>
+        <body>
+            
+            <form id="nonseamless" method="post" name="redirect" action="{!sfRedirectURL}"> 
+                <input type="hidden" id="encDonorId" name="encDonorId" value="{!encDonorId}"/>   
+            </form>
+            
+             <script>
+                var respstatus  = "{!payment_Status}";
+                if(respstatus == "{!$Label.Payment_Success}"){
+                     swal({
+                        title: '',
+                        text: respstatus,
+                        type:'success',
+                        timer: 2000
+                    });
+                    document.redirect.submit();
+                }else if(respstatus == "{!$Label.Payment_Failed}"){
+                    swal('',respstatus,'error');
+                    swal({
+                        title: '',
+                        text: respstatus,
+                        type:'error',
+                        timer: 2000
+                    });
+                    document.redirect.submit();
+                }else if(respstatus == "{!$Label.Payment_Aborted}"){
+                    swal({
+                        title: '',
+                        text: respstatus,
+                        type:'error',
+                        timer: 2000
+                    });
+                    document.redirect.submit();
+                }else{
+                    location.href='/donor';
+                }
+                
+        </script>
+            
+        </body> 
+    </html>
+</apex:page>

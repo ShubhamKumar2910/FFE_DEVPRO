@@ -1,0 +1,48 @@
+<apex:page standardController="Application__c" sidebar="false" showHeader="false">
+    <apex:form >
+        <apex:pageBlock mode="maindetail" title="">
+            <apex:pageBlockSection title="Basic Info">
+                <apex:outputField value="{!Application__c.Student__r.Name}"/>
+                <apex:outputField value="{!Application__c.Student__r.Phone}"/>
+                <apex:outputField value="{!Application__c.Student__r.Email}"/>
+                <apex:outputField value="{!Application__c.Student__r.MobilePhone}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Academic Details">
+                <apex:outputField value="{!Application__c.Student__r.X10th__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.X12th__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.PCM_PCB__c}"/> 
+            </apex:pageBlockSection>
+              <apex:pageBlockSection title="Course/College Particulars">
+                <apex:outputField value="{!Application__c.Student__r.College_Name__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.College_Other__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.College_City__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.Course__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.College_State__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.Branch_Stream__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.Type__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Family Information">
+                <apex:outputField value="{!Application__c.Student__r.Father_Name__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.Mother_Name__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.Father_Age__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.Mother_Age__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.Father_Education__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.Mother_Education__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.Father_Occupation__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.Mother_Occupation__c}"/>
+                <apex:outputField value="{!Application__c.Student__r.Annual_Family_Income__c}"/>
+            </apex:pageBlockSection>
+          <apex:pageBlockSection title="Student Address">
+                <apex:outputField value="{!Application__c.Student__r.npsp__Current_Address__c}"/> 
+                <apex:outputField value="{!Application__c.Student__r.MailingCity}"/>
+                <apex:outputField value="{!Application__c.Student__r.MailingState}"/>
+                <apex:outputField value="{!Application__c.Student__r.MailingCountry}"/>
+                <apex:outputField value="{!Application__c.Student__r.MailingPostalCode}"/>
+                <apex:outputField value="{!Application__c.Student__r.MailingStreet}"/>
+
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+    
+    </apex:form>
+</apex:page>

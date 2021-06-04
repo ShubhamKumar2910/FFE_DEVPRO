@@ -1,0 +1,21 @@
+<apex:page controller="AP_Application_CTRL" showHeader="false" sidebar="false" action="{!checkUserAuth}">
+    <script>
+    	debugger;
+        if("{!recordType}" == 'Student'){
+            window.location.href='/application/studentProfile';
+        }else if("{!recordType}" == 'Facilitator'){
+            window.location.href='/application/facilitatorProfile';
+        }else if("{!isMentorshipSite}" == 'true') {
+            if("{!recordType}" === "Mentor")
+                window.location.href='/mentorship/MentorLoginPortal?login=true';
+            else {
+                let email = encodeURIComponent('{!gemailId}');
+                let firstName = encodeURIComponent('{!gFirstName}');
+                let lastName = encodeURIComponent('{!gLastName}');
+                window.location.href='/mentorship/RegistrationFromGoogle?gemail='+email+'&first_name='+firstName+'&last_name='+lastName;
+            }
+        }else{
+            window.location.href='/application';
+        }
+    </script> 
+</apex:page>

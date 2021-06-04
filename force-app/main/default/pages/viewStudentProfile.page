@@ -1,0 +1,541 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+    <!--html ng-app="Student"-->
+    <title>Student Profile</title>
+    <head>
+        <style>
+            html{
+            background:#fff;
+            }
+            
+            .switchDiv{
+            top: 170px;
+            position: relative;
+            }
+            .rowView{
+            width:98%;
+            padding:1%;
+            }
+            .inputfiledsSelect,.inputfileds{
+            width: 95%;
+            }
+            .uploadDocsDiv{
+            float: left;
+            width: 100%;
+            }
+            .tags{
+            color: #f38b05
+            }
+            
+            .profile {
+            padding: 15px;
+            margin: 4px 30px;
+            width: 18%;
+            height: 170px;
+            border: 1px solid #ccc;
+            margin-top: 18px;
+            }
+            .rowsHistory th {
+            color: #000;
+            }
+            
+        </style>
+    </head>
+    <div >
+        <div class="formDiv" style="margin-top:170px;">
+            <h4 class="formheadings" align="center">
+                Basic Information    
+            </h4>
+            <div style="width:73%;float:left">
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Name: 
+                        <span class="tags">{{studentDetails.FirstName}}&nbsp;{{studentDetails.LastName}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Gender: 
+                        <span class="tags">{{studentDetails.Gender__c}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Email: 
+                        <span class="tags">{{studentDetails.Email}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Date of Birth: 
+                        <span class="tags">{{studentDetails.Birthdate}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Student Id: 
+                        <span class="tags">{{studentDetails.FFE_ID__c}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Mobile No: 
+                        <span class="tags">{{studentDetails.MobilePhone}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Phone No: 
+                        <span class="tags">{{studentDetails.Phone}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Application Status: 
+                        <span class="tags">{{studentDetails.Applications__r.records[0].External_Status__c}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div style="float:right" class="profile" ng-if="!noImage" >
+                <apex:image url="{{imageSFIdURL}}" styleClass="logo" style="width:70%;position: relative;left: 34px;top: 12px;" />
+            </div>
+            <div style="float:right" class="profile" ng-if="noImage" >
+                <apex:image url="{!$Resource.NoImage}" styleClass="logo" style="width:70%;position: relative;left: 34px;top: 12px;" />
+            </div>
+        </div>
+        <div class="formDiv">
+            <h4 class="formheadings" align="center">
+                Educational Information    
+            </h4>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    10th Passed Year: 
+                    <span class="tags">{{studentDetails.X10th_Year_Passed__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    12th Passed Year: 
+                    <span class="tags">{{studentDetails.X12th_Year_Passed__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    10th Board Type: 
+                    <span class="tags">{{studentDetails.Xth_ExamBoard__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    12th Board Type: 
+                    <span class="tags">{{studentDetails.X12th_ExamBoard__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    10th%: 
+                    <span class="tags">{{studentDetails.X10th__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    12th%: 
+                    <span class="tags">{{studentDetails.X12th__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    10th Marks Obtained: 
+                    <span class="tags">{{studentDetails.X10th_Marks_Obtained__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    12th Marks Obtained: 
+                    <span class="tags">{{studentDetails.X12th_Marks_Obtained__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    10th Maximum Marks: 
+                    <span class="tags">{{studentDetails.X10th_Maximum_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    12th Maximum Marks: 
+                    <span class="tags">{{studentDetails.X12th_Maximum_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    10th Medium Of Instruction: 
+                    <span class="tags">{{studentDetails.X10th_Medium_Of_Instruction__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    12th Medium Of Instruction: 
+                    <span class="tags">{{studentDetails.X12th_Medium_Of_Instruction__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    10th Type: 
+                    <span class="tags">{{studentDetails.X10th_Type__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    12th Type: 
+                    <span class="tags">{{studentDetails.X12th_Type__c}}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="formDiv">
+            <h4 class="formheadings" align="center">
+                Entrance Test information 
+            </h4>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    Entrance Test Name: 
+                    <span class="tags" ng-if="studentDetails.Entrance_Test_Name__c!='Other'">{{studentDetails.Entrance_Test_Name__c}}</span>
+                    <span class="tags" ng-if="studentDetails.Entrance_Test_Name__c=='Other'">{{studentDetails.Other_Entrance_Test__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Entrance Exam Taken In Year: 
+                    <span class="tags">{{studentDetails.Entrance_Exam_Taken_In_Year__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    Entrance Exam Maximum Marks: 
+                    <span class="tags">{{studentDetails.Entrance_Exam_Maximum_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    Entrance Test Marks: 
+                    <span class="tags">{{studentDetails.Entrance_Test_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    Entrance Test Rank: 
+                    <span class="tags">{{studentDetails.Entrance_Test_Rank__c}}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="formDiv">
+            <h4 class="formheadings" align="center">
+                Course/College Details
+            </h4>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    College Name: 
+                    <span class="tags" ng-show="studentDetails.College_Name__r.Name!='Other'">{{studentDetails.College_Name__r.Name}}</span>
+                    <span class="tags" ng-show="studentDetails.College_Name__r.Name=='Other'">{{studentDetails.College_Other__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    College City: 
+                    <span class="tags">{{studentDetails.College_City__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    Course: 
+                    <span class="tags">{{studentDetails.Course__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    College State: 
+                    <span class="tags">{{studentDetails.College_State__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    Branch/Stream: 
+                    
+                    <span class="tags" ng-show="studentDetails.Branch_Stream__c!='Other'">{{studentDetails.Branch_Stream__c}}</span>
+                    <span class="tags" ng-show="studentDetails.Branch_Stream__c=='Other'">{{studentDetails. Branch_Other__c}}</span>
+                </h4>
+            </div>
+            <div class="row" >
+                <h4 class="tagnames" >
+                    College Type: 
+                    <span class="tags">{{studentDetails.Type__c}}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="formDiv" >
+            <h4 class="formheadings" align="center">
+                Family Information    
+            </h4>
+            <div class="row" style="width:90%">
+                <h4 class="tagnames" >
+                    Permanent Address: 
+                    <span class="tags">{{studentDetails.MailingStreet}}
+                        <br/>{{studentDetails.MailingCity}}, 
+                        <br/>{{studentDetails.MailingState}},
+                        <br/> {{studentDetails.MailingCountry}}, 
+                        <br/>{{studentDetails.MailingPostalCode}}
+                    </span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Father's Name: 
+                    <span class="tags">{{studentDetails.Father_Name__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Mother's Name: 
+                    <span class="tags">{{studentDetails.Mother_Name__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Father's Age: 
+                    <span class="tags">{{studentDetails.Father_Age__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Mother's Age: 
+                    <span class="tags">{{studentDetails.Mother_Age__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Father's Education: 
+                    <span class="tags">{{studentDetails.Father_Education__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Mother's Education: 
+                    <span class="tags">{{studentDetails.Mother_Education__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Father's Occupation: 
+                    <span class="tags">{{studentDetails.Father_Occupation__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Mother's Occupation: 
+                    <span class="tags">{{studentDetails.Mother_Occupation__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Parent's Mobile No: 
+                    <span class="tags">{{studentDetails.Parent_Mobile__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Parent's Phone No: 
+                    <span class="tags">{{studentDetails.Parent_Phone__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Annual Family Income: 
+                    <span class="tags">{{studentDetails.Annual_Family_Income__c}}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="formDiv" >
+            <h4 class="formheadings" align="center">
+                About Student and Family  
+            </h4>
+            <div class="row" style="width:98%">
+                <h4 class="tagnames" >
+                    What is your ambition in life?
+                    <br/>
+                    <span class="tags">{{studentDetails.What_is_your_ambition_in_life__c}}</span>
+                </h4>
+            </div>
+            <div class="row" style="width:98%">
+                <h4 class="tagnames" >
+                    Who has inspired you the most until now? Why did you select this person?
+                    <br/>
+                    <span class="tags">{{studentDetails.Who_has_inspired_you_the_most_until_now__c}}</span>
+                </h4>
+            </div>
+            <div class="row" style="width:98%">
+                <h4 class="tagnames" >
+                    Tell us some things about yourself, your strengths/weaknesses, interests/hobbies:
+                    <br/>
+                    <span class="tags">{{studentDetails.Tell_us_some_things_about_yourself__c}}</span>
+                </h4>
+            </div>
+            <div class="row" style="width:98%">
+                <h4 class="tagnames" >
+                    How would you describe your family’s income/living conditions?
+                    <br/>
+                    <span class="tags">{{studentDetails.Describe_your_family_s_income__c}}</span>
+                </h4>
+            </div>
+            <div class="row" style="width:98%">
+                <h4 class="tagnames" >
+                    When you start earning, in what ways do you think you could help others?
+                    <br/>
+                    <span class="tags">{{studentDetails.When_you_start_earning_how_you_help__c}}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="formDiv">
+            <h4 class="formheadings" align="center">
+                Other Details
+            </h4>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Receiving Full AICTE/Fee Waiver from Gvt: 
+                    <span class="tags">{{Receiving_Full_AICTE_OtherTution_Fee_Wa__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Scholarship/Financial Asst Other Than FFE?: 
+                    <span class="tags">{{SchlrShp_FinancialAsst_Other_Than_FFE__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="SchlrShp_FinancialAsst_Other_Than_FFE__c=='Yes'">
+                <h4 class="tagnames" >
+                    If Yes How much?(Other Source): 
+                    <span class="tags">{{If_Yes_How_much_Other_Source__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="SchlrShp_FinancialAsst_Other_Than_FFE__c=='Yes'">
+                <h4 class="tagnames" >
+                    Assistance Source?: 
+                    <span class="tags">{{Assistance_Source__c}}</span>
+                </h4>
+            </div>
+        </div>
+        <div class="formDiv">
+            <h4 class="formheadings" align="center">
+                Facilitator's Remarks   
+            </h4>
+            <ng-form name="regForm">
+            <div class="row rowView">
+                    <h4 class="formTags" >
+                        Student Name: 
+                        <span style="color:#f38b05">{{studentDetails.Name}}</span>
+                    </h4>
+                     <br/>
+                    <h4 class="formTags" >
+                        Student Id: 
+                        <span style="color:#f38b05">{{studentDetails.FFE_ID__c}}</span>
+                    </h4>
+                </div>
+                <div class="row rowView">
+                    <h4 class="formTags" >
+                        Have you been able to visit the student's house.?(Physically/Online)
+                        <span style="color:#ff0000">*</span>
+                    </h4>
+                    <select name="Have_you_visited_the_student_s_house__c" required="true"  class="inputfiledsSelect" ng-model="application__c.Have_you_visited_the_student_s_house__c" ng-disabled="studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator'">
+                        <option value="" label="--Select--" selected="true"/>
+                        <option value='true'>Yes</option>
+                        <option value='false'>No</option>
+                    </select>
+                    <span ng-show="formInvalidFaci && regForm.Have_you_visited_the_student_s_house__c.$invalid" class="error">This is required.</span>
+                </div>
+                <div class="row rowView">
+                    <h4 class="formTags" >
+                        Have you met the student's parent(s).?(Physically/Online)
+                        <span style="color:#ff0000">*</span>
+                    </h4>
+                    <select name="Have_you_met_the_student_s_parent_s__c" required="true"  class="inputfiledsSelect" ng-model="application__c.Have_you_met_the_student_s_parent_s__c"   ng-disabled="studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator'">
+                        <option value="" label="--Select--" selected="true"/>
+                        <option value='true'>Yes</option>
+                        <option value='false'>No</option>
+                    </select>
+                    <span ng-show="formInvalidFaci && regForm.Have_you_met_the_student_s_parent_s__c.$invalid" class="error">This is required.</span>
+                </div>
+                <div class="row rowView">
+                    <h4 class="formTags" >
+                        Has the student provided satisfactory justification on the amounts asked by him/her for the college fees, hostel mess charges, transport charges, books, stationery and uniform.?
+                        <span style="color:#ff0000">*</span>
+                    </h4>
+                    <select name="Has_student_provided_Justification__c" required="true"  class="inputfiledsSelect" ng-model="application__c.Has_student_provided_Justification__c" ng-disabled="studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator'">
+                        <option value="" label="--Select--" selected="true"/>
+                        <option value='true'>Yes</option>
+                        <option value='false'>No</option>
+                    </select>
+                    <span ng-show="formInvalidFaci && regForm.Has_student_provided_Justification__c.$invalid" class="error">This is required.</span>
+                </div>
+                <div class="row rowView">
+                    <h4 class="formTags" >
+                        Are you convinced about the genuineness of the critical financial need of the student's family and that the student truly deserves a scholarship from FFE.?
+                        <span style="color:#ff0000">*</span>
+                    </h4>
+                    <select name="Student_truly_deserves_a_scholarship__c" required="true"  class="inputfiledsSelect" ng-model="application__c.Student_truly_deserves_a_scholarship__c" ng-disabled="studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator'">
+                        <option value="" label="--Select--" selected="true"/>
+                        <option value='true'>Yes</option>
+                        <option value='false'>No</option>
+                    </select>
+                    <span ng-show="formInvalidFaci && regForm.Student_truly_deserves_a_scholarship__c.$invalid" class="error">This is required.</span>
+                </div>
+                <div class="row rowView">
+                    <h4 class="formTags" >
+                        Please comment on parent's education, occupation, family background and gross family income and wealth/assets, if any.
+                        <span style="color:#ff0000">*</span>
+                    </h4>
+                    <textarea  name="Please_Comment_on_Parent_s_Background__c" class="inputfileds" required="true"  ng-model="application__c.Please_Comment_on_Parent_s_Backgroun__c" style="min-height:98px;" ng-disabled="studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator'"></textarea>
+                    <span ng-show="formInvalidFaci && regForm.Please_Comment_on_Parent_s_Background__c.$invalid" class="error">This is required.</span>
+                </div>
+            </ng-form>
+        </div>
+        <div class="formDiv " ng-if='attachemts.length>0'>
+            <h4 class="formheadings" align="center">
+                Uploaded Documents
+            </h4>
+            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;">
+                <thead>
+                    <tr class="rowsHistory" style="color:#ccc;">
+                        <th>S.No.</th>
+                        <th>Uploaded Date</th>
+                        <th>Document Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tr align="center" class="rowsHistory" ng-repeat="attachemt in attachemts">
+                    <td>{{attachemts.indexOf(attachemt) + 1}}</td>
+                    <td>{{attachemt.CreatedDate | date:"dd/MM/yyyy"}}</td>
+                    <td>{{attachemt.Name}}</td>
+                    <td>
+                        <a href="/application/servlet/servlet.FileDownload?file={{attachemt.Id}}" class="material-icons"  style="text-decoration:none;font-size:19px" target="_blank">
+                            <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 98%;position: relative;left: 1%;float: left;" ng-if="!(studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator')">
+            <input type="checkbox" name="terms" id="terms"  ng-model="terms" ng-change="checkValue(terms)"/>
+            <span class="formTags">{!$Label.facilitatorTerms}</span>
+        </div>
+        <div class="searchRow" align="center" style="margin-bottom:20px;margin-top:10px;" ng-if="!(studentDetails.Applications__r.records[activeIndex].FacilitatorInputDone__c == true || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Pending FFE Staff Review' || studentDetails.Applications__r.records[activeIndex].Internal_Status__c=='Rejected by Facilitator')">
+            <input type="button" value="Approve" class="buttons"  ng-click="verified();" ng-disabled="!terms"/>
+            <input type="button" value="Reject" class="buttons"  ng-click="reject();" ng-disabled="!terms"/>
+        </div>
+        <div class="loadingSection" ng-show="loading" >
+            <div class="loadingBackground"></div>
+            <div>
+                <apex:image url="{!$Resource.loading}" styleClass="loading" />
+            </div>
+        </div>
+    </div>
+    <!--</body> -->
+    <!--/html-->
+</apex:page>

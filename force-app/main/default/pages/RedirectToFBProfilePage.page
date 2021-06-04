@@ -1,0 +1,12 @@
+<apex:page controller="AP_Application_CTRL" showHeader="false" sidebar="false" action="{!checkUserAuth}">
+    <script>
+        debugger;
+        if("{!recordType}" === "Mentor")
+            window.location.href='/mentorship/MentorLoginPortal?login=true';
+        else {
+            let email = encodeURIComponent('{!FbId}');
+            let firstName = encodeURIComponent('{!name}');
+            window.location.href='/mentorship/RegistrationFromFacebook?gemail='+email+'&first_name='+firstName;
+        }
+    </script>
+</apex:page>

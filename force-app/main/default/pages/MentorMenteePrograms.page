@@ -1,0 +1,587 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="mentorMenteeController">
+    <head>
+        <meta charset="utf-8"/>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+        crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js" integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA==" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular-csp.css" integrity="sha512-f7WVHp6iaZ7iOx9duYm67KLwCFJ9KirfMIK0MAOxf1wq5M8Ogdw5ljbCxlk/BtWIbyXWMsIaDaqwUpXttPQ/5g==" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular-csp.min.css" integrity="sha512-nptw3cPhphu13Dy21CXMS1ceuSy2yxpKswAfZ7bAAE2Lvh8rHXhQFOjU+sSnw4B+mEoQmKFLKOj8lmXKVk3gow==" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.js" integrity="sha512-rCVQBDU9Ny0aKLo1/B1MqgRjWEMlCL3WJ0DD6mJeK6qMZqpN9JCRxPtMQWWR9XWCMFIqlSgT4uOdwpvxWTSejw==" crossorigin="anonymous"></script>
+        </head>
+        <style>
+            
+            * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            font-family: sans-serif;
+        }
+        nav {
+            position: sticky;
+            background: #222;
+            padding: 5px 20px;
+            
+        }
+        ul {
+            list-style-type: none;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .logo a:hover {
+            text-decoration: none;
+        }
+        .menu li {
+            font-size: 16px;
+            padding: 15px 5px;
+            white-space: nowrap;
+        }
+        .logo a,
+            .toggle a {
+                font-size: 20px;
+            }
+        .button.secondary {
+            border-bottom: 1px #444 solid;
+        }
+        img{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            position: relative;
+        }
+        .div1 {
+            background: url(reg.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        /* Mobile menu */
+        .menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toggle {
+            order: 1;
+        }
+        .item.button {
+            order: 2;
+        }
+        .item {
+            width: 100%;
+            text-align: center;
+            order: 3;
+            display: none;
+        }
+        .item.active {
+            display: block;
+        }
+        
+        /* Navbar Toggle */
+        .toggle {
+            cursor:pointer;
+        }
+        .bars {
+            background: #999;
+            display: inline-block;
+            height: 2px;
+            position: relative;
+            transition: background .2s ease-out;
+            width: 18px;
+        }
+        .bars:before,
+            .bars:after {
+                background: #999;
+                content: '';
+                display: block;
+                height: 100%;
+                position: absolute;
+                transition: all .2s ease-out;
+                width: 100%;
+            }
+        .bars:before {
+            top: 5px;
+        }
+        .bars:after {
+            top: -5px;
+        }
+        
+        /* Tablet menu */
+        @media all and (min-width: 468px) {
+            .menu {
+                justify-content: center;
+            }
+            
+            .logo {
+                flex: 1;
+            }
+            
+            .item.button {
+                width: auto;
+                order: 1;
+                display: block;
+            }
+            .toggle {
+                order: 2;
+            }
+            .button.secondary {
+                border: 0;
+            }
+            .button a {
+                color: #ddd;
+                padding: 7.5px 15px;
+                background: teal;
+                border: 1px #006d6d solid;
+                border-radius:50em;
+            }
+            .button.secondary a {
+                color: #ddd;
+                background: transparent;    
+            }
+            .button a:hover {
+                text-decoration: none;
+                transition:all .25s;
+            }
+            .button:not(.secondary) a:hover {
+                background: #006d6d;
+                color: #ddd;
+                border-color: #005959;
+            }
+            .button.secondary a:hover {
+                color: #ddd;
+            } 
+        }
+        
+        /* Desktop menu */
+        @media all and (min-width: 768px) {
+            .item {
+                display: block;
+                width: auto;
+            }
+            .toggle {
+                display: none;
+            }
+            .logo {
+                order: 0;
+            }
+            .item {
+                order: 1;
+            }
+            .button {
+                order: 2;
+            }
+            .menu li {
+                padding: 15px 10px;
+            }
+            .menu li.button {
+                padding-right: 0;
+            }
+            .sidebar {
+                height: 100%;
+                width: 0;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                background-color: #111;
+                overflow-x: hidden;
+                transition: 0.5s;
+                padding-top: 60px;
+            }
+            
+            .sidebar a {
+                padding: 8px 8px 8px 32px;
+                text-decoration: none;
+                font-size: 25px;
+                color: #818181;
+                display: block;
+                transition: 0.3s;
+            }
+            
+            .sidebar a:hover {
+                color: #f1f1f1;
+            }
+            
+            .sidebar .closebtn {
+                position: absolute;
+                top: 0;
+                right: 25px;
+                font-size: 36px;
+                margin-left: 50px;
+            }
+            
+            .openbtn {
+                font-size: 20px;
+                cursor: pointer;
+                background-color: #111;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+            }
+            
+            .openbtn:hover {
+                background-color: #444;
+            }
+            
+            #main {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+        
+        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+        @media screen and (max-height: 450px) {
+            .sidebar {padding-top: 15px;}
+            .sidebar a {font-size: 18px;}
+        }
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Arimo:400,700&display=swap"/>
+            body{
+                background:#CDDC39;
+                font-family: 'Arimo', sans-serif;
+            }
+        h2{
+            color:#000;
+            text-align:center;
+            font-size:2em;
+        }
+        .warpper{
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .tab{
+            cursor: pointer;
+            padding:10px 20px;
+            margin:0px 2px;
+            background:#000;
+            display:inline-block;
+            color:#fff;
+            border-radius:3px 3px 0px 0px;
+            box-shadow: 0 0.5rem 0.8rem #00000080;
+        }
+        .panels{
+            background:#fffffff6;
+            box-shadow: 0 2rem 2rem #00000080;
+            min-height:200px;
+            width:100%;
+            max-width:500px;
+            border-radius:3px;
+            overflow:hidden;
+            padding:20px;  
+        }
+        .panel{
+            display:none;
+            animation: fadein .8s;
+        }
+        @keyframes fadein {
+            from {
+                opacity:0;
+            }
+            to {
+                opacity:1;
+            }
+        }
+        .panel-title{
+            font-size:1.5em;
+            font-weight:bold
+        }
+        .radio{
+            display:none;
+        }
+        .assessmentdata{
+            padding:10px;}
+        #one:checked ~ .panels #one-panel,
+        #two:checked ~ .panels #two-panel,
+        #three:checked ~ .panels #three-panel{
+        display:block
+        }
+        #one:checked ~ .tabs #one-tab,
+        #two:checked ~ .tabs #two-tab,
+        #three:checked ~ .tabs #three-tab{
+        background:#fffffff6;
+        color:#000;
+        border-top: 3px solid #000;
+        }
+        .assessment,table{
+            margin:20px;
+        }
+        .mentorTable{
+            border-collapse: collapse;  
+            border: 1px solid black;
+            
+        }
+        
+        th,td{
+            margin:20px;
+            padding: 20px;
+        }
+        .assessdata{
+            margin:20px;
+            padding: 20px;
+        }
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 1em;
+            font-family: sans-serif;
+            min-width: 200px;
+            margin-left: auto; 
+            margin-right: auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        progrm {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 24px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 9px #999;
+        }
+        
+        .progrm:hover {background-color: #3e8e41}
+        
+        .progrm:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        .download {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 5px 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .download:hover {
+         background-color: RoyalBlue;
+         }              
+                       
+                       </style>
+                       
+                       <body ng-app="myapp" ng-controller="myctrl">
+                           {!$Site.BaseUrl}
+                       <nav>
+                           <ul class="menu">
+                               <li class="logo"><a href="#">LOGO</a></li>
+                                   <li class="item"><a href="#">Home</a></li>
+                                       <li class="item button"><a href="#">Log In</a></li>
+                                           <li class="item btn secondary"><a href="https://utilitarianlab-dev-ed--c.visualforce.com/apex/SignupPortal">Sign Up</a></li>
+                                               <li class="toggle"><span class="bars"></span></li>
+                                                   </ul>
+                                               </nav>
+                                               <div id="mySidebar" class="sidebar">
+                                                   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+                                                   <a href="#">Profile</a>
+                                                   <a href="#" ng-click="getprogramDetail()">Programmes</a>
+                                                   <a href="#">Schedule</a>
+                                                   </div>
+                                                   <div id="main">
+                                                       <button class="openbtn" onclick="openNav()">☰</button>  
+                                                       </div>
+                                                       <div class="warpper">
+                                                           <input class="radio" id="one" name="group" type="radio" ></input>
+                                                           <input class="radio" id="two" name="group" type="radio"/>
+                                                               <div class="tabs">
+                                                                   
+                                                                   <button class="tab" id="two-tab" for="two" type="button" ng-click="getBasicInfo()">Basic Information</button>
+                                                                       <button class="tab" id="two-tab" for="two" type="button" ng-click="getSelfAssessmentQuestions()">Self Assessment</button>
+                                                                       </div>
+                                                                       </div>
+                                                                       <div ng-show="selfAssessmentQues" > 
+                                                                       
+                                                                       <table class="mentorTable">
+                                                                       <thead>
+                                                                       <th class="mentorTable">Skills</th>
+                                                                         <th class="mentorTable">Question</th>
+                                                                       </thead>
+                                                                       <tbody>
+                                                                       <tr ng-repeat="x in selfAssessmentQuestions">
+                                                                       <td>{{x.templateQuestion}}</td>
+                                                                       <td>
+                                                                       <table class="mentorTable">
+                                                                       <thead>
+                                                                       </thead>
+                                                                       <tbody>
+                                                                       <tr ng-repeat="y in x.allQuestions" >
+                                                                       
+                                                                       <td >{{y.questionRec.Question__c}}</td>
+                                                                       <td >{{y.questionRec.Type__c}}</td>
+                                                                       <td >
+                                                                       <div ng-if="y.questionRec.Type__c =='Picklist'">
+                                                                       <select><option ng-repeat="z in y.optionList" ng-model="optionValues" > {{z}}</option></select>
+                                                                       <p>{{optionValues}}</p>
+                                                                       </div>
+                                                                       <div ng-if="y.questionRec.Type__c =='Checkbox'">
+                                                                       <input type="{{y.questionRec.Type__c}}"/>
+                                                                       </div>
+                                                                       <div ng-if="y.questionRec.Type__c =='Text'">
+                                                                       <input type="y.questionRec.Type__c" ng-model="typed"/>
+                                                                       <p>Entered text : {{typed}}</p>
+                                                                       </div>
+                                                                       </td>
+                                                                       </tr>
+                                                                       </tbody>
+                                                                       </table>
+                                                                       </td>
+                                                                       </tr>
+                                                                       </tbody>
+                                                                       </table>
+                                                                       </div>
+                                                                       
+                                                                       <div ng-show="mentordetails">
+                                                                       <button type="button" class="btn btn-secondary btn-lg" ng-click="getMentorDetail()">Get Mentor Info</button><br/><br/>
+                                                                       <table class="basic">
+                                                                       
+                                                                       <td class="styled-table">Name</td>
+                                                                       <td class="styled-table">Phone</td>
+                                                                       <td class="styled-table">Email</td>
+                                                                       <td class="styled-table">Gender</td>
+                                                                       <td class="styled-table">Languages Spoken</td>
+                                                                       <td class="styled-table">Mentor Before</td>
+                                                                       <td class="styled-table">Years of Work Experience</td>
+                                                                       <td class="styled-table">City</td>
+                                                                       
+                                                                       <tr ng-repeat="x in mentorDetails">
+                                                                       
+                                                                       <td class="styled-table">{{x.Name}}</td>
+                                                                       <td class="styled-table">{{x.Phone__c}}</td>
+                                                                       <td class="styled-table">{{x.Email__c}}</td>
+                                                                       <td class="styled-table">{{x.Gender__c}}</td>
+                                                                       <td class="styled-table">{{x.Languages_Spoken__c}}</td>
+                                                                       <td class="styled-table">{{x.Mentor_Before__c}}</td>
+                                                                       <td class="styled-table">{{x.Years_of_Work_Experience__c}}</td>
+                                                                       <td class="styled-table">{{x.City__c}}</td>
+                                                                       </tr>
+                                                                       </table>
+                                                                       </div>
+                                                                       
+                                                                       <div class="styled-table" ng-show="programDetails">
+                                                                       <table class="styled-table">
+                                                                       
+                                                                       <td class ="styled-table">SNo</td>                                              
+                                                                       <td class ="styled-table">Programme</td>
+                                                                       <td class ="styled-table">Curriculam</td>
+                                                                       <td class ="styled-table">Apply</td>
+                                                                       
+                                                                       
+                                                                       <tr ng-repeat="x in programDetails">
+                                                                       <td class ="styled-table">{{$index + 1}}</td>
+                                                                       <td class ="styled-table">{{x.programmeRec.Name}}</td>
+                                                                       <td class ="styled-table">{{x.programmeRec.curriculum__c}}
+                                                                       <button class="download" ng-click="download(x.attId)" ng-if="x.attId !=''"><i class="fa fa-download"></i> Download</button>
+                                                                       </td>
+                                                                       <td><button class="download" ng-click="apply(x.programmeRec.Id)" >Apply</button></td>
+                                                                       
+                                                                       
+                                                                       </tr>
+                                                                       </table>
+                                                                       </div>
+                                                                       </body>
+                                                                       <script>
+                                                                       function openNav() {
+                                                                           document.getElementById("mySidebar").style.width = "250px";
+                                                                           document.getElementById("main").style.marginLeft = "250px";
+                                                                       }
+                                                                           
+                                                                           function closeNav() {
+                                                                           document.getElementById("mySidebar").style.width = "0";
+                                                                           document.getElementById("main").style.marginLeft= "0";
+                                                                       }
+                                                                           </script>
+        
+        <script>
+        debugger;
+        
+        var app = angular.module('myapp',[]);
+        app.controller('myctrl',function($scope){
+            
+            $scope.selfAssessmentQues=false;
+            $scope.basicInformation=false;
+            $scope.programDetails=false;
+            
+            $scope.selfAssessmentQuestions=	pageLoadData["selfAssessmentQuestions"];
+            
+            $scope.getSelfAssessmentQuestions = function(){
+                $scope.selfAssessmentQues=true;
+                $scope.mentordetails=false;
+                $scope.programDetails=false;
+                debugger;
+                $scope.$apply();
+            }
+            
+            $scope.getBasicInfo = function(){
+                $scope.mentordetails=true;
+                $scope.selfAssessmentQues=false;
+                $scope.programDetails=false;
+                debugger;
+                $scope.$apply();    
+            }
+            
+
+        
+                $scope.download = function(attIds){
+                    //alert(attIds);
+                    //alert('{!baseURL}');
+                    var baseURL = '{!baseURL}';
+                    var attlocation = 'https://'+baseURL+'/servlet/servlet.FileDownload?file='+attIds;
+                    window.open(attlocation,'_blank');
+                }
+                    
+                $scope.getprogramDetail = function(){
+                    debugger;
+                    $scope.programDetails=true;
+                    $scope.mentordetails=false;
+                    $scope.selfAssessmentQues=false;
+                    
+                    $scope.programDetails =[];
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.mentorMenteeController.getProgramDetails}',
+                        function(result,event){
+                            if(event.status){
+                                $scope.programDetails=result;
+                                $scope.$apply();
+                            }
+                            else if (event.type==='exception'){
+                                alert(event.message);
+                            }else{
+                                alert(event.message);
+                            }
+                        },
+                        {escape:true}
+                    );
+                }             
+        });
+        
+        $(function() {
+            $(".toggle").on("click", function() {
+                if ($(".item").hasClass("active")) {
+                    $(".item").removeClass("active");
+                } else {
+                    $(".item").addClass("active");
+                }
+            });
+        });
+        
+        
+        </script>
+        
+    </apex:page>

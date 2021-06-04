@@ -1,0 +1,1429 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" cache="false" doctype="html-5.0" lightningStylesheets="false">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <style>
+        md-select[disabled],md-datepicker[disabled]{
+        PADDING-LEFT:0 !important;
+        }
+        .activetabs a{
+        color: #fff !important; 
+        }
+        .headersHistory{
+        margin-top:148px; 
+        border: 1px solid #032559;
+        background: #fff;
+        width: 89.85% !important;
+        }
+        .activetabs { 
+        background: #ff793c;
+        } 
+        .headersHistory ul li a{
+        font-size: 14px;
+        color: #032559;
+        }
+        .activetabs a{
+        color: #fff !important; 
+        }
+        .switchDiv{
+        top: 14px;
+        position: relative;
+        }
+        .switchPages{
+        position: relative;
+        top: 20px;
+        float: left;
+        }
+        .uploadDocsDiv{
+        float: left;
+        width: 100%;
+        }
+        md-select[disabled] .md-select-value {
+        background-position: 0 bottom;
+        background-size: 4px 1px;
+        background-repeat: repeat-x;
+        margin-bottom: -1px;
+        background: #eee;
+        border: 1px solid #ccc;
+        }
+        .rowsHistory th {
+        color: #000;
+        }
+        .rowabout{
+        width:91.5%;
+        }
+        .rowabout textarea{
+        width:100%;
+        }
+        
+        .mandatorCls{
+        color:red;
+        }
+        .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 0px dotted black;
+        }
+        .missingDoc{
+        width: 90%;
+        float: left;
+        min-height: 30px;
+        border: 1px solid rgba(99, 97, 121, 0.49);
+        border-radius: 5px;
+        padding: 0;
+        resize: none;
+        padding-left: 8px;
+        border-color: Red;
+        }
+        .profileCSS{
+        	width:54%;float:left;
+        }
+        .appList{}
+         @media screen and (max-width: 600px){
+        		.appList{
+        			display:flex;
+        			flex-direction:row;
+        		}
+        		.headermenuSelection{
+        			overflow:hidden;
+        		}
+        		.profileCSS{
+        			width:100%;
+        		}
+        		.profileCSS{
+        			width:50%;
+        		}
+        }
+        
+    </style>
+    <script>
+    window.onload=function(){
+        var i;
+        var x = document.getElementsByClassName("city");
+        for (i = 0; i < x.length; i++) {
+            if(i==0){
+                x[i].style.display = "block";
+            }
+            else{
+                x[i].style.display = "none";
+            }
+        }
+    }
+    </script>
+    <body style="margin-top:50%;">
+        
+    
+    <div class="headermenuSelection headersHistory" ng-init="switch(2,2);getListofFiles();">
+        
+        <ul style=""  class="profileCSS">
+            <li ng-click="switch(0,0)" ng-class="{activetabs: 0 == selectedtabs}" onclick="openCity('Basic')" ><a  ng-click="moveToTop();">Profile Details</a></li>
+            <li  ng-click="switch(2,2);getListofFiles();" ng-class="{activetabs: 2 == selectedtabs}" onclick="openCity('course')" ><a ng-click="moveToTop();">Applications</a></li>
+            <li  ng-click="switch(3,3);" ng-if="!IsPrelimApplication" ng-class="{activetabs: 3 == selectedtabs}" onclick="openCity('tellYourStory')" ><a ng-click="moveToTop();">Tell Your Story</a></li>
+        </ul>
+        
+        <div style="width:40%;float: left;padding: 9px 0;">
+            <a ng-show="IsPrelimApplication" class="pdf" href="/application/scholar_profile?ScholarId={{studendId}}" target="_blank" style="float: left;/* position: relative; *//* top: 7px; *//* font-size: 11pt; *//* left: -299px; */color: rgb(66, 92, 170);/* text-decoration: underline; */cursor: pointer;width: 30%;text-align: right;">Generate Profile as Pdf</a>
+            <!-- <a ng-show="IsPrelimApplication" href="{!$Setup.System_Details__c.Generate_Pledge_Parent_Declaration__c}" target="_blank" style="float: left;position: relative;/* top:7px; *//* font-size: 11pt; *//* margin-left: 10px; */text-align: left;color: #425caa;/* text-decoration: underline; */cursor: pointer;width: 61%;text-indent: 1em;">Generate the Pledge and Parent Declaration</a> -->
+        </div>
+    </div>
+    <ng-form name="basicInfo" novalidate="true" class="switchDiv">
+        
+        <div id="Basic" class="city switchPages" ng-init="tabs();">
+            
+            <div class="buttonDiv" align="center" style="margin-bottom:0px;">
+                <input type="button" value="Edit" class="buttons"  ng-click="edit();" ng-if="editFileds"/>
+                <input type="button" value="Save" class="buttons"  ng-click="save();" ng-if="!editFileds"/>
+                <input type="button" value="Cancel" class="buttons"  ng-click="cancelChanges();" ng-if="!editFileds"/>
+            </div>
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    Basic Information 
+                </h4>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        First Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="fName" ng-model="student.FirstName"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.fName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.fName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Last Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="userLastName" ng-model="student.LastName"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.userLastName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.userLastName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Gender:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <select class="inputfiledsSelect" name="gender" style="width:92%;color:black;" ng-model="student.Gender__c" required='true' ng-disabled="editFileds">
+                        <option  value='Male'>Male</option>
+                        <option  value='Female'>Female</option>
+                        <option  value='Other'>Other</option>
+                    </select>
+                    <span ng-show="formInvalid && basicInfo.gender.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.gender.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Email:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="userEmail" ng-model="student.Email"  class="inputfileds" ng-change="valid(student.Email)" required='true' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.userEmail.$invalid" class="error">This is required.</span>
+                    <span class="error" ng-show="(!(basicInfo.userEmail.$invalid) && invalidEmail)">Invalid email address</span>
+                    <span ng-show="!(formInvalid && basicInfo.userEmail.$invalid) && !(!(basicInfo.userEmail.$invalid) && invalidEmail) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Date Of Birth:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <md-datepicker style="min-height: 30px;" class="inputfiledsSelect" type="date" ng-model="student.Birthdate" required="true" name="userDob" id="mydate" ng-disabled="editFileds" md-max-date='todate'></md-datepicker>
+                    <span ng-show="formInvalid && basicInfo.userDob.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.userDob.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Aadhaar No: <span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" ng-if="scholarshipGrantedAtLeastOnce || student.KYC_Verified__c" name="userAadhar" ng-model="student.Aadhar_number__c"  class="inputfileds"  ng-readonly='true'  />
+                    <input type="text" ng-if="!scholarshipGrantedAtLeastOnce && !student.KYC_Verified__c" name="userAadhar" ng-model="student.Aadhar_number__c"  class="inputfileds"  onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-readonly="editFileds || scholarshipGrantedAtLeastOnce || student.KYC_Verified__c"  required='true' maxlength="12" minlength="12"/> 
+                    <span ng-show="formInvalid && basicInfo.userAadhar.$invalid && !student.KYC_Verified__c && !scholarshipGrantedAtLeastOnce" class="error">&nbsp;Enter your 12 digit Aadhaar number.</span>
+                </div>
+                
+                
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Mobile No:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="userMobile" ng-model="student.MobilePhone"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="11" minlength="10" ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.userMobile.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.userMobile.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Phone No:
+                    </h4>
+                    <input type="text" name="userPhone" ng-model="student.Phone"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="11" minlength="6"  ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="(formInvalid && basicInfo.userMobile.$error.minlength || formInvalid && basicInfo.userMobile.$error.maxlength )" class="error">Phone Number length should be between 6-11 digits</span>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Student Unique Id:<span style="color:#ff0000"></span>
+                    </h4>
+                    <input type="text" name="id" ng-model="student.FFE_ID__c"  class="inputfileds" ng-readonly="true"/>              
+                </div>
+                <div ng-if="editFileds">
+                    <div class="row" ng-if="(student.Facilitator_Name__r.Name!=undefined && student.Facilitator_Name__r.Name!='')">
+                        <h4 class="tagnames" >
+                            Assigned Facilitator Name:
+                        </h4>
+                        <input type="text" name="Facilitator_Name__c" ng-model="student.Facilitator_Name__r.Name"  class="inputfileds readInput" onpaste="return isChar(event)" onkeypress="return isChar(event)" readonly='true'/>
+                    </div>
+                    
+                    <div class="row" ng-if='editFileds'>
+                        <h4 class="tagnames" >
+                            Total Training Point(s) Earned: <span style="color:#ff0000"></span>
+                        </h4>
+                        <input type="text" name="id" ng-model="student.Total_Point_s__c"  class="inputfileds" ng-readonly="true"/>              
+                    </div>
+                    
+                    <div class="row" ng-if="(student.Refered_by_Facilitator_Name__c!=undefined && student.Refered_by_Facilitator_Name__c!='')">
+                        <h4 class="tagnames" >
+                            Facilitator Name:
+                        </h4>
+                        <input type="text" name="Refered_by_Facilitator_Name__c" ng-model="student.Refered_by_Facilitator_Name__c"  class="inputfileds readInput" onpaste="return isChar(event)" onkeypress="return isChar(event)" readonly='true'/>
+                    </div>
+                    <div class="row" ng-if="(student.Refered_by_Facilitator_Id__c!=undefined && student.Refered_by_Facilitator_Id__c!='')">
+                        <h4 class="tagnames" >
+                            Facilitator Id:
+                        </h4>
+                        <input type="text" name="Refered_by_Facilitator_Id__c" ng-model="student.Refered_by_Facilitator_Id__c"  class="inputfileds readInput" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" readonly='true'/>
+                    </div>
+                </div>
+            </div>
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    Bank Information    
+                </h4>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Bank Account Holder's Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="acName" ng-model="student.Bank_Account_Holder_s_Name__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.acName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.acName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Full Bank Account No. (With all digits):<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="acNum" ng-model="student.Full_Bank_Account_No_With_all_digits__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.acNum.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.acNum.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                
+                
+                <div class="row">
+                    <h4 class="formTags" >
+                        11 characters IFSC Code of the Branch:<span style="color:#ff0000" >*</span>
+                    </h4>
+                    <input type="text" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" name="ifscCode" class="inputfileds"  ng-required="true"  ng-model="student.X11_character_IFSC_Code_of_the_Branch__c" maxlength='11' minlength='11' ng-pattern="/^[a-zA-Z0-9]*$/" ng-readonly="editFileds" ng-class="{readInput: editFileds}" ng-change="ifscChanged()"/>
+                    <span ng-show="!(formInvalid && basicInfo.ifscCode.$invalid)  && showSpace" class="error">&nbsp;</span>
+                    <span ng-show="formInvalid && basicInfo.ifscCode.$invalid" class="error">This is required.</span>
+                    <span class="error">&nbsp;</span>
+                    <span class="error" ng-if="ifscCodeValid"  style="color: rgb(10, 45, 94);    font-weight: bold;"> {{ifscCodeMessage}}</span>
+                    <span class="error" ng-if="ifscCodeValid">&nbsp;</span>
+                    
+                    <span class="error" ng-show="(!basicInfo.ifscCode.$invalid && basicInfo.ifscCode.$error.minlength)">Invalid PAN details</span>
+                    <span class="error" ng-show="!(!basicInfo.ifscCode.$invalid && basicInfo.ifscCode.$error.minlength)  && showSpace">&nbsp;</span>
+                    
+                    <br/><span ng-if="!editFileds"><input type="button" ng-mouseover="showVerifyIFSChelpText()"  ng-mouseleave="hideVerifyIFSChelpText()" value="Verify IFSC" class="buttons"  ng-click="verifyIfsc(basicInfo.ifscCode);"/>  <span ng-if="ifscCodeValid" style="color: rgb(255, 0, 0);    font-weight: bold;">&nbsp;&nbsp;IFSC code is valid.</span><span ng-if="ifscServiceDisabled" style="color: rgb(255, 0, 0);    font-weight: bold;">&nbsp;&nbsp;Service is disabled.</span><span ng-if="ifscCodeNotValid" style="color: rgb(255, 0, 0);    font-weight: bold;">&nbsp;&nbsp;IFSC code is not valid.</span></span>
+                    <span class="error" ng-if="showVerifyIFSChelpTextFlag">&nbsp;</span>
+                    <span  class="error"  style="color: rgb(255, 0, 0);    font-weight: bold;" ng-if="showVerifyIFSChelpTextFlag">This helps to verify the IFSC entered by you. This is mandatory. Please check the IFSC code with your bank if there was a merger.</span>
+                    
+                </div>
+                <!--  <div class="row" ng-if="!editFileds">
+<h4 class="formTags" >
+Use this button to verify the IFSC code:<span style="color:#ff0000" >*</span>
+</h4> 
+<input type="button" value="Verify IFSC" class="buttons"  ng-click="edit();" ng-if="!editFileds"/>
+</div> -->
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Bank Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="bName" ng-model="student.Bank_Name__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.bName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.bName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" style="width:91.5%">
+                    <h4 class="formTags" >
+                        Branch Address:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <textarea  name="bAddress" class="inputfileds" required="true"  ng-model="student.Branch_Address__c" style="min-height:98px;width:100%" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                    <span ng-show="formInvalid && basicInfo.bAddress.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.bAddress.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Bank Branch Phone No:
+                    </h4>
+                    <input type="text" name="bPhone" ng-model="student.Bank_Branch_Phone_No__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-readonly="editFileds" maxlength='11' ng-class="{readInput: editFileds}"/>
+                </div>
+                
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Bank City:
+                    </h4>
+                    <input type="text" name="bCity" ng-model="student.Bank_City__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)"  ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Bank State:
+                    </h4>
+                    <input type="text" name="bState" ng-model="student.Bank_State__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Bank Pincode:
+                    </h4>
+                    <input type="text" name="bPin" ng-model="student.Bank_Pincode__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"  ng-readonly="editFileds" maxlength="6" ng-class="{readInput: editFileds}"/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Type Of Account:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <select ng-model="student.Type_Of_Bank_Account__c" class="inputfiledsSelect"  required='true' name="course" ng-disabled="editFileds" style="min-height: 38px;">
+                        <option ng-repeat="typeOfBackAcc in typeOfBankAccounts" value="{{typeOfBackAcc}}">{{typeOfBackAcc}}</option>
+                    </select>
+                    <span ng-show="formInvalid && basicInfo.typeOfBackAcc.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.typeOfBackAcc.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" ng-if="student.Type_Of_Bank_Account__c=='Other'">
+                    <h4 class="tagnames" >
+                        Type Of Account(Other):<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="Other_Type_Bank_Account__c " ng-model="student.Other_Type_Bank_Account__c "  class="inputfileds" required='true' onpaste="return isChar(event)" onkeypress="return isChar(event)" ng-readonly="editFileds" style="min-height: 38px;" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.Other_Type_Bank_Account__c .$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.Other_Type_Bank_Account__c .$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+            </div>
+            <div class="formDiv" >
+                <h4 class="formheadings" align="center">
+                    Course/College Details    
+                </h4>
+                <a id="college"></a>
+                <div class="row">
+                    <h4 class="tagnames" ><a id="college"></a>
+                        College Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <md-input-container class="mdContPopup inputfiledsmdSelect">
+                        <md-select class="inputfiledsSelect" style="border: 1px solid #ccc;" ng-model="student.College_Name__r.Name" name="college"  ng-disabled="editFileds" ng-change="selectedValue(student.College_Name__r.Name)">
+                            <md-select-header class="demo-select-header">
+                                <input ng-model="clg" ng-keydown="$event.stopPropagation()" type="search" class="demo-header-searchbox md-text" ng-change="getCollege(clg)"/>
+                            </md-select-header>
+                            <md-optgroup>  
+                                <md-option ng-value="college.Name" ng-repeat="college in colleges">{{college.Name}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                    <!--input type="text" name="college" ng-model="student.College_Name__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/-->
+                    <span ng-show="formInvalid && basicInfo.college.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.college.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" ng-if="student.College_Name__r.Name=='Other'">
+                    <h4 class="tagnames" >
+                        College Name(Other):<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="College_Other__c" ng-model="student.College_Other__c"  class="inputfileds" required='true' onpaste="return isChar(event)" onkeypress="return isChar(event)" ng-readonly="editFileds" style="min-height: 38px;" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.College_Other__c.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.College_Other__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Course:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <select ng-model="student.Course__c" class="inputfiledsSelect"  required='true' name="course" ng-disabled="editFileds" style="min-height: 38px;">
+                        <option ng-repeat="course in studentCourse" value="{{course}}">{{course}}</option>
+                    </select>
+                    <span ng-show="formInvalid && basicInfo.course.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.course.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" ng-if="student.Course__c !='MBBS' && student.Course__c !='BPharm' ">
+                    <h4 class="tagnames" >
+                        Branch:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <select ng-model="student.Branch_Stream__c" class="inputfiledsSelect" required="student.Course__c!='MBBS' || student.Course__c !='BPharm'" name="branch" ng-disabled="student.Course__c=='MBBS' || editFileds || student.Course__c =='BPharm' " style="min-height: 38px;">
+                        <option ng-repeat="studentBranch in StudentBranches" value="{{studentBranch}}" ng-if="student.Course__c=='BE/B.Tech' || student.Course__c=='Integrated MTech'">{{studentBranch}}</option>
+                        <option ng-repeat="studentBranch in StudentLawBranches" value="{{studentBranch}}" ng-if="student.Course__c=='Law'">{{studentBranch}}</option>
+          
+                    </select>
+                    <span ng-show="formInvalid && basicInfo.branch.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.branch.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" ng-if="student.Branch_Stream__c=='Other' && student.Course__c !='MBBS'">
+                    <h4 class="tagnames" >
+                        Branch (Other):<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="Branch_Other__c" ng-model="student.Branch_Other__c"  class="inputfileds" required='true' onpaste="return isChar(event)" onkeypress="return isChar(event)" ng-readonly="editFileds" style="min-height: 38px;" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.Branch_Other__c.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.Branch_Other__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+            </div>
+            <div class="formDiv" >
+                <h4 class="formheadings" align="center">
+                    Communication Information    
+                </h4>
+                <div class="row" style="width:91.5%">
+                    <h4 class="formTags" >
+                        Permanent Address:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <textarea  name="Permanent" class="inputfileds" required="true"  ng-model="student.MailingStreet" style="min-height:98px;width:100%" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                    <span ng-show="formInvalid && basicInfo.Permanent.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.Permanent.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="formTags">
+                        Permanent State:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <!--input type="text" name="State" onpaste="return isChar(event)" onkeypress="return isChar(event)" class="inputfileds" required="true"  ng-model="student.MailingState" ng-readonly="editFileds"/-->
+                    <select class="inputfiledsSelect" name="State" style="width:92%;color:black;" ng-model="student.MailingState" required='true' ng-disabled="editFileds" ng-change="getCities(student.MailingState)">
+                        <option ng-repeat="listOfState in listOfStates" value='{{listOfState.Label}}'>{{listOfState.Label}}</option>
+                    </select>
+                    <span ng-show="formInvalid && basicInfo.State.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.State.$invalid)&& showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="formTags" >
+                        Permanent City:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <select class="inputfiledsSelect" name="city" style="width:92%;color:black;" ng-model="student.MailingCity" required='true' ng-disabled="student.MailingState==undefined || student.MailingState=='' || editFileds">
+                        <option ng-repeat="listOfCitie in listOfCities" value='{{listOfCitie.City__c}}'>{{listOfCitie.City__c}}</option>
+                    </select>
+                    <!--input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="city" class="inputfileds" required="true"  ng-model="student.MailingCity" ng-readonly="editFileds"/-->
+                    <span ng-show="formInvalid && basicInfo.city.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.city.$invalid)&& showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="formTags" >
+                        Permanent Country:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="country"  onpaste="return isChar(event)" onkeypress="return isChar(event)" class="inputfileds" required="true"  ng-model="student.MailingCountry" ng-readonly="editFileds" ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.country.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.country.$invalid)&& showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="formTags" >
+                        Permanent Zip:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input style="text-align:left" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" type="text" name="zip" class="inputfileds" required="true"  ng-model="student.MailingPostalCode" maxlength='10' ng-readonly="editFileds" ng-class="{readInput: editFileds}"/ >
+                    <span ng-show="formInvalid && basicInfo.zip.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.zip.$invalid)&& showSpace" class="error">&nbsp;</span>
+                </div>
+            </div>
+            <div class="formDiv" ng-if="editFileds">
+                <h4 class="formheadings" align="center">
+                    Educational Information    
+                </h4>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        10th Passed Year:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X10th_Year_Passed__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        12th Passed Year:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th_Year_Passed__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        10th Board Type:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Xth_ExamBoard__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        12th Board Type:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th_ExamBoard__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        10th%:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X10th__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        12th%:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        10th Marks Obtained: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X10th_Marks_Obtained__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        12th Marks Obtained:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th_Marks_Obtained__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        10th Maximum Marks: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X10th_Maximum_Marks__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        12th Maximum Marks: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th_Maximum_Marks__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        10th Medium Of Instruction:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X10th_Medium_Of_Instruction__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        12th Medium Of Instruction:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th_Medium_Of_Instruction__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        10th Type:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X10th_Type__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        12th Type: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.X12th_Type__c" ng-readonly='true'/>
+                </div>
+            </div>
+            <div class="formDiv" ng-if="editFileds">
+                <h4 class="formheadings" align="center">
+                    Entrance Test information 
+                </h4>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Entrance Test Name:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Entrance_Test_Name__c" ng-readonly='true' ng-if="studentDetails.Entrance_Test_Name__c!='Other'"/>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Other_Entrance_Test__c" ng-readonly='true' ng-if="studentDetails.Entrance_Test_Name__c=='Other'"/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Entrance Exam Taken In Year:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Entrance_Exam_Taken_In_Year__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Entrance Exam Maximum Marks:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Entrance_Exam_Maximum_Marks__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Entrance Test Marks:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Entrance_Test_Marks__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Entrance Test Rank:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Entrance_Test_Rank__c" ng-readonly='true'/>
+                </div>
+            </div>
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    Family Information    
+                </h4>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Father's Name: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Father_Name__c" ng-readonly='true'/>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Mother's Name:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Mother_Name__c" ng-readonly='true'/>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Father's Age: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Father_Age__c" ng-readonly='true'/>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Mother's Age:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Mother_Age__c" ng-readonly='true'/>
+                </div>  
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Father's Education:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Father_Education__c" ng-readonly='true'/>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Mother's Education: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Mother_Education__c" ng-readonly='true'/>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Father's Occupation:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Father_Occupation__c" ng-readonly='true'/>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Mother's Occupation:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Mother_Occupation__c" ng-readonly='true'/>
+                </div>
+                
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Parent's Mobile No:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="Parent_Mobile__c" ng-model="student.Parent_Mobile__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="11" minlength="10" ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="formInvalid && basicInfo.Parent_Mobile__c.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalid && basicInfo.Parent_Mobile__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Parent's Phone No:<span></span>
+                    </h4>
+                    <input class="inputfileds" name="Parent_Phone__c" ng-model="student.Parent_Phone__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="11" ng-readonly='editFileds' ng-class="{readInput: editFileds}"/>
+                    <span ng-show="showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row" ng-if='editFileds'>
+                    <h4 class="tagnames" >
+                        Annual Family Income:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Annual_Family_Income__c" ng-readonly='true'/>
+                </div>
+            </div>
+            
+            
+            <div class="formDiv" ng-if="editFileds">
+                <h4 class="formheadings" align="center">
+                    AMCAT Score (Pre Assessment)
+                </h4>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Aptitude Analytical Score: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Aptitude_Analytical_Score__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Aptitude Logical Score:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Aptitude_Logical_Score__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        English Spoken Score:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.English_Spoken_Score__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        English Written Score:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.English_Written_Score__c" ng-readonly='true'/>
+                </div>
+            </div>
+            
+            <div class="formDiv" ng-if="editFileds">
+                <h4 class="formheadings" align="center">
+                    AMCAT Score (Post Assessment)
+                </h4>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Aptitude Analytical Score: 
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Aptitude_Analytical_Score_post__c" ng-readonly='true'/>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Aptitude Logical Score:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.Aptitude_Logical_Score_post__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        English Spoken Score:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.English_Spoken_Score_post__c" ng-readonly='true'/>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        English Written Score:
+                    </h4>
+                    <input style="text-align:left" class="inputfileds readInput" ng-model="student.English_Written_Score_post__c" ng-readonly='true'/>
+                </div>
+            </div>
+            
+            
+            
+            <div class="formDiv" >
+                <h4 class="formheadings" align="center">
+                    About Yourself  
+                </h4>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        What is your ambition in life?
+                    </h4>
+                    <textarea  name="What_is_your_ambition_in_life__c" class="inputfileds "  ng-model="student.What_is_your_ambition_in_life__c" style="min-height:98px;" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        Who has inspired you the most until now? Why did you select this person?
+                    </h4>
+                    <textarea  name="Who_has_inspired_you_the_most_until_now__c" class="inputfileds"  ng-model="student.Who_has_inspired_you_the_most_until_now__c" style="min-height:98px;" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        Tell us some things about yourself, your strengths/weaknesses, interests/hobbies:
+                    </h4>
+                    <textarea  name="Tell_us_some_things_about_yourself__c" class="inputfileds"  ng-model="student.Tell_us_some_things_about_yourself__c" style="min-height:98px;" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        How would you describe your family’s income/living conditions?
+                    </h4>
+                    <textarea  name="Describe_your_family_s_income__c" class="inputfileds"  ng-model="student.Describe_your_family_s_income__c" style="min-height:98px;" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        When you start earning, in what ways do you think you could help others?
+                    </h4>
+                    <textarea  name="When_you_start_earning_how_you_help__c" class="inputfileds"  ng-model="student.When_you_start_earning_how_you_help__c" style="min-height:98px;" ng-readonly="editFileds" ng-class="{readInput: editFileds}"></textarea>
+                </div>
+            </div>
+            <!--div class="formDiv">
+<h4 class="formheadings" align="center">
+Other Details
+</h4>
+<div class="row">
+<h4 class="tagnames" >
+Receiving Full AICTE/Fee Waiver from Gvt:
+</h4>
+<select class="inputfiledsSelect" name="Receiving_Full_AICTE_OtherTution_Fee_Wa__c" ng-model="student.Receiving_Full_AICTE_OtherTution_Fee_Wa__c" ng-disabled="editFileds">
+<option value='true'>Yes</option>
+<option value='false'>No</option>
+</select>
+</div>
+<div class="row">
+<h4 class="tagnames" >
+Scholarship/Financial Asst Other Than FFE?:
+</h4>
+<select class="inputfiledsSelect" name="SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-model="student.SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-disabled="editFileds">
+<option value='true'>Yes</option>
+<option value='false'>No</option>
+</select>
+</div>
+<div class="row" ng-if="student.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'">
+<h4 class="tagnames" >
+If Yes How much?(Other Source):<span style="color:#ff0000">*</span>
+</h4>
+<input type="text" name="If_Yes_How_much_Other_Source__c" ng-model="student.If_Yes_How_much_Other_Source__c"  class="inputfileds"  required="student.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6" ng-readonly="editFileds"/>
+<span ng-show="formInvalid && basicInfo.If_Yes_How_much_Other_Source__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalid && basicInfo.If_Yes_How_much_Other_Source__c.$invalid) && showSpace" class="error">&nbsp;</span>  
+</div>
+</div-->
+            <div class="buttonDiv" align="center" style="margin-bottom:40px;">
+                <input type="button" value="Edit" class="buttons"  ng-click="edit();" ng-if="editFileds"/>
+                <input type="button" value="Save" class="buttons"  ng-click="save();" ng-if="!editFileds"/>
+                <input type="button" value="Cancel" class="buttons"  ng-click="cancelChanges();" ng-if="!editFileds"/>
+            </div>
+        </div>
+        <div id="course" class="city switchPages" ng-init="tabs();">
+            <div class="headermenuSelection" ng-init="switch(2,2);switchInternal(0,0);" style="margin-top: 186px;">
+                <ul style="width:100%" class="appList">
+                    <li ng-click="switchInternal(0,0)" ng-class="{activetabs: 0 == selectedtabsInternal}" ng-if="activeAppli !=undefined"><a  ng-click="moveToTop();" style=" font-size: 14px;">Current Application</a></li>
+                    <li ng-click="switchInternal(1,1)" ng-class="{activetabs: 1 == selectedtabsInternal}" ng-if="closedAppli.length>0"><a  ng-click="moveToTop();" style=" font-size: 14px;">Past Applications</a></li>
+                </ul>
+            </div>
+            <div ng-switch='indexValueInternal' style="margin-top: 40px;">
+                <div ng-switch-when='0' ng-if="activeAppli !=undefined">
+                    <ng-form name="basicInfoRenew">
+                        <div class="formDiv">
+                            <h4 class="formheadings" align="center" style="font-size:15px;">
+                                Application Details     
+                            </h4>
+                            <div class="row">
+                                <h4 class="tagnames" >
+                                    College Name:
+                                </h4>
+                                <input type="text" name="tenPerc" ng-model="student.College_Name__r.Name"  class="inputfileds readInput"  readonly="true" />
+                            </div>
+                            <div class="row"> 
+                                <h4 class="tagnames" >
+                                    Course Name:
+                                </h4>
+                                <input type="text" name="tenPerc" ng-model="activeAppli.Course__c"  class="inputfileds readInput" readonly="true" />
+                            </div>
+                            
+                            <div class="row">
+                                <h4 class="tagnames" >
+                                    Appliation Status:
+                                </h4>
+                                <input type="text" name="tenPerc" ng-model="activeAppli.External_Status__c" class=" readInput" ng-class="{inputfileds: missingFilesUploaded.length == 0, missingDoc: missingFilesUploaded.length > 0}" readonly="true" />
+                            </div>
+                            <div class="row">
+                                <h4 class="tagnames" >
+                                    Approved Scholarship Amount:
+                                </h4>
+                                <input type="text" name="tenPerc" ng-model="student.ScholarshipAmount__c"  class="inputfileds readInput" readonly="true" />
+                            </div>
+                            
+                            <div class="row" ng-if="activeAppli.Application_Type__c=='New'">
+                                <h4 class="tagnames" >
+                                    Year in which studying:
+                                </h4>
+                                <input type="text" name="tenPerc" ng-model="activeAppli.Year__c"  class="inputfileds readInput" readonly="true" />
+                            </div>
+                            <div ng-if="activeAppli.Application_Type__c!='New'">
+                                
+                                <div class="row" >
+                                    <h4 class="tagnames" >
+                                        Year in which studying:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select ng-model="activeAppli.Year__c" style="width:92%;color:black;" class="inputfiledsSelect" name="tenPerc" disabled="true" >
+                                        <option ng-repeat="yr in btechYearList" value="{{yr}}" ng-if="student.Course__c=='BE/B.Tech'">{{yr}}</option>
+                                        <option ng-repeat="yr in MbbsYearList" value="{{yr}}" ng-if="student.Course__c=='MBBS'">{{yr}}</option>
+                                        <option ng-repeat="yr in MtechYearList" value="{{yr}}" ng-if="student.Course__c=='Integrated MTech'">{{yr}}</option>
+                                    </select>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.yearStud.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.yearStud.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                                </div>
+                                
+                                <!-- -->
+                                <div class="row">
+                                    <h4 class="tagnames" >
+                                        Grading System<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select class="inputfiledsSelect" style="width:92%;color:black;" ng-disabled="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" name="Grading_System__c" ng-model="activeAppli.Grading_System__c" required='true'>
+                                        <option  value='{{grad}}' ng-repeat="grad in gradSystemList">{{grad}}</option>
+                                    </select>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Grading_System__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Grading_System__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                                </div>
+                                <div class="row">
+                                    <h4 class="tagnames" >
+                                        Accomodation Type:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select class="inputfiledsSelect" name="accomoType" ng-model="activeAppli.FFE_Accommodation_Type__c" required='true' ng-disabled="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" >
+                                        <option ng-repeat="accomType in accomTypes" value='{{accomType}}'>{{accomType}}</option>
+                                    </select>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.accomoType.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.accomoType.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                                </div>
+                                <div style="width:100%;float:left">
+                                    <div class="row">
+                                        <h4 class="formTags" >
+                                            Are you a member of LinkedIn group "FFEConnect":
+                                        </h4>
+                                        <div class="radioInputs">
+                                            <input type="radio" name="Llogin" ng-model="student.Do_you_have_Linkedin_Profile__c" ng-value="true" class="" ng-change='lValue(donor.Do_you_have_Linkedin_Profile__c)'/>Yes
+                                            <input type="radio" name="Llogin" ng-model="student.Do_you_have_Linkedin_Profile__c" ng-value="false" class="" ng-change='lValue(donor.Do_you_have_Linkedin_Profile__c)'/>No
+                                        </div>
+                                    </div> 
+                                    <!--  <div class="row" ng-if="student.Do_you_have_Linkedin_Profile__c">
+<h4 class="formTags" >
+LinkedIn ID:<span style="color:#ff0000">*</span>
+</h4>
+<input type="text" name="lmail" class="inputfileds" ng-model="student.Linkedin_Profile_Link__c " ng-change="valid(student.Linkedin_Profile_Link__c)" required="true"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.lmail.$invalid" class="error">This is required.</span>
+</div> -->
+                                    <div class="row">
+                                        <h4 class="formTags" >
+                                            LinkedIn ID:<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <input type="text" name="lmail" class="inputfileds" ng-model="student.Linkedin_Profile_Link__c " ng-change="valid(student.Linkedin_Profile_Link__c)" required="true"/>
+                                        <span ng-show="formInvalidRenew && basicInfoRenew.lmail.$invalid" class="error">This is required.</span>
+                                    </div>
+                                    <div class="row" ng-if="student.Do_you_have_Linkedin_Profile__c == false">
+                                        <p>
+                                            Please join this LinkedIn group - <a href="https://www.linkedin.com/in/ffe-connect-686252ab" target="_blank">FFE Connect</a>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Gourab -->
+                                <div class="row">
+                                    <h4 class="tagnames">
+                                        Have you met/called your facilitator?: <span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select class="inputfiledsSelect" style="width:92%;" name="Have_you_called_met_your_facilitator__c" ng-model="activeAppli.Have_you_called_met_your_facilitator__c" required='true'>
+                                        <option value='Called'>Called</option>
+                                        <option value='Visited'>Visited</option>
+                                        <option value='Called and Visited'>Called and Visited</option>
+                                    </select>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Have_you_called_met_your_facilitator__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Have_you_called_met_your_facilitator__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                
+                                <div class="row" >
+                                    <h4 class="tagnames" >
+                                        Date you met/called<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <!--  <md-datepicker style="min-height: 30px;" class="inputfiledsSelect" type="date" ng-model="activeAppli.Facilitator_meet_date__c" required="true" name="Facilitator_meet_date__c" id="mydate" md-min-date='fromdate'  md-max-date='todate'></md-datepicker> -->
+                                    <md-datepicker style="min-height: 30px;" class="inputfiledsSelect" type="date" ng-model="activeAppli.Facilitator_meet_date__c" required="true" name="Facilitator_meet_date__c" id="mydate"></md-datepicker>
+                                    
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Facilitator_meet_date__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Facilitator_meet_date__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span> 
+                                </div> 
+                                <!--End Gourab -->
+                                
+                                <div class="" ng-if="AcademicScores.length>0">
+                                    <table class="historyTable" style="margin-top: 20px;margin-bottom:20px;" ng-if="student.Course__c !='MBBS'">             
+                                        <caption style="color: #032559;font-size: 12pt;"><b>Academic Marks<br/></b></caption>
+                                        <thead>
+                                            <tr class="rowsHistory">
+                                                <th style="color: #032559;width:10%;"></th>
+                                                <th ng-repeat="acaYear in AcademicScores">
+                                                    <span ng-if="acaYear == 'Semester1__c'" style="color:white;color: #032559;">Semester I</span>
+                                                    <span ng-if="acaYear == 'Semester2__c'" style="color:white;color: #032559;">Semester II</span>
+                                                    <span ng-if="acaYear == 'Semester3__c'" style="color:white;color: #032559;">Semester III</span>
+                                                    <span ng-if="acaYear == 'Semester4__c'" style="color:white;color: #032559;">Semester IV</span>
+                                                    <span ng-if="acaYear == 'Semester5__c'"  style="color:white;color: #032559;">Semester V</span>
+                                                    <span ng-if="acaYear == 'Semester6__c'" style="color:white;color: #032559;">Semester VI</span>
+                                                    <span ng-if="acaYear == 'Semester7__c'"  style="color:white;color: #032559;">Semester VII</span>
+                                                    <span ng-if="acaYear == 'Semester8__c'" style="color:white;color: #032559;">Semester VIII</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr align="center" class="rowsHistory">
+                                                
+                                                <td style="color: #032559;font-size: 10pt;width:10%;"><b>SGPA or % age</b></td>
+                                                
+                                                <td ng-repeat="acaYear in AcademicScores">
+                                                    
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester1__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester2__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester3__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester3__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester4__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester4__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester5__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester5__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester6__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester6__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester7__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester7__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input class="tdInput" ng-if="acaYear == 'Semester8__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester8__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>  
+                                    
+                                    
+                                    
+                                    <table class="historyTable" style="margin-top: 20px;margin-bottom:20px;" ng-if="student.Course__c =='MBBS'">             
+                                        <caption style="color: #032559;font-size: 12pt;"><b>Academic Marks<br/><b style="color:grey;">Provide applicable marks</b></b></caption>
+                                        <thead>
+                                            <tr class="rowsHistory">
+                                                <th style="color:white;width:10%;"></th>
+                                                <th ng-repeat="acaYear in AcademicScores">
+                                                    <span ng-if="acaYear == 'MBBS_Year_1__c'" style="color:white;color: #032559;" >MBBS Year I</span>
+                                                    <span ng-if="acaYear == 'MBBS_Year_2__c'" style="color:white;color: #032559;" >MBBS Year II</span>
+                                                    <span ng-if="acaYear == 'MBBS_Year_3_Part_1__c'" style="color:white;color: #032559;">MBBS Year III Part 1</span>
+                                                    <span ng-if="acaYear == 'MBBS_Year_3_Part_2__c'" style="color:white;color: #032559;">MBBS Year III Part 2</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr align="center" class="rowsHistory">
+                                                <td style="color: #032559;font-size: 10pt;"><b>% age</b></td>
+                                                <td ng-repeat="acaYear in AcademicScores">
+                                                    <input ng-if="acaYear == 'MBBS_Year_1__c'" class="tdInput" type="number" style="text-align:right;width: 93%;"  ng-model="student.MBBS_Year_1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input ng-if="acaYear == 'MBBS_Year_2__c'" class="tdInput" type="number" style="text-align:right;width: 93%;"  ng-model="student.MBBS_Year_2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input ng-if="acaYear == 'MBBS_Year_3_Part_1__c'" class="tdInput" type="number" style="text-align:right;width: 93%;" ng-model="student.MBBS_Year_3_Part_1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                    <input ng-if="acaYear == 'MBBS_Year_3_Part_2__c'" class="tdInput" type="number" style="text-align:right;width: 93%;" ng-model="student.MBBS_Year_3_Part_2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>          
+                                
+                                <!--div class="row">
+<h4 class="tagnames" >
+Odd Semester % Marks Scored SGPA:<span style="color:#ff0000"></span>
+</h4>
+<input type="text" name="Odd_Semester_Marks_Scored_SGPA__c" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" ng-model="activeAppli.Odd_Semester_Marks_Scored_SGPA__c"  class="inputfileds"  min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.Odd_Semester_Marks_Scored_SGPA__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalidRenew && basicInfoRenew.Odd_Semester_Marks_Scored_SGPA__c   .$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+</div>
+<div class="row">
+<h4 class="tagnames" >
+Even Semester % Marks Scored SGPA:<span style="color:#ff0000"></span>
+</h4>
+<input type="text" name="Even_Semester_Marks_Scored_SGPA__c" ng-model="activeAppli.Even_Semester_Marks_Scored_SGPA__c"   ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" class="inputfileds"  min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.Even_Semester_Marks_Scored_SGPA__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalidRenew && basicInfoRenew.Even_Semester_Marks_Scored_SGPA__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>       
+</div>
+<div class="row">
+<h4 class="tagnames" >
+Annual % Marks Scored CGPA:<span style="color:#ff0000"></span>
+</h4>
+<input type="text" name="Annual_Marks_Scored_CGPA__c" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" ng-model="activeAppli.Annual_Marks_Scored_CGPA__c"  class="inputfileds"  min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.Annual_Marks_Scored_CGPA__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalidRenew && basicInfoRenew.Annual_Marks_Scored_CGPA__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+</div-->
+                                
+                                <div class="row">
+                                    <h4 class="tagnames" >
+                                        Failure/ATKT?:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    
+                                    <select class="inputfiledsSelect" style="width:92%;color:black;" ng-disabled="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" name="Failure_ATKT__c" ng-model="activeAppli.Failure_ATKT__c" required='true' ng-options="boolToStr(item) for item in [true, false]"></select>
+                                    <!--select class="inputfiledsSelect" name="Failure_ATKT__c" ng-model="activeAppli.Failure_ATKT__c" required='true'>
+<option value='true'>Yes</option>
+<option value='false'>No</option>
+</select-->
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Failure_ATKT__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Failure_ATKT__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                <div class="row" ng-if="activeAppli.Failure_ATKT__c==true">
+                                    <h4 class="tagnames" >
+                                        Failure Semester:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <input type="text" name="Failure_ATKT_Yes_If_Yes_Semester__c" ng-model="activeAppli.Failure_ATKT_Yes_If_Yes_Semester__c"  class="inputfileds"  required='true' ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))"/>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Failure_ATKT_Yes_If_Yes_Semester__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Failure_ATKT_Yes_If_Yes_Semester__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                                </div>
+                                <div class="row" ng-if="activeAppli.Failure_ATKT__c==true">
+                                    <h4 class="tagnames" >
+                                        Failure Subject(s):<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <input type="text" name="Failure_Subject_s__c" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" ng-model="activeAppli.Failure_Subject_s__c"  class="inputfileds"  required='true'/>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Failure_Subject_s__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Failure_Subject_s__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div> 
+                                <div class="row">
+                                    <h4 class="tagnames" >
+                                        Receiving Full AICTE/Fee Waiver from Gvt:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select class="inputfiledsSelect" style="width:92%;color:black;" ng-disabled="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" name="Receiving_Full_AICTE_OtherTution_Fee_Wa__c" ng-model="activeAppli.Receiving_Full_AICTE_OtherTution_Fee_Wa__c" required='true' ng-options="boolToStr(item) for item in [true, false]"></select>
+                                    
+                                    <!--select class="inputfiledsSelect" name="Receiving_Full_AICTE_OtherTution_Fee_Wa__c" ng-model="activeAppli.Receiving_Full_AICTE_OtherTution_Fee_Wa__c" required='true'>
+<option value='true'>Yes</option>
+<option value='false'>No</option>
+</select-->
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                
+                                <div class="row" ng-if="activeAppli.Receiving_Full_AICTE_OtherTution_Fee_Wa__c==true">
+                                    <h4 class="tagnames" >
+                                        If Yes How much?(AICTE/Fee Waiver from Govt):<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <input type="text" name="If_Yes_How_much_AICTE_Fee_from_Govt__c" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" ng-model="activeAppli.If_Yes_How_much_AICTE_Fee_from_Govt__c"  class="inputfileds"  required="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="10"/>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.If_Yes_How_much_AICTE_Fee_from_Govt__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.If_Yes_How_much_AICTE_Fee_from_Govt__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                <div class="row">
+                                    <h4 class="tagnames" >
+                                        Change in Annual Income of Parents?:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select class="inputfiledsSelect"  style="width:92%;color:black;" ng-disabled="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" name="Change_in_AnnualIncome_of_Parents__c" ng-model="activeAppli.Change_in_AnnualIncome_of_Parents__c" required='true' ng-options="boolToStr(item) for item in [true, false]"></select>
+                                    
+                                    <!--select class="inputfiledsSelect" name="Change_in_AnnualIncome_of_Parents__c" ng-model="activeAppli.Change_in_AnnualIncome_of_Parents__c" required='true'>
+<option value='true'>Yes</option>
+<option value='false'>No</option>
+</select-->
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Change_in_AnnualIncome_of_Parents__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Change_in_AnnualIncome_of_Parents__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                
+                                <!-- New Change -->
+                                <div class="row" ng-if="activeAppli.Change_in_AnnualIncome_of_Parents__c==true">
+                                    <h4 class="tagnames" >
+                                        Current Annual Family Income:<span style="color:#ff0000">*</span> 
+                                    </h4>
+                                    <input type="text" name="currentIncome" ng-model="student.Current_Annual_Family_Income__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="8"/>
+                                    <span ng-show="formInvalid && basicInfoRenew.currentIncome.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalid && basicInfoRenew.currentIncome.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                                </div>
+                                <!-- New Change Ends-->
+                                
+                                <div class="row">
+                                    <h4 class="tagnames" >
+                                        Scholarship/Financial Asst Other Than FFE?:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <select class="inputfiledsSelect" style="width:92%;color:black;" name="SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-model="activeAppli.SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-disabled="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" required='true' ng-options="boolToStr(item) for item in [true, false]"></select>
+                                    
+                                    
+                                    <!--select class="inputfiledsSelect" name="SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-model="activeAppli.SchlrShp_FinancialAsst_Other_Than_FFE__c" required='true'>
+<option value='true'>Yes</option>
+<option value='false'>No</option>
+</select-->
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                <div class="row" ng-if="activeAppli.SchlrShp_FinancialAsst_Other_Than_FFE__c==true">
+                                    <h4 class="tagnames" >
+                                        If Yes How much?(Other Source):<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <input type="text" name="If_Yes_How_much_Other_Source__c" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" ng-model="activeAppli.If_Yes_How_much_Other_Source__c"  class="inputfileds"  required='true' onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="10"/>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.If_Yes_How_much_Other_Source__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.If_Yes_How_much_Other_Source__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                
+                                <div class="row" ng-if="activeAppli.SchlrShp_FinancialAsst_Other_Than_FFE__c==true">
+                                    <h4 class="tagnames" >
+                                        Assistance Source?:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <input type="text" name="Assistance_Source__c" ng-model="activeAppli.Assistance_Source__c" ng-readonly="!((activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}'))" class="inputfileds"  required='true'/>
+                                    <span ng-show="formInvalidRenew && basicInfoRenew.Assistance_Source__c.$invalid" class="error">This is required.</span>
+                                    <span ng-show="!(formInvalidRenew && basicInfoRenew.Assistance_Source__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                                </div>
+                                
+                                <div ng-if="activeAppli.Receiving_Full_AICTE_OtherTution_Fee_Wa__c==false || activeAppli.Failure_ATKT__c==false || activeAppli.SchlrShp_FinancialAsst_Other_Than_FFE__c==false" >{{clearFieldValues()}}</div>        
+                                <!--div ng-if="activeAppli.Failure_ATKT__c==false">{{clearFieldValues()}}</div> 
+<div ng-if="activeAppli.SchlrShp_FinancialAsst_Other_Than_FFE__c==false">{{clearFieldValues()}}</div-->
+                                
+                            </div>
+                            
+                            
+                        </div>
+                       
+                        <div class="searchRow" align="center"  style="margin-bottom: 20px;margin-top: -5px;">
+                            <!--  <input type="button" value="Submit Application Details" class="buttons"  ng-click="expenseUpload();" ng-if="(activeAppli.Internal_Status__c!='{!$Label.Pending_Approval}') && (activeAppli.External_Status__c!='{!$Label.Approved_Status}')"/> -->
+                            <input type="button" value="Submit Application Details" class="buttons"  ng-click="expenseUpload();" ng-disabled="disableSubmitAndReplaceButtons"/>
+                            <!--a href="#/profile" ng-click="moveToTop();">ss</a-->    
+                        </div>
+                        <!--div align="center" style="    margin-top: -1%;     margin-bottom: 2%;   font-size: 16px;    color: #ff793c;">
+<b> * Meeting the facilitator once in a year is mandatory. Else your scholarship will be withheld.
+</b>    </div-->
+                        <a id="UploadedDocuments"></a>
+                        <div class="formDiv " ng-if='attachemts.length>0'>
+                            
+                            <h4 class="formheadings" align="center">
+                                Uploaded Documents
+                            </h4>
+                            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;">
+                                <thead>
+                                    <tr class="rowsHistory">
+                                        <th>S.No.</th>
+                                        <th>Uploaded Date</th>
+                                        <th>Document Name</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr align="center" class="rowsHistory" ng-repeat="attachemt in attachemts">
+                                    <td>{{attachemts.indexOf(attachemt) + 1}}</td>
+                                    <td>{{attachemt.CreatedDate | date:"dd/MM/yyyy"}}</td>
+                                    <td><span ng-show="!missingFilesUploaded.includes(attachemt.Name);">{{attachemt.Name}}</span>
+                                    <span style="color:red;" ng-hide="!missingFilesUploaded.includes(attachemt.Name);">{{attachemt.Name}}</span></td>
+                                    <td>
+                                        <a href="/application/servlet/servlet.FileDownload?file={{attachemt.Id}}" class="material-icons"  style="text-decoration:none;font-size:19px" target="_blank">
+                                            <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                                        </a> 
+                                        <span style=" position: relative;
+                                                     top: -2px;
+                                                     font-size: 23pt;
+                                                     ">|</span>
+                                        <input type="button" value="Replace" class="buttons"  ng-click="replace(attachemt,uploadForScholar)"  ng-disabled="disableSubmitAndReplaceButtons" style="position: relative;top: -5px;"/>
+                                    </td>
+                                </tr> 
+                            </table>
+                            <div class="searchRow" align="center"  ng-if="activeAppli.External_Status__c=='{!$Label.DocumentMissing}'" style="margin-bottom:5px;margin-top:10px;">
+                                <input type="button" value="Submit" class="buttons"  ng-click="docuUpload();"/>
+                                <span  title="Upload all mandatory(* marked) documents before submit." style="color: #ff793c;
+                                                                                                              font-weight: bold;
+                                                                                                              font-size: 14pt;
+                                                                                                              background: #032559;
+                                                                                                              border-radius: 100%;
+                                                                                                              width: 2%;
+                                                                                                              position: absolute;
+                                                                                                              margin-top: -12px;
+                                                                                                              cursor: help;">?</span>
+                                
+                            </div>
+                        </div>
+                        <a name="bottom"></a>
+                        <div class="formDiv" ng-if="student.Internal_Status__c != eligibleStage && remainingFilesList.length>0">
+                            <h4 class="formheadings" align="center">
+                                Upload document     
+                            </h4>
+                            <h4 align='center' style="font-weight: bold;color:#ff0000;POSITION: RELATIVE;
+                                                      TOP: 7px;
+                                                      FONT-SIZE: 11pT;
+                                                      ">
+                                (* marked documents are mandatory)
+                            </h4>
+                            <h4 style="FONT-SIZE: 11pT;font-weight: bold;float: left;margin: 9px 14px;color: #032559;">
+                                Document Name
+                            </h4>
+                            <div class="uploadDocsDiv" ng-repeat="attch in remainingFilesList">
+                                <div >
+                                    
+                                    <!-- EXPENSE DETAILS -->
+                                    <!-- <div class="row11 formDiv" ng-if="attch.Attachment_Name__c=='Receipts for Actual Expenses incurred for current year(College Fee/Hostel & Mess/Transport/Books/Uniform)'"> -->
+                                    <div class="row11 formDiv" ng-if="attch.Attachment_Name__c=='Receipts for Actual Expenses incurred for current year(College Fee/Hostel & Mess/Transport/Books/Uniform)' || attch.Attachment_Name__c=='Expense Receipts for Actual Expenses incurred for current academic year(College Fee/Hostel & Mess/Transport/Books/Uniform)'"> 
+                                        <h4 class="formheadings" align="center">
+                                            Actual Expense/Fee Details     
+                                        </h4>
+                                        <div class="row">
+                                            <h4 class="tagnames">
+                                                Actual College Fees:<span style="color:#ff0000">*</span>
+                                            </h4>
+                                            <input type="text" value="0" name="Student_College_Fees__c" ng-model="activeAppli.Student_College_Fees__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                                        </div>
+                                        <div class="row">
+                                            <h4 class="tagnames" >
+                                                Actual Hostel/Mess Expenses:<span style="color:#ff0000">*</span>
+                                            </h4>
+                                            <input type="text" name="Student_Hostel_Mess_Expenses__c" ng-model="activeAppli.Student_Hostel_Mess_Expenses__c"  class="inputfileds " onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                                        </div>
+                                        <div class="row">
+                                            <h4 class="tagnames" >
+                                                Actual Books Expenses:<span style="color:#ff0000">*</span>
+                                            </h4>
+                                            <input type="text" name="Student_Books_Expenses__c" ng-model="activeAppli.Student_Books_Expenses__c"  class="inputfileds " onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                                        </div>
+                                        <div class="row">
+                                            <h4 class="tagnames" >
+                                                Actual Transportation Expenses:<span style="color:#ff0000">*</span>
+                                            </h4>
+                                            <input type="text" name="Student_Transportation_Expenses__c" ng-model="activeAppli.Student_Transportation_Expenses__c"  class="inputfileds "  onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                                        </div>
+                                        <div class="row">
+                                            <h4 class="tagnames" >
+                                                Actual Uniform Expenses:<span style="color:#ff0000">*</span>
+                                            </h4>
+                                            <input type="text" name="Student_Uniform_Expenses__c" ng-model="activeAppli.Student_Uniform_Expenses__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                                        </div>
+                                    </div>
+                                    <!-- EXPENSE DETAILS ENDS -->
+                                    <div class="row" style="font-weight: bold;">  
+                                        <div class="tooltip" ng-if="attch.Attachment_Name__c=='Bonafide Student Certificate showing status of enrolment in college, course/branch, year of study'"> <label >{{attch.Attachment_Name__c}}</label>
+                                            <span style="color:#ff0000;font-size:18px;">*</span>
+                                            <span style="color:#ff0000;font-size:12px;" class="tooltiptext">{!$Label.FFE_BonafideHelpText}</span>
+                                        </div> 
+                                        <div class="tooltip" ng-if="attch.Attachment_Name__c=='Receipts for Actual Expenses incurred for current year(College Fee/Hostel & Mess/Transport/Books/Uniform)' || attch.Attachment_Name__c=='Expense Receipts for Actual Expenses incurred for current academic year(College Fee/Hostel & Mess/Transport/Books/Uniform)'"> <label >{{attch.Attachment_Name__c}}</label>
+                                            <span style="color:#ff0000;font-size:18px;">*</span>
+                                            <span style="color:#ff0000;font-size:12px;" class="tooltiptext">{!$Label.FFE_ReceiptsHelpText}</span>
+                                        </div> 
+                                        <!-- Code Starts -->
+                                        <div class="tooltip" ng-if="attch.Attachment_Name__c=='Copy of First Sheet of Bank Pass Book or Cancelled Cheque'"> <label >{{attch.Attachment_Name__c}}</label>
+                                            <span style="color:#ff0000;font-size:18px;">*</span>
+                                            <span style="color:#ff0000;font-size:12px;" class="tooltiptext">{!$Label.FFE_BankAccountHelpText}</span>
+                                        </div> 
+                                        
+                                        <div ng-if="attch.Attachment_Name__c!='Receipts for Actual Expenses incurred for current year(College Fee/Hostel & Mess/Transport/Books/Uniform)' && attch.Attachment_Name__c!='Expense Receipts for Actual Expenses incurred for current academic year(College Fee/Hostel & Mess/Transport/Books/Uniform)' && attch.Attachment_Name__c!='Bonafide Student Certificate showing status of enrolment in college, course/branch, year of study' && attch.Attachment_Name__c!='Copy of First Sheet of Bank Pass Book or Cancelled Cheque'"> <label>{{attch.Attachment_Name__c}}</label>
+                                            <span style="color:#ff0000;font-size:18px;">*</span>
+                                        </div>
+                                        <p style="margin: 0;">                                    
+                                            <a ng-if="IsRenewalApplication && attch.Attachment_Name__c=='Oath, Pledge and Declaration Form signed by you and your parent/guardian'" href="{!$Setup.System_Details__c.Generate_Pledge_Parent_Declaration__c}" target="_blank" style="float: right;text-decoration: underline;cursor: pointer;float:left">Click here</a>
+                                            <span style="float: left;" ng-if="IsRenewalApplication && attch.Attachment_Name__c=='Oath, Pledge and Declaration Form signed by you and your parent/guardian'"> &nbsp;to download the Oath &amp; Pledge form. Upload this duly filled form here.</span>
+                                        </p>
+                                        <p style="margin: 0;">                                    
+                                            <a ng-if="IsRenewalApplication && attch.Attachment_Name__c=='Applicant\'s Pledge of Future Support to FFE'" href="{!$Setup.System_Details__c.Generate_Applicant_s_Pledge_for_Future_S__c}" target="_blank" style="float: right;text-decoration: underline;cursor: pointer;float:left">Click here</a>
+                                            <span style="float: left;" ng-if="IsRenewalApplication && attch.Attachment_Name__c=='Applicant\'s Pledge of Future Support to FFE'"> &nbsp;to download the pledge form.</span>
+                                        </p>
+                                        <p style="margin: 0;">                                    
+                                            <a ng-if="IsRenewalApplication && attch.Attachment_Name__c=='Letter of Thanks to Donors'" href="{!$Setup.System_Details__c.Letter_of_Thanks_to_Donors__c}" target="_blank" style="float: right;text-decoration: underline;cursor: pointer;float:left">Click here</a>
+                                            <span style="float: left;" ng-if="IsRenewalApplication && attch.Attachment_Name__c=='Letter of Thanks to Donors'"> &nbsp;to download instruction for writting Letter of Thanks to Donors.</span>
+                                        </p>
+                                        <p style="margin: 0;">
+                                            <a ng-show="IsPrelimApplication" ng-if="attch.Attachment_Name__c=='Applicant\'s Pledge of Future Support to FFE'" href="{!$Setup.System_Details__c.Generate_Applicant_s_Pledge_for_Future_S__c }" target="_blank" style="float: left;position: relative;/* top:7px; *//* font-size: 11pt; *//* margin-left: 10px; */text-align: left;color: #425caa;/* text-decoration: underline; */cursor: pointer;width: 61%;text-indent: 1em;">Generate Applicant’s Pledge for Future Support to FFE</a>
+                                        </p>
+                                        <p style="margin: 0;">
+                                            <a ng-show="IsPrelimApplication" ng-if="attch.Attachment_Name__c=='Parent\'s or Guardian\'s Declaration'" href="{!$Setup.System_Details__c.Generate_Pledge_Parent_Declaration__c}" target="_blank" style="float: left;position: relative;/* top:7px; *//* font-size: 11pt; *//* margin-left: 10px; */text-align: left;color: #425caa;/* text-decoration: underline; */cursor: pointer;width: 61%;text-indent: 1em;">Generate Parent Declaration</a>
+                                        </p>
+                                    </div>
+                                    <div class="row">
+                                        <div  style="font-weight: bold;width: 83%;" ng-if="attch.Attachment_Name__c=='Income Certificate, Salary Certificate, Pension Certificate or Income Tax Return or Other document, as applicable' && student.Father_Occupation__c != 'Service'">  
+                                            <h4 class="tagnames" >
+                                                Certificate Expiry Date:<span style="color:#ff0000">*</span>
+                                            </h4>
+                                            <md-datepicker class="inputfiledsSelect" style="margin-bottom:4px;" type="date" ng-model="student.Certificate_Expiry_Date__c" name="certificateExpiryDate" id="certificateExpiryDate"  md-min-date='minDate' onkeydown="return false" ng-change="checkCertificateDate(student.Certificate_Expiry_Date__c)"></md-datepicker>                                       
+                                        </div>
+                                        <input type="file" name="{{attch.Attachment_Name__c}}" class="inputfileds" id="{{attch.Id}}" style="width:75%" />
+                                        <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(activeAppli.Id,attch.Id,uploadForScholar,attch.Attachment_Name__c,'');" style="float: left;margin-left: 5%;"/>
+                                    </div> 
+                                </div>                                
+                            </div>                           
+                        </div>
+                        
+                    </ng-form>
+                </div>
+                <div ng-switch-when='1' ng-if="closedAppli.length>0">
+                    <table class="historyTable" style="margin-top: 0;margin-bottom:25px;" ng-if="closedAppli.length>0">
+                        <thead>
+                            <tr class="rowsHistory thRow">
+                                <th style="color:#fff">Application Name</th>
+                                <th style="color:#fff">Application Stage</th>
+                                <th style="color:#fff">Application Type</th>
+                                <th style="color:#fff">Approved Scholarship Amount</th>
+                                <th style="color:#fff">Year</th>
+                            </tr>
+                        </thead>
+                        <tr align="center" class="rowsHistory" ng-repeat="closed in closedAppli">
+                            <td>{{closed.Name}}</td>
+                            <td>{{closed.Application_Stage__c}}</td>
+                            <td>{{closed.Application_Type__c}}</td>
+                            <!-- <td>{{closed.Amount_Requested__c}}</td> -->
+                            <td>{{closed.Amount_Funded__c}}</td>
+                            <td>{{closed.Year__c}}</td>
+                        </tr> 
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="tellYourStory" class="city switchPages" ng-if="!IsPrelimApplication"  ng-init="tabs();">
+            <div class="buttonDiv" align="center" style="margin-bottom:0px;">
+                <input type="button" value="Edit" class="buttons"  ng-click="editTYS();" ng-if="editTYSFileds"/>
+                <input type="button" value="Save" class="buttons"  ng-click="saveTYS();" ng-if="!editTYSFileds"/>
+                <input type="button" value="Cancel" class="buttons"  ng-click="cancelTYSChanges();" ng-if="!editTYSFileds"/>
+            </div>
+            <div class="formDiv" >
+                <h4 class="formheadings" align="center">
+                    Tell Your Story  
+                </h4>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        Mention the link of your Video Testimony: <a href="{!$Setup.System_Details__c.Video_Testimony_Guidelines__c}" target="_blank">Refer to Guidelines for Video Testimony</a>
+                    </h4>
+                    <textarea  name="TYS_Video_Link__c" class="inputfileds "  ng-model="student.TYS_Video_Link__c" style="min-height:10px;"  ng-readonly="editTYSFileds"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        1. Tell us about your school life (max 150 words)
+                        <ul> 
+                            <li type="a"> Tell us about your school/s, your academic performance and any prizes you won, any activities that you enjoyed.</li>
+                            <li type="a"> Any particular teacher who motivated and mentored you? </li>
+                            <li type="a"> How have your parents/others helped you?</li>
+                        </ul>
+                    </h4>
+                    <textarea  name="TYS_SchoolLife__c" class="inputfileds "  ng-model="student.TYS_SchoolLife__c" style="min-height:98px;"  ng-readonly="editTYSFileds" maxlength="1000"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        2. Mentor and Guide  (max 50 words)
+                        <ul> 
+                            <li type="a">Who is the person who has helped/guided you?  What is their role in your life today?</li>
+                        </ul>
+                    </h4>
+                    
+                    <textarea  name="TYS_GuidanceProvider__c" class="inputfileds"  ng-model="student.TYS_GuidanceProvider__c" style="min-height:98px;" ng-readonly="editTYSFileds" ng-class="{readInput: editTYSFileds}" maxlength="500"></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        3. College, adjustment and your academic performance (max 150 words)
+                        <ul> 
+                            <li type="a">How did you adjust to college environment after coming from your home town?</li>
+                            <li type="a">How did you do academically? Tell us about your interests and hobbies being pursued.</li>
+                            <li type="a">Mention all the prizes/awards won- for academic and extracurricular activities.</li>
+                        </ul>
+                    </h4>
+                    <textarea  name="TYS_CollegeAssessment__c" class="inputfileds"  ng-model="student.TYS_CollegeAssessment__c" style="min-height:98px;" ng-readonly="editTYSFileds" ng-class="{readInput: editTYSFileds}" maxlength="1000" ></textarea>
+                </div>
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        4. FFE Scholarship and impact (max 150 words) 
+                        <ul> 
+                            <li type="a">Tell us the difference that FFE’s scholarship made to you, your family.</li>
+                            <li type="a">If this scholarship was not awarded, what would be the options you had to continue your studies.</li>
+                        </ul>
+                    </h4>
+                    <textarea  name="TYS_FFE_Scholarship_and_Impact__c" class="inputfileds"  ng-model="student.TYS_FFE_Scholarship_and_Impact__c" style="min-height:98px;" ng-readonly="editTYSFileds" ng-class="{readInput: editTYSFileds}" maxlength="1000" ></textarea>
+                </div>
+                
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        5. Your Future Plans (max 100 words) 
+                        <ul> 
+                            <li type="a">Once you complete your degree, what are your future plans? Do you wish to study further or work?</li>
+                        </ul>
+                    </h4>
+                    <textarea  name="TYS_Future_Plans__c" class="inputfileds"  ng-model="student.TYS_Future_Plans__c" style="min-height:98px;" ng-readonly="editTYSFileds" ng-class="{readInput: editTYSFileds}" maxlength="750"></textarea>
+                </div>
+                
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        6. Being a scholarship awardee with a bright future, how will you help your family when you can (max 50 words) 
+                        
+                    </h4>
+                    <textarea  name="TYS_Dreams_and_Responsibilities__c" class="inputfileds"  ng-model="student.TYS_Dreams_and_Responsibilities__c" style="min-height:98px;" ng-readonly="editTYSFileds" ng-class="{readInput: editTYSFileds}" maxlength="500"></textarea>
+                </div> 
+                
+                <div class="row rowabout">
+                    <h4 class="formTags" >
+                        7. What do you understand about the FFE pledge of support and how do you think you can impact/help needy students (50 words)
+                    </h4>
+                    <textarea  name="TYS_How_would_you_help_other_Students__c" class="inputfileds"  ng-model="student.TYS_How_would_you_help_other_Students__c" style="min-height:98px;" ng-readonly="editTYSFileds" ng-class="{readInput: editTYSFileds}" maxlength="500"></textarea>
+                </div>
+            </div>
+            <div class="buttonDiv" align="center" style="margin-bottom:0px;">
+                <input type="button" value="Edit" class="buttons"  ng-click="editTYS();" ng-if="editTYSFileds"/>
+                <input type="button" value="Save" class="buttons"  ng-click="saveTYS();" ng-if="!editTYSFileds"/>
+                <input type="button" value="Cancel" class="buttons"  ng-click="cancelTYSChanges();" ng-if="!editTYSFileds"/>
+            </div>
+        </div>
+    </ng-form>
+        </body>
+</apex:page>

@@ -1,0 +1,351 @@
+<apex:page controller="Alumni_To_Donor_Ctrl" doctype="html-5.0" showheader="false"
+           sidebar="false"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false">
+    <html ng-app="ffe">
+        <title>Alumni as Donor Registration Form</title>
+        <head>
+            <c:pageResource ></c:pageResource>
+            <script src="{!$Resource.alumniToDonor}">
+            </script>
+            <script>
+            var scholarResidenstilPickValues={!DRscholarResidenstilPickValues};
+            var CitizenIndian       = "{!CitizenIndian}";
+            var CitizenNonIndian    = "{!CitizenNonIndian}";
+            var confirmMsg          = "{!confirmationMsg}";
+            var aadharErrMsg        = "{!aadharErrMsg}";
+            var mobileErrMsg        = "{!mobileErrMsg}";
+            var panErrMsg           = "{!panErrMsg}";
+            var profileURL          = '{!$Setup.CCAvenue_Details__c.Donor_Site_URL__c}';
+            var donorCategory       = '{!donorCategory}';
+            var googleAndFacebookdup = '{!googleAndFacebookdup}';
+            var isStudentMsg         = '{!isStudentMsg}';
+            var newConfirMsg         = '{!newConfirMsg}';
+            var currentYear          = {!currentYear};
+            var countryList         = {!countryList};
+            var listOfStates        = {!listOfStates};
+            
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                
+                return true;
+            }
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+            </script>
+        </head>
+        <body ng-controller="ffeCtrl">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+            </div>
+            <div class="titleHead" align="center">
+                <h3 class="headerTags" style="color: #ff793c;">
+                    Welcome to the Foundation For Excellence Alumni registration portal. Please enter your details below.       
+                </h3>
+            </div>
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    General Information      
+                </h4>
+                <form name="regForm" novalidate="true">
+                    <div class="row">
+                        <h4 class="formTags" >
+                            First Name:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="fName" ng-model="donor.FirstName" class="inputfileds" required="true" ng-readonly="editRead"/>
+                        <span ng-show="formInvalid && regForm.fName.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.fName.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags">
+                            Last Name:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="lName" class="inputfileds" required="true" ng-model="donor.LastName" />
+                        <span ng-show="formInvalid && regForm.lName.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.lName.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags">
+                            Organization:
+                        </h4>
+                        <input type="text" name="organization" class="inputfileds"  ng-model="donor.DN_Organization__c"/>
+                        
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Email:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <input type="text" name="email" class="inputfileds" required="true"  ng-model="donor.Email" ng-change="valid(donor.Email)"/> 
+                        <span ng-show="formInvalid && regForm.email.$invalid" class="error">This is required.</span>
+                        <span class="error" ng-show="(!(regForm.email.$invalid) && invalidEmail)">Invalid email address</span>
+                        <span ng-show="!(formInvalid && regForm.email.$invalid) && !(!(regForm.email.$invalid) && invalidEmail)" class="error">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags" > 
+                            Mobile:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <input type="tel" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"  name="mobile" ng-model="donor.MobilePhone" required="true" class="inputfileds" maxlength="11" minlength="10" max="10"/>
+                        <!--input type="tel" name="mobile" class="inputfileds" required="true"  ng-model="donor.MobilePhone" /-->
+                        <span ng-show="formInvalid && regForm.mobile.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.mobile.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Phone:
+                        </h4>
+                        <input type="tel" name="phone" class="inputfileds" ng-model="donor.Phone" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="11" minlength="7" max="11"/>
+                        <span  class="error">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Mailing Address:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <textarea  name="Permanent" class="inputfileds" required="true"  ng-model="donor.MailingStreet" style="min-height:98px;"></textarea>
+                        <span ng-show="formInvalid && regForm.Permanent.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.Permanent.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    
+                    
+                    <!--div class="row">
+                        <h4 class="formTags" >
+                            Country:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <input type="text" name="country"  onpaste="return isChar(event)" onkeypress="return isChar(event)" class="inputfileds" required="true"  ng-model="donor.MailingCountry" />
+                        <span ng-show="formInvalid && regForm.country.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.country.$invalid)" class="error">&nbsp;</span>
+                    </div-->
+                    
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Country :<span style="color:#ff0000">*</span>
+                        </h4>
+                        <select name="country" required="true"  class="inputfiledsSelect" ng-model="countrySelected" ng-change="getstateList(countrySelected);">
+                            <option ng-repeat="country in countryList" value="{{country.DeveloperName}}"> {{country.Label}}</option>
+                        </select>
+                        <span ng-show="formInvalid && regForm.country.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.country.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    
+                    <div class="row" >
+                        <h4 class="formTags" >
+                            State :<span style="color:#ff0000">*</span>
+                        </h4>
+                        <select name="State" required="true"  class="inputfiledsSelect" ng-model="locationSelected" ng-change="getcityList(locationSelected)">
+                            <option ng-repeat="location in listOfStates" value="{{location}}"> {{location}}</option>
+                        </select>
+                        <span ng-show="formInvalid && regForm.State.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.State.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    
+                    <div class="row">
+                        <h4 class="formTags" >
+                            City :<span style="color:#ff0000">*</span>
+                        </h4>
+                        <select name="city" required="true"  class="inputfiledsSelect" ng-model="locationCitySelected" ng-change="otherCityCheck(locationCitySelected)">
+                            <option ng-repeat="locationcity in listOfCities track by $index" value="{{locationcity}}"> {{locationcity}}</option>
+                        </select>
+                        <span ng-show="formInvalid && regForm.city.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.city.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    
+                    
+                    <div class="row" ng-if="dislpayOtherCity">
+                        <h4 class="formTags" >
+                            <span style="color:#ff0000">Enter your City :</span>
+                        </h4>
+                        <input type="text" placeholder="Enter your city" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="city" class="inputfileds" ng-required="dislpayOtherCity"  ng-model="otherCity" ng-change="othercityvalues(otherCity)"/>
+                         <span ng-show="formInvalid && regForm.city.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.city.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    
+
+                    
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Zip:<span style="color:#ff0000">*</span>
+                        </h4>
+                        <input style="text-align:left" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" type="text" name="zip" class="inputfileds" required="true"  ng-model="donor.MailingPostalCode" maxlength='10'/ >
+                        <span ng-show="formInvalid && regForm.zip.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.zip.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Citizenship :<span style="color:#ff0000">*</span>
+                        </h4>
+                        <!--input type="text" name="ResidentialStatus" class="inputfileds" required="true"  ng-model="donor.Residential_Status__c" /-->
+                        <select name="ResidentialStatus" required="true"  class="inputfiledsSelect" ng-model="donor.DN_Citizenship__c" ng-change="residential(donor.DN_Citizenship__c);">
+                            <option ng-repeat="values in scholarResidenstilPickValues" value="{{values}}"> {{values}}</option>
+                        </select>
+                        <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.ResidentialStatus.$invalid)" class="error">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            PAN:<span style="color:#ff0000" ng-if="pan">*</span><span style="color:#ff0000" ng-if="!pan">&nbsp;</span>
+                        </h4>
+                        <input type="text" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" name="pan" class="inputfileds"  ng-required="pan"  ng-model="donor.DN_PAN__c" maxlength='10' minlength='10' ng-pattern="/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/"/>
+                        <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">&nbsp;</span>
+                        <span ng-show="formInvalid && regForm.pan.$invalid" class="error">This is required. Please Enter this format (First 5 digits alpha followed by 4 numbers <br/>followed by one alpha, e.g - ABCDE1234F)</span>
+                        <span class="error" ng-show="(!regForm.pan.$invalid && regForm.pan.$error.minlength)">Invalid PAN details</span>
+                        <span class="error" ng-show="!(!regForm.pan.$invalid && regForm.pan.$error.minlength)">&nbsp;</span>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                            Aadhaar No:<span style="color:#ff0000" ng-if="pan">*</span><span style="color:#ff0000" ng-if="!pan">&nbsp;</span>
+                        </h4>
+                        <input type="text" name="userAadhar" ng-model="donor.Aadhar_number__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-required="pan" maxlength="12" minlength="12" />
+                        <span ng-show="formInvalid && regForm.userAadhar.$invalid" class="error">This is required.</span>
+                        <span ng-show="!(formInvalid && regForm.userAadhar.$invalid)" class="error">&nbsp;</span></div>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Passport Number:<span style="color:#ff0000" ng-if="passport">*</span><span style="color:#ff0000" ng-if="!passport">&nbsp;</span>
+                        </h4>
+                        <input type="text" name="passport" class="inputfileds"  ng-required="passport"  ng-model="donor.DN_Passport_Number__c" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" maxlength='15'/>
+                        <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">&nbsp;</span>
+                        <span ng-show="formInvalid && regForm.passport.$invalid" class="error">This is required.</span>
+                    </div>
+                    <!--div class="row">
+                        <h4 class="formTags" >
+                            Category:
+                        </h4>
+                        <select name="DN_Donor_Category__c"  class="inputfiledsSelect" ng-model="donor.DN_Donor_Category__c" ng-change="disableScholarDetails(donor.DN_Donor_Category__c)">
+                            <option value='' label="--Select--"/>
+                            <option ng-repeat="donorCategories in donorCategory" value="{{donorCategories}}"> {{donorCategories}}</option>
+                        </select>
+                    </div-->
+                    <!-- to display only if category is scholar use ng-if="disableSchlrDtls"-->
+                    <h5  style="float: left;width: 96%;margin: 0;color:#ff793c;font-size:11pt;padding-left: 13px;margin-top: 16px;">
+                        For FFE Alumni, please provide following details
+                    </h5>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            FFE Scholar ID: <span style="color:#ff793c;font-size:10pt;">"If FFEUID is not known, please write to <b style="color:#032559;">alumnirelations@ffe.org</b>"</span>
+                        </h4>
+                        <input type="text" name="scholorId" class="inputfileds" ng-model="donor.DN_FFE_Scholar_ID__c" />
+                    </div>
+                    <div class="row">
+                        <h4 class="formTags" >
+                            Scholar year of Graduation:
+                        </h4>
+                        <input type="text" ng-change="checkCurrentYearisGreate(donor.DN_Year_Of_Graduation__c)" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" name="scholorId" class="inputfileds" ng-model="donor.DN_Year_Of_Graduation__c" ng-readonly="editRead" maxlength="4"/>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="formDiv">
+                <h4 class="formheadings" align="center">
+                    Login Information
+                </h4>
+                <div style="width:100%;float:left">
+                    <form name="gmailvalidation">
+                        <div class="row">
+                            <h4 class="formTags" >
+                                Do you have Google login:
+                            </h4>
+                            <div class="radioInputs">
+                                <input type="radio" name="Glogin" ng-model="donor.Do_you_have_Google_login__c" ng-value="true" class="" ng-change='gValue(donor.Do_you_have_Google_login__c)'/>Yes
+                                <input type="radio" name="Glogin" ng-model="donor.Do_you_have_Google_login__c" ng-value="false" class="" ng-change='gValue(donor.Do_you_have_Google_login__c)'/>No
+                            </div>
+                        </div>
+                        <div class="row" ng-if="donor.Do_you_have_Google_login__c">
+                            <h4 class="formTags" >
+                                Google Email Id:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="gmail" class="inputfileds" ng-model="donor.Google_login_ID__c" ng-change="valid(donor.Google_login_ID__c)" required="true"/>
+                            <span ng-show="formInvalid && gmailvalidation.gmail.$invalid" class="error">This is required.</span>
+                            <span class="error" ng-show="(!(gmailvalidation.gmail.$invalid) && invalidGmail) ">Invalid Email address</span>
+                            <span class="error" ng-show="notGmail">Please Enter your gmail Id</span>
+                        </div>
+                    </form>
+                </div>
+                <div style="width:100%;float:left">
+                    <form name="emailvalidation">
+                        <div class="row">
+                            <h4 class="formTags" >
+                                Do you have Facebook login:
+                            </h4>
+                            <div class="radioInputs">
+                                <input type="radio" name="Flogin" ng-model="donor.Do_you_have_Facebook_login__c" ng-value="true" class="" ng-change='fbValue(donor.Do_you_have_Facebook_login__c)'/>Yes
+                                <input type="radio" name="Flogin" ng-model="donor.Do_you_have_Facebook_login__c" ng-value="false" class="" ng-change='fbValue(donor.Do_you_have_Facebook_login__c)'/>No
+                            </div>
+                        </div> 
+                        <div class="row" ng-if="donor.Do_you_have_Facebook_login__c">
+                            <h4 class="formTags" >
+                                Email Id used for Facebook:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="fmail" class="inputfileds" ng-model="donor.Facebook_login_ID__c" ng-change="valid(donor.Facebook_login_ID__c)" required="true"/>
+                            <span ng-show="formInvalid && emailvalidation.fmail.$invalid" class="error">This is required.</span>
+                            <span class="error" ng-show="(!(emailvalidation.fmail.$invalid) && invalidFEmail)">Invalid email address</span>
+                        </div>
+                    </form> 
+                </div>
+            </div>
+            
+            <div class="studentAllocationPopUp" ng-if="popupdisplay" style="top: 195px;width: 40%;left: 29%;">
+                <div class="material-icons closePopUp" ng-click="clear();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="buttonsdiv" align="center" style="margin-bottom: -10px;">
+                    <div style="font-size: 17px;font-family: 'Source Sans Pro', sans-serif;"><b><br/>
+                        You are already a registered alumni, do you want us to send an email to your registered email address - {{maskEmail}}  with more details?
+                        </b></div>
+                    <br/>
+                    <input type="button" style="width: 20%;" value="YES" class="buttons"  ng-click="sendEmail()"/>
+                    <input type="button" style="width: 20%;" value="NO" class="buttons" ng-click="clear()"/>
+                    
+                    <div style="font-size: 17px;font-family: 'Source Sans Pro', sans-serif;"><b><br/>
+                        Is the above masked email not valid? <a href="#" ng-click="emailAlternate()">Click Here</a> to enter new Email ID
+                        </b></div><br/>
+                    
+                    <br/><br/>
+                </div>
+                
+            </div>
+            <div class="buttonsdiv" align="center">
+                <input type="button" value="Register" class="buttons"  ng-click="register(1);"/>
+                <input type="button" value="Cancel" class="buttons" ng-click="clearFields();"/>
+            </div>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

@@ -1,0 +1,44 @@
+<apex:page Controller="DocumentUploadCLs" showHeader="false" sidebar="false" docType="html-5.0">
+<head>
+        <title>Document Upload</title>
+    </head>
+    <style>
+        .bPageBlock {
+        	background-color: #fff !important;
+        	border:none !important;
+        }
+    </style>
+    <script>
+    
+    	 
+    function closeCurrentPopup(){  
+        window.opener.location.href="/{!con.id}";
+        self.close();        
+    }
+
+    </script>
+
+
+<apex:pagemessages id="Msg"> </apex:pagemessages>
+
+
+ <apex:form id="theForm">
+     <apex:pageblock rendered="{!isDisplay}" id="thePb">
+        <!-- <apex:pageBlockSection > -->
+  
+   <apex:pageblockTable value="{!docWrapperRecordList}" var="record">
+   <apex:column headerValue="Select">
+     <apex:inputCheckbox value="{!record.isSelected}"/>
+    </apex:column>
+    <apex:column headerValue="Category" value="{!record.docrelated}"/>
+    <apex:column headerValue="Document Name" value="{!record.docObj}"/>
+   </apex:pageblockTable> <br/>
+   <!--</apex:pageBlockSection>  <br/>-->
+   <apex:commandButton value="Submit" action="{!Submit}" style="margin-left: 300px;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;">
+            </apex:commandButton><br/>
+  </apex:pageblock><br/>
+        <apex:commandButton Id="completed" value="Close" style="margin-left: 300px;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;" oncomplete="closeCurrentPopup();"  rendered="{!!isDisplay}">
+            </apex:commandButton><br/>
+ </apex:form>
+
+</apex:page>

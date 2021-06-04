@@ -1,0 +1,87 @@
+<apex:page controller="DeclarationFormController" showHeader="false" applyBodyTag="false" applyHtmlTag="false" renderAs="pdf" cache="true" readOnly="true">
+    <head>
+        <style>
+            .student {
+                font-size: 13pt;
+            }
+
+            .amount {
+                border-collapse: collapse;
+                font-size: 13pt;
+                border: 1px solid black;
+            }
+
+            .border {
+                padding:8px;
+                border: 1px solid black;
+            }
+        </style>
+        
+    </head>
+
+    <center><h3>FOUNDATION FOR EXCELLENCE</h3></center>
+    <center><h3>STUDENT EXPENSES: SELF DECLARATION FORM FOR FY 2020-21</h3></center>
+    <br/><br/>
+    <table class="student"  width="100%">
+        <tbody>
+            <tr>
+                <td width="20%" >Name:</td>
+                <td width="80%" align="left" >{!application.Student__r.Name}</td>
+            </tr>
+            <tr>
+                <td width="20%" >FFEUID:</td>
+                <td width="80%" align="left" >{!application.Student__r.FFE_ID__c}</td>
+            </tr>
+            <tr>
+                <td width="20%" >Course:</td>
+                <td width="80%" align="left" >{!application.Course_Name__c}</td>
+            </tr>
+            <tr>
+                <td width="20%" >College Name:</td>
+                <td width="80%" align="left" >{!application.College_Name__c}</td>
+            </tr> 
+        </tbody>            
+    </table>
+    <br/>
+    <br/>
+
+    <table class="amount border" width="100%">
+        <thead >
+            <th class="border" style="text-align:center;">Particulars</th>
+            <th class="border" style="text-align:center;">Amount <br/>(INR)</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td width="80%" class="border">College Tuition Fees / Hostel &amp; Mess Fee / Books &amp; Transportation  Expenses (Receipts Enclosed): </td>
+                <td width="20%" class="border" style="text-align:center;">{!chbtTotal}</td>
+            </tr>
+            <tr>
+                <td width="80%" class="border">
+                    Study from Home Expenses (No Receipts available):<br/><br/>
+                    (Food/Rent/Electricity/ Internet Charges/Mobile phone/ Data access plans/Laptop rental/Online Course Payment)
+                </td>
+                <td width="20%" class="border" style="text-align:center;">{!application.Calc_Uniform_Expenses__c}</td>
+            </tr>
+            <tr>
+                <td width="80%" class="border">Round off Amount:</td>
+                <td width="20%" class="border" style="text-align:center;">{!application.Calc_Others__c}</td>
+            </tr>
+            <tr>
+                <td width="80%" class="border">Total Scholarship Amount:</td>
+                <td width="20%" class="border" style="text-align:center;">{!application.Amount_Requested__c}</td>
+            </tr>
+        </tbody>            
+    </table>
+    <br/><br/>
+    <p style="font-size:13pt;">
+        I, __________________________________________ do hereby declare that the information given above is correct and has been actually incurred.  However, I do not have any receipts / invoices for the Study From Home expenses.
+    </p><br/>
+    <p style="font-size:13pt;">
+        _______________________________<br/> 
+        (Student Signature) 
+    </p><br/>
+    <p style="font-size:13pt;">
+        Date: _______________________________<br/>
+        dd/mmm/year
+    </p>
+</apex:page>

@@ -1,0 +1,195 @@
+<!--<apex:page controller="sampleData" showHeader="false" applyBodyTag="false" applyHtmlTag="false" contentType="application/msWord#Student_Data.doc" cache="true" readOnly="true" >-->
+<apex:page controller="sampleData" showHeader="false" applyBodyTag="false" applyHtmlTag="false" renderAs="pdf" cache="true" readOnly="true" >
+     <!--<html xmlns="http://www.w3.org/TR/REC-html40" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">-->
+<html xmlns:w="urn:schemas-microsoft-com:office:word">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <head>
+        
+        <style type="text/css" media="print">    
+            @page {
+            
+
+            @top-center {
+            
+            content: element(header);
+            
+            }
+            
+            @bottom-center {
+            content: element(footer);
+            
+            }
+            }
+            div.header {
+            padding: 5px;
+            position: running(header);
+            }
+            div.footer {
+            display: block;
+            padding: 5px;
+            font-size : 18px;
+            color : blue;
+            position: running(footer);
+            }
+            .pagenumber:before {
+            content: counter(page);
+            
+            }
+            .pagecount:before {
+            content: counter(pages);
+            }
+            
+                   
+        </style>
+    </head>  
+    <div class="header">
+        
+        <table  width="100%">
+            <tr>
+              
+                <td align="left" style="{!IF((primarydonorLogoEmpty==false && secondarydonorLogoEmpty==false), 'display:block', 'display:none')}" >
+                    <img src="{!logoUrl}"  height="100px" width="100%" />
+                </td>
+                
+                 <td align="left" style="{!IF((primarydonorLogoEmpty && secondarydonorLogoEmpty ==false), 'display:block', 'display:none')}">
+                    <img src="{!logoUrl}"  height="100px" width ="600px"/>
+                    
+                </td>
+                  <td align="left" style="{!IF((primarydonorLogoEmpty==false && secondarydonorLogoEmpty), 'display:block', 'display:none')}">
+                    <img src="{!logoUrl}"  height="100px" width ="600px"/>
+                    
+                </td>
+                 <td align="left" style="{!IF((primarydonorLogoEmpty && secondarydonorLogoEmpty), 'display:block', 'display:none')}">
+                    <img src="{!logoUrl}"  height="100px"/>
+                    
+                </td>
+                
+                <td align="left" style="{!IF(primarydonorLogoEmpty, 'display:table-cell', 'display:none')};" >
+                    <apex:image height="100px" width="100px" url="/servlet/servlet.FileDownload?file={!donorcon.Primary_Donor_logo_attachment_Id__c}"/>
+                </td>
+                <td style="{!IF(primarydonorLogoEmpty==false, 'display:block', 'display:none')}">
+                    &nbsp;
+                </td>
+                <td style="{!IF(secondarydonorLogoEmpty, 'display:table-cell', 'display:none')}" >
+                    <!--<apex:image style="margin-left:3%" height="50px" width="50px" url="/servlet/servlet.FileDownload?file={!donorcon.Secondary_Donor_logo_attachment_id__c}"/>-->        
+                    <apex:image height="100px" width="100px" url="/servlet/servlet.FileDownload?file={!donorcon.Secondary_Donor_logo_attachment_id__c}"/>
+                </td>
+                <td style="{!IF(secondarydonorLogoEmpty==false, 'display:block', 'display:none')}">
+                    &nbsp;
+                </td>
+                
+            </tr>           
+        </table>
+    </div>
+    <table >
+        <tr>
+            <td width="100%" >ADOPT A SCHOLAR <br/><br/> FFE Scholar Profile</td>
+            <td rowspan="2" align="center" style="{!IF(studentpicAvailable, 'display:block', 'display:none')}" >
+                <apex:image height="180px" width="180px" url="/servlet/servlet.FileDownload?file={!imageURL}"/>    
+            </td>
+           <!-- <td rowspan="2" align="center" style="{!IF(studentpicAvailable==false, 'display:block', 'display:none')}">
+                &nbsp;
+            </td>-->
+        </tr>
+        
+    </table>
+    
+    <table width="100%" >
+        <tr > <td><b><u>Student Details</u></b> </td></tr>
+        <tr >
+            <td width="50%" font-size="8px" style="padding-top:10% !important;"> Student's Name: {!con.Name}</td>
+            <td width="40%" font-size="8px" align="left" >Student's FFEUID: {!con.FFE_ID__c}</td>
+        </tr>
+        <tr>
+            <td width="50%" font-size="8px" > Gender : {!con.Gender__c}</td>
+            <td width="50%" font-size="8px" align="left">Class X Marks (%): {!con.X10th__c}</td>
+        </tr>
+        <tr >
+            <td width="50%" font-size="8px" > Class XII Marks (%): {!con.X12th__c}</td>
+            <td width="50%" font-size="8px"  align="left">Entrance Exam Name : {!con.Entrance_Test_Name__c}</td>
+        </tr>
+        <tr >
+            <td width="50%" font-size="8px" > Course Joined: {!con.Course__c}</td>
+            <td width="50%" font-size="8px"  align="left">Entrance Test Rank : {!con.Entrance_Test_Rank__c}</td>
+        </tr>
+        <tr>
+            <td width="50%" font-size="8px" > Branch: {!con.Branch_Stream__c}</td>
+            <td width="50%" font-size="8px"  align="left">Course Year: {!con.Current_year__c}</td>
+        </tr>
+        </table> <br/>
+        
+        
+        <table  width="100%">
+        <tr >
+             <td width="50%" font-size="8px"> <b><u>Institution Name:</u></b> {!con.College_Name__r.Name}</td>
+             <td width="50%" font-size="8px" ><b><u>Mailing City/State:</u></b> {!con.mailingcity},{!con.mailingstate}</td>
+
+           <!-- <td width="50%" border="1" align="left">Institution Type: {!con.College_Type__c}</td> -->
+        </tr>
+        <tr >
+            <td width="50%" font-size="8px" ><b><u> Institution Location:</u></b> {!con.College_State__c}</td>
+        </tr>     
+    </table> 
+    <br/>
+    
+    <table width="100%">
+        <tr> <td><b><u>Parent Details</u></b> </td> </tr>
+        <tr>
+            <td  font-size="8px" width="50%"> Father's Name: {!con.Father_Name__c}</td>
+            <td  font-size="8px" width="50%" align="left">Mother's Name: {!con.Mother_Name__c}</td>
+        </tr>
+        <tr >
+            <td  font-size="8px" width="50%"> Father's Age (Years): {!con.Father_Age__c}</td>
+            <td  font-size="8px" width="50%" align="left"> Mother's Age (Years): {!con.Mother_Age__c}</td>
+        </tr>
+        <tr>
+            <td  font-size="8px" width="50%"> Father's Education: {!con.Father_Education__c}</td>
+            <td  width="50%" font-size="8px" align="left"> Mother's Education: {!con.Mother_Education__c}</td>
+        </tr>
+        <tr>
+            <td width="50%" font-size="8px"> Father's Occupation: {!con.Father_Occupation__c}</td>
+            <td width="50%" font-size="8px" align="left"> Mother's Occupation: {!con.Mother_Occupation__c}</td>
+        </tr>
+        <tr >
+            <td width="50%" font-size="8px"> Annual Family Income: {!con.Annual_Family_Income__c}</td>
+        </tr> 
+    </table><br/>
+    <!--table>
+            <tr>
+            <td width="70%"> Parents' Address: {!con.Parent_Address__c}</td>
+            </tr>  
+            </table--> 
+    <table width="100%" >
+        <tr><td><b><u>Scholarship Details</u></b> </td> </tr>
+        <tr >
+            <td  font-size="8px" width="50%" align="left">Amount Sanctioned: {!schlamt}</td> 
+            <td  font-size="8px" width="50%" align="left">In the Year: {!con.Financial_year__c}</td>
+        </tr>
+        <tr >
+            <td  font-size="8px" width="50%"> Facilitator Name: {!con.Facilitator_Name__r.Name}</td>
+            <td  font-size="8px" width="50%" align="left">Facilitator's ID # : {!con.Facilitator_Name__r.FFE_ID__c}</td>
+        </tr>
+        
+    </table> <br/>
+    
+    <table width="100%">
+        <tr> <td><b><u>Sponsorship Details</u></b> </td> </tr> 
+        <tr>
+            <td font-size="8px" width="50%"> Donor Name: {!donorcon.Name}</td>
+            <td  font-size="8px" width="50%" align="left">Donor's ID # : {!donorcon.FFE_ID__c}</td>
+        </tr>
+        <tr>
+        <!--    <td width="50%"> Amount Donated: {!DonatedAmt}</td> -->
+            <td  font-size="8px" width="50%" align="left">For the Year: {!fyear}</td>
+        </tr>
+        
+    </table><br/>
+    <!--<div class="footer">
+        <div><center>Foundation For Excellence India Trust - Scholar Profile &nbsp;<span class="pagenumber"/> of <span class="pagecount"/></center></div>
+    </div>-->
+    <div class="footer">
+        <div><center>Foundation For Excellence India Trust - Scholar Profile</center></div>
+    </div>
+    
+   </html>   
+</apex:page>

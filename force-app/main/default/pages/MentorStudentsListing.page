@@ -1,0 +1,81 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MentorDetailPageController">
+<html>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>  
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+       .card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 5px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+img {
+  border-radius: 5px 5px 0 0;
+}
+
+.container {
+  padding: 2px 16px;
+} 
+        </style>
+    
+<body ng-app="myApp" ng-controller="myCtrl">
+    <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+            </div>
+
+<div style="width:30%;margin-left:35%;margin-top:5%;">
+    <div class="card" ng-repeat="mentee in menteeList" style="padding:20px;margin-bottom: 30px;">
+  <div class="container">    <h4><b>{{mentee.Name}}</b></h4> 
+    <h4><b>Skills: {{mentee.Skills__c}}</b></h4> 
+    <p>Location: {{mentee.Location__c}}</p> 
+    <p>Languages Known: {{mentee.Languages_Known__c}}</p>
+  </div>
+
+</div>
+      <button type="button" class="btn btn-primary" style="margin-left:40%;" ng-click="previous()">Back</button>
+
+    </div>
+
+
+
+<script>
+var app = angular.module("myApp", []);
+app.controller("myCtrl", function($scope) {
+    
+      $scope.menteeList ;
+      $scope.getMenteeList = function(){
+      	debugger;
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.MentorDetailPageController.getMenteeDetails}',
+            
+            function(result, event){
+              
+               if(event.status){
+                  $scope.menteeList = result;                    
+                   $scope.$apply();                                        
+               }               
+            },
+            {escape: true}
+        );
+      }
+    $scope.getMenteeList();
+    
+	$scope.previous = function(){
+    	let mainURL = window.location.origin+'/apex';
+        window.location.replace(mainURL + "/MentorPortal");
+    }
+});
+</script>
+
+</body>
+</html>
+
+</apex:page>

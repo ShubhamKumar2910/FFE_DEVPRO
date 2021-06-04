@@ -1,0 +1,40 @@
+<apex:page contentType="application/vnd.ms-excel#Beneficary_Details_For__{!financialYear}.xlsx" controller="BeneficiaryDetailController" cache="true" readOnly="true">
+ 
+
+<apex:pageBlock >
+        <apex:pageblockTable value="{!donAppMapping}" var="v" >
+            <apex:column headerValue="FFE UID">{!v.Application__r.FFE_UID__c}</apex:column>
+            <apex:column headerValue="Name of Student">{!v.Application__r.Student_Name_for_Email__c}</apex:column>
+            <apex:column headerValue="Gender">{!v.Student__r.Gender__c}</apex:column>
+           <apex:column headerValue="Course Year">{!v.Application__r.Year__c}</apex:column>
+            <apex:column headerValue="BirthDate">
+                <apex:outputText style="text-align:center;" value="{0,date,dd/MM/yyyy}">
+                   <apex:param value="{!v.Student__r.Birthdate}" />
+         </apex:outputText>
+  </apex:column>
+
+            
+            <apex:column headerValue="Course">{!v.Application__r.Course_Name__c}</apex:column>
+            <apex:column headerValue="Entrance Test Name">{!v.Student__r.Entrance_Test_Name__c}</apex:column>
+            <apex:column headerValue="Entrance Test Rank">{!v.Student__r.Entrance_Test_Rank__c}</apex:column>
+            <apex:column headerValue="College Name">{!v.Application__r.College_Name__c}</apex:column>
+            <apex:column headerValue="Branch/Stream">{!v.Application__r.Branch__c}</apex:column>
+            <apex:column headerValue="College City">{!v.Student__r.College_City__c}</apex:column>
+            <apex:column headerValue="College State">{!v.Student__r.College_State__c}</apex:column>
+            <apex:column headerValue="Father Name">{!v.Student__r.Father_Name__c}</apex:column>
+            <apex:column headerValue="Father Education">{!v.Student__r.Father_Education__c}</apex:column>
+            <apex:column headerValue="Father Occupation">{!v.Student__r.Father_Occupation__c}</apex:column>
+            <apex:column headerValue="Mother Name">{!v.Student__r.Mother_Name__c}</apex:column>
+            <apex:column headerValue="Mother Occupation">{!v.Student__r.Mother_Occupation__c}</apex:column>
+            <apex:column headerValue="Mother Education">{!v.Student__r.Mother_Education__c}</apex:column>
+            <apex:column headerValue="Annual Family Income">{!v.Student__r.Annual_Family_Income__c}</apex:column>
+            <apex:column headerValue="Family City">{!v.Student__r.MailingCity}</apex:column>
+            <apex:column headerValue="Family State">{!v.Student__r.mailingState}</apex:column>
+            <apex:column headerValue="Facilitator Name">{!v.Student__r.Facilitator_Name__r.Name}</apex:column>
+            <apex:column headerValue="Scholarship Amount">{!v.Application__r.Amount_Requested__c}</apex:column>
+            <apex:column headerValue="Remarks"></apex:column>
+            
+        </apex:pageblockTable>
+    </apex:pageBlock> 
+
+</apex:page>

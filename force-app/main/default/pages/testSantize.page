@@ -1,0 +1,25 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-sanitize.js"></script>
+<body>
+
+<div ng-app="myApp" ng-controller="myCtrl">
+
+<p ng-bind-html="myText"></p>
+
+</div>
+
+<script>
+var app = angular.module("myApp", ['ngSanitize']);
+app.controller("myCtrl", function($scope) {
+    $scope.myText = "My name is:<ol><li>This example includes the &quot;angular-sanitize.js&quot;</li><li>This example includes the &quot;angular-sanitize.js&quot;</li><li>This example includes the &quot;angular-sanitize.js&quot;</li></ol>";
+});
+</script>
+
+<p><b>Note:</b> This example includes the "angular-sanitize.js",
+which has functions for removing potentially dangerous tokens from the HTML.</p>
+
+</body>
+</html>
+</apex:page>

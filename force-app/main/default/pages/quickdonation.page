@@ -1,0 +1,742 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0" controller="DN_QuickDonation">
+    <html ng-app="quickDonation">
+        <title>Quick Donation</title>
+        <head>
+            <c:pageResource />
+            <apex:stylesheet value="{!URLFOR($Resource.fontAwesome,'/font-awesome-4.7.0/css/font-awesome.min.css')}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.sliderJS}">
+            </script>
+            
+            <script src="{!$Resource.textAngularRangy}">
+            </script>
+            <script src="{!$Resource.textAngularSanitize}">
+            </script>
+            <script src="{!$Resource.textAngularJs}">
+            </script>
+            <script src="{!$Resource.quickDonationJs}">
+            </script>
+            <script>
+            var scholarResidenstilPickValues    = {!DRscholarResidenstilPickValues};
+            var CitizenIndian       = "{!CitizenIndian}";
+            var CitizenNonIndian    = "{!CitizenNonIndian}";
+            var paymentDelete       = '{!deletePayment}';
+            var countryList         = {!countryList};
+            var listOfStates        = {!listOfStates};
+            var baseURL             = '{!baseURL}';
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                
+                return true;
+            }
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+                
+            function showDescJs(){
+                document.getElementById('popUpDesc').style.display='block';
+            }
+            
+            function closeDescJs(){
+                document.getElementById('popUpDesc').style.display='none';
+            }
+            
+            
+           
+            </script>
+
+            <style>
+                
+                .sweet-alert p{
+                    float: left;
+                    width: 100%;
+                }
+                .sweet-alert h2{
+                    margin:2px 0;
+                }
+                .historyTable{
+                    margin-top: 0;
+                }
+                .row{
+                    width: 47%;
+                    float: left;
+                    padding: 0%;
+                }
+                .rowNewDonor{
+                    width: 100%;
+                    margin-left: 17px;
+                }
+                
+                .rowNewDonor .formTags{
+                    width: 31%;
+                    float: left;
+                    padding: 5px;
+                    text-align: left;
+                }
+                
+                .rowNewDonor .inputfileds {
+                    width: 55%;
+                    float: left;
+                }
+                .rowNewDonor .inputfiledsSelect {
+                    width: 57%;
+                    float: left;
+                }
+                .error{
+                    width: 100%;
+                    float: left;
+                    text-align: center;
+                }
+                .detailsHeader{ 
+                    text-align: center;
+                    background: #032559;
+                    color: #ffffff;
+                    font-size: 1.0vw;
+                    padding: 8px;
+                    margin: 13px 0;
+                    width:25%;
+                    float:left;
+                }
+
+                /* New UI Colors */
+
+                .programBtnColor {
+                    background-color: #4B67B3 !important;
+                    color: white !important;
+                    float: left !important;
+                }
+                .programBtnSelColor {
+                    background-color: rgb(4, 21, 66) !important;
+                    color: white !important;
+                    border: solid 1px !important;
+                    border-color: white !important;
+                    float: left !important;
+                }
+                .frequencyBtnColor {
+                    background-color: #F39C12 !important;
+                    color: white !important;
+                    float: left !important;
+                }
+                .frequencyBtnSelColor {
+                    background-color: rgb(206, 128, 3) !important;
+                    color: white !important;
+                    border: solid 1px !important;
+                    border-color: white !important;
+                    float: left !important;
+                }
+
+                .frequencyBtnSelColor:disabled {
+                    border: solid 1px !important;
+                    border-color: white !important;
+                }
+
+                md-tab-item, md-tabs-canvas, md-prev-button, md-next-button{
+                    color: white !important;
+                    font-weight: bold !important;
+                    background-color: #F39C12 !important;
+                }
+                md-ink-bar {
+                    color: #4B67B3 !important;
+                    background: #4B67B3 !important;
+                }
+
+                md-card {
+                    border: solid black 1px !important;
+                }
+                
+                .md-card-image {
+                    height: 290px !important;
+                }
+
+                .students-btn {
+                    font-size: 1vw;
+                    margin: 0px 0;
+                    color: rgb(49, 46, 46);
+                    text-transform: none;
+                    font-weight: 600;
+                    min-width: 35px;
+                    line-height: unset !important;
+                    border: 2px solid #4B67B3;
+                    cursor: pointer;
+                    min-height: unset !important;
+                }
+
+
+                .students-btn:hover {
+                    background: #4B67B3 !important;
+                    color: white !important;
+                }
+
+                .md-button.left {
+                    border-radius: 10px 0 0 10px;
+                }
+                .md-button.right {
+                    border-radius: 0 10px 10px 0;
+                }
+                .iconColor {
+                    color: #4B67B3 !important;
+                }
+                /* Chrome, Safari, Edge, Opera */
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                /* Firefox */
+                input[type=number] {
+                    -moz-appearance: textfield;
+                }
+
+                .total {
+                    /* font-size: 13pt; */
+                    font-size: 1.2vw;
+                    color: #4B67B3;
+                    font-weight: 600;
+                }
+
+                .donate-form-label {
+                    margin: 0;
+                    padding: 0px 0px;
+                    color: #032559;
+                    font-size: 1.2vw;
+                    align-self: center;
+                }
+
+                .proceed-btn {
+                    width: 100%;
+                    border: none;
+                    background-color: #F39C12;
+                    padding: 10px 28px;
+                    font-size: 1vw;
+                    cursor: pointer;
+                    text-align: center;
+                    color: white;
+                }
+                .proceed-btn:disabled {
+                    background-color: gray !important;
+                }
+
+                .mdproceed-btn {
+                    background-color: #F39C12 !important;
+                    color: white !important;
+                    padding-top: 1%;
+                    padding-bottom: 1%;
+                }
+
+                .mdproceeddonate-btn {
+                    /* padding-left: 40% !important;
+                    padding-right: 40% !important; */
+                    position: absolute !important;
+                    bottom: 0 !important;
+                    margin-bottom: 2% !important;
+                    width: 92% !important;
+                }
+                .mdproceed-btn:disabled {
+                    background-color: gray !important;
+                }
+                .buttons {
+                    background: #F39C12 !important;
+                }
+
+                .donation-desc {
+                    overflow-y: auto;
+                    text-overflow: ellipsis;
+                    white-space: normal;
+                    min-height: 25px;
+                    /* height: 100px; */
+                    max-height: 100px;
+                    font-size: 1.001vw;
+                    color: #032559;
+                }
+
+                .no-of-students {
+                    text-align:right !important;
+                    height: fit-content !important;
+                    align-self: center !important;
+                    margin-right:10% !important;
+                    width: 80% !important;
+                    -webkit-appearance: none !important;
+                }
+
+                .amount-input {
+                    text-align:right !important;
+                    height: fit-content !important;
+                    align-self: center !important;
+                    margin-right:10% !important;
+                    width: 80% !important;
+                }
+
+                .custom-scrollbar::-webkit-scrollbar-track
+                {
+                    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                    border-radius: 10px;
+                    background-color: #F5F5F5;
+                }
+
+                #custom-scrollbar::-webkit-scrollbar
+                {
+                    width: 12px;
+                    background-color: #F5F5F5;
+                }
+
+                #custom-scrollbar::-webkit-scrollbar-thumb
+                {
+                    border-radius: 10px;
+                    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+                    background-color: #F39C12;
+                }
+
+                .md-padding {
+                    padding: 1px !important;
+                    background: white !important;
+                }
+                .md-tabs-canvas {
+                }
+                .md-tab {
+                    font-size: 1.0vw !important;
+                }
+                .md-button {
+                    font-size: 1.0vw !important;
+                }
+                .md-button-custom {
+                    line-height: unset !important;
+                    padding: 0 6px;
+                    margin: 4px 4px;
+                }
+                html {
+                    font-size: 1vw !important;
+                }
+            </style>
+        </head>
+        <body ng-controller="quickDonationCtrl">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+            </div>
+            
+            <div class="renewalPopup" style="border-radius: 10px 10px 10px 10px;" id='popUpDesc'>
+                <!--div class="material-icons closePopUp" ng-click="closeDesc();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div-->
+                <div  ta-bind="text" ng-model="description.Description__c" id='textArea'></div>
+            </div>
+            
+            <div align="center" ng-init="loadProgramInfo()" style="
+                                                                   margin-top: 113px;
+                                                                   ">    
+                <!-- New UI TODO-->
+                <div ng-cloak="" class="tabsdemoCenterTabs">
+                    <md-content>
+                        <md-tabs md-dynamic-height="true" class="md-primary" md-center-tabs="" md-border-bottom="true" md-enable-disconnect="true">
+                            <md-tab label="{{program}}" ng-repeat="(program, donations) in makeDonations | fromMap" md-on-select="tabChange(program);">
+                                <md-content class="md-padding" ng-hide="hideDuringTransition">
+                                    <div>
+                                        <div class="custom-scrollbar" style="overflow-x:auto;">
+                                            
+                                            <table style="width:100%;table-layout: fixed;">
+                                                <tr>
+                                                    <td style="width:80%;overflow-x:auto;">
+                                                        <section layout="row" >
+                                                            <md-button class="{{ donation.checked == true ? 'programBtnSelColor md-raised md-button-custom' : 'programBtnColor md-raised md-button-custom'}}" ng-repeat="donation in donations" ng-click="donationClick(donation, donations);">{{donation.Name}}</md-button>
+                                                        </section>
+                                                        <section layout="row" >
+                                                            <md-button class="{{ frequency.checked == true ? 'frequencyBtnSelColor md-raised md-button-custom' : 'frequencyBtnColor md-raised md-button-custom'}}" ng-disabled="currentDonation.only_1_frequency__c" ng-repeat="frequency in frequencies" ng-click="frequencyClick(frequency, frequencies);">{{frequency.Name}}</md-button>
+                                                        </section>
+                                                    </td>
+                                                    <td style="width:20%">
+                                                        <section layout="row" >
+                                                            <span class="total">Total Amount : <i class="fa fa-inr iconColor" style="margin-right:2px;" aria-hidden="true"/>{{getTotalAmount()}} </span> 
+                                                        </section>
+                                                        <section layout="row" >
+                                                            <span class="total">Total Students : {{getNoOfstudents()}}</span>
+                                                        </section>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                        
+                                        <!-- AllFreqs = {{allFrequency.length}}<br/>
+                                        Donation = {{currentDonation}}<br/>
+                                        Frequency = {{currentFrequency}}<br/>
+                                        minAmountRequired = {{minAmountRequired}}<br/>
+                                        totalAmountForDonate = {{totalAmountForDonate}} -->
+                                        <!-- <md-divider ng-if="currentDonation != null"/> -->
+                                        <table style="width:100%" ng-if="currentDonation != null">
+                                            <tr>
+                                                <!-- <td style="width:10%"></td> -->
+                                                <td style="width:55%">
+
+                                                    <md-card ><!-- ng-show="currentDonation.Resource_Image__c != null" -->
+                                                        <img ng-src="{{imageURL +''+ currentDonation.Resource_Image__c}}" class="md-card-image" alt=""/>
+                                                        <md-card-content>
+                                                            <div id="custom-scrollbar" class="donation-desc" ng-bind-html="currentDonation.Description__c" /><!-- onmouseover="showDescJs();" ng-mouseover='showDesc(currentDonation);' onmouseout="closeDescJs();" -->
+                                                        </md-card-content>
+                                                    </md-card>
+                                                    
+                                                </td>
+                                                <td style="width:5%"></td>
+                                                <td style="width:40%;position: relative;" >
+                                                    <div style="position: absolute;top: 0;width:100%;" ng-show="currentFrequency != null">
+                                                        <section layout="row" >
+                                                            <h4 class="donate-form-label" style="width:30%"><!-- margin-right: 10%; -->
+                                                                No. of Students:
+                                                            </h4>
+                                                            <div style="width:45%">
+                                                                <input ng-if="currentFrequency.Amount_Fixed__c" ng-change="calc();" value="No. of Students" class="tdInput no-of-students" ng-disabled="(currentFrequency == undefined || frequencies.length == 0)" ng-model="currentDonation.nstudents" type="number" min="0" maxlength="4" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"/> 
+                                                                <input ng-if="!currentFrequency.Amount_Fixed__c" value="No. of Students" class="tdInput no-of-students" type="number" ng-model="currentDonation.nstudents" min="0" ng-disabled="true"/>
+                                                            </div>
+                                                            
+                                                            
+                                                                <md-button ng-if="currentFrequency.Amount_Fixed__c" class="students-btn left" ng-click="removeStudent();" ng-disabled="(currentFrequency == undefined || frequencies.length == 0)">-</md-button>
+                                                                <md-button ng-if="currentFrequency.Amount_Fixed__c" class="students-btn right" ng-click="addStudent();" ng-disabled="(currentFrequency == undefined || frequencies.length == 0)">+</md-button>
+                                                                <md-button ng-if="!currentFrequency.Amount_Fixed__c" class="students-btn left" ng-click="removeStudent();" ng-disabled="true">-</md-button>
+                                                                <md-button ng-if="!currentFrequency.Amount_Fixed__c" class="students-btn right" ng-click="addStudent();" ng-disabled="true">+</md-button>
+                                                            
+                                                            
+                                                        </section>
+                                                        <br/><br/>
+                                                        <section layout="row" > 
+                                                            <h4 class="donate-form-label" style="width:30%">
+                                                                Amount:
+                                                            </h4>                                                          
+                                                            <div style="width:45%">
+                                                                <input ng-if="currentFrequency.Amount_Fixed__c" class="tdInput amount-input" type="text" ng-value="calculatedAmount" min="0" ng-disabled="true" /> 
+                                                                <input ng-if="!currentFrequency.Amount_Fixed__c && !currentDonation.only_1_frequency__c" ng-change="minAmountValidation();" class="tdInput amount-input" type="text" min="0" ng-mouseleave="onmouseoutpopup();" ng-model="currentDonation.totalLineAmount" /> 
+                                                                <input ng-if="!currentFrequency.Amount_Fixed__c && currentDonation.only_1_frequency__c" ng-change="minAmountValidation();" class="tdInput amount-input" type="text" maxlength="14" ng-disabled="(currentFrequency == undefined || frequencies.length == 0)" ng-mouseleave="onmouseoutpopup();" ng-model="currentDonation.totalLineAmount" min="minAmount" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" /> 
+                                                            </div>
+                                                            <i class="fa fa-inr fa-2x iconColor" aria-hidden="true"/>
+                                                        </section>
+                                                    </div>
+                                                    <div ng-show="currentFrequency != null"><!-- style="position: absolute;bottom: 0;margin-bottom: 4%;" -->
+                                                        <md-button class="md-raised mdproceed-btn mdproceeddonate-btn" ng-disabled="!totalAmountForDonate || minAmountRequired" ng-click="proceed();">Proceed</md-button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </md-content>
+                            </md-tab>
+                            <md-tab label="Bank Transfers">    
+                                <md-content class="md-padding" ng-hide="hideDuringTransition">
+                                    <div align="left" style="    margin-top: 2%;margin-left: 1%;">
+                                        <table style="width:100%">
+                                            <tr style="color:#F39C12;font-size:1vw" align="left">
+                                                <th>OFFLINE DONATION</th>
+                                                <th colspan="2">ONLINE DONATION VIA FUNDS TRANSFER/NEFT/IMPS/RTGS</th>
+                                            </tr>
+                                            <tr style="color:#4B67B3">
+                                                <td><b>Donations by cheques can be mailed to:</b></td>
+                                                <td><b>Donations in INR can be made to:</b></td> 
+                                                <td><b>For donations by Non-Indian citizens please contact:</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>
+                                                        FOUNDATION FOR EXCELLENCE INDIA TRUST<br></br>
+                                                        No. 840, 5th Main,<br></br>
+                                                        Indiranagar 1st Stage,<br></br>
+                                                        Bengaluru 560 038, India<br></br><br></br>
+                                                        Phone:+91 (080) 2520 1925<br></br>
+                                                        Email: india_support@ffe.org<br></br>
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                    <p>
+                                                        ACCOUNT NAME: FOUNDATION FOR EXCELLENCE INDIA TRUST<br></br>
+                                                        ACCOUNT NO: 005301045598<br></br>
+                                                        TYPE OF ACCOUNT: SB (SAVINGS) ACCOUNT<br></br>
+                                                        BRANCH: ICICI BANK, JAYANAGAR BRANCH,<br/> BANGALORE-560011<br></br>
+                                                        MICR CODE - 560229004<br></br>
+                                                        IFSC CODE - ICIC0000053<br></br>
+                                                    </p>
+                                                </td>
+                                                <td>
+                                                   <p>
+                                                        FOUNDATION FOR EXCELLENCE<br></br>
+                                                        No. 840, 5th Main,<br></br>
+                                                        Indiranagar 1st Stage,<br></br>
+                                                        Bengaluru 560 038, India<br></br><br></br>
+                                                        Phone:+91 (080) 2520 1925<br></br>
+                                                        Email: india_support@ffe.org<br></br>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </md-content>                            
+                                
+                            </md-tab>
+                        </md-tabs>
+                    </md-content>
+                </div>
+            </div>
+            
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            
+            
+            <div class="background" ng-show="descPop" >
+            </div>
+            
+            <div class="studentAllocationPopUp" ng-show="donorDetailsPopup" style="width: 57%;
+                                                                                   left: 20%;">
+                <div class="material-icons closePopUp" ng-click="closeDetails();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <h4 class="detailsHeader">
+                    Your Information
+                </h4>
+                
+                <h4  style="text-align: right;
+                            padding: 0;
+                            background: none;
+                            color: #032559;
+                            padding: 8px;
+                            font-size: 1vw;
+                            margin: 10px;">
+                     &#8377;&nbsp;{{totalAMount}}
+                </h4>
+                
+                <!-- Donation Form layout changed -- Sumit Gaurav - 17-June-2020 -->
+                <form name="donorDetails" novalidate="true">
+                    <div style="width:100%">
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" >
+                                            Citizenship :<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <!--input type="text" name="ResidentialStatus" class="inputfileds" required="true"  ng-model="donor.Residential_Status__c" /-->
+                                        <select name="Citizenship" required="true"  class="inputfiledsSelect" ng-model="donor.DN_Citizenship__c" ng-change="residential(donor.DN_Citizenship__c);">
+                                            <option ng-repeat="values in scholarResidenstilPickValues" value="{{values}}"> {{values}}</option>
+                                        </select>
+                                        <span ng-show="formInvalid && donorDetails.Citizenship.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.Citizenship.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" >
+                                            FFE Scholar ID (If FFE Alumni): &nbsp;
+                                        </h4>
+                                        <input style="margin-top:10px;" type="text" name="scholorId" class="inputfileds" ng-model="donor.Previous_FFE_ID__c" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)"/>
+                                        <span  class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" >
+                                            First Name:<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="fName" ng-model="donor.FirstName" class="inputfileds" required="true" />
+                                        <span ng-show="formInvalid && donorDetails.fName.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.fName.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" >
+                                            Email:<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <input type="text" name="email" class="inputfileds" required="true"  ng-model="donor.Email" ng-change="valid(donor.Email)"/> 
+                                        <span ng-show="formInvalid && donorDetails.email.$invalid" class="error">This is required.</span>
+                                        <span class="error" style="width: 96%;" ng-show="(!(donorDetails.email.$invalid) && invalidEmail)">Invalid email address</span>
+                                        <span ng-show="!(formInvalid && donorDetails.email.$invalid) && !(!(donorDetails.email.$invalid) && invalidEmail)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags">
+                                            Last Name:<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="lName" class="inputfileds" required="true" ng-model="donor.LastName" />
+                                        <span ng-show="formInvalid && donorDetails.lName.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.lName.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" > 
+                                            Mobile:<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <input type="tel" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"  name="mobile" ng-model="donor.MobilePhone" required="true" class="inputfileds" maxlength="11" minlength="10" max="10"/>
+                                        <!--input type="tel" name="mobile" class="inputfileds" required="true"  ng-model="donor.MobilePhone" /-->
+                                        <span ng-show="formInvalid && donorDetails.mobile.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.mobile.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" >
+                                            Mailing Address:<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <textarea  name="Permanent" class="inputfileds" required="true"  ng-model="donor.MailingStreet" style="min-height:98px;"></textarea>
+                                        <span ng-show="formInvalid && donorDetails.Permanent.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.Permanent.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                        <h4 class="formTags" >
+                                            Country :<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <select name="Country" required="true"  class="inputfiledsSelect" ng-model="countrySelected" ng-change="getstateList(countrySelected);">
+                                            <option ng-repeat="country in countryList" value="{{country.DeveloperName}}"> {{country.Label}}</option>
+                                        </select>
+                                        <span ng-show="formInvalid && donorDetails.Country.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.Country.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                    <div class="row rowNewDonor" ng-show="!enterCountryData">
+                                        <h4 class="formTags" >
+                                            State :<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <select name="State" required="true"  class="inputfiledsSelect" ng-model="locationSelected" ng-change="getcityList(locationSelected)">
+                                            <option ng-repeat="location in listOfStates" value="{{location}}"> {{location}}</option>
+                                        </select>
+                                        <span ng-show="formInvalid && donorDetails.State.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.State.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor" ng-show="!enterCountryData">
+                                        <h4 class="formTags" >
+                                            City :<span style="color:#ff0000">*</span>
+                                        </h4>
+                                        <select name="City" required="true"  class="inputfiledsSelect" ng-model="locationCitySelected" ng-change="otherCityCheck(locationCitySelected)">
+                                            <option ng-repeat="locationcity in listOfCities track by $index" value="{{locationcity}}"> {{locationcity}}</option>
+                                        </select>
+                                        <span ng-show="formInvalid && donorDetails.City.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.City.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                    <div class="row rowNewDonor" ng-if="dislpayOtherCity">
+                                        <h4 class="formTags" >
+                                            <span style="color:#ff0000"></span>
+                                        </h4>
+                                        <input type="text" placeholder="Enter your city" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="Othercity" class="inputfileds" ng-required="dislpayOtherCity"  ng-model="otherCity" ng-change="othercityvalues(otherCity)"/>
+                                        <span ng-show="formInvalid && donorDetails.Othercity.$invalid" class="error">This is requiredd.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.Othercity.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor">
+                                    <h4 class="formTags" >
+                                        Zip / Pincode:<span style="color:#ff0000">*</span>
+                                    </h4>
+                                    <input style="text-align:left" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" type="text" name="zip" class="inputfileds" required="true"  ng-model="donor.MailingPostalCode" maxlength='10'/ >
+                                    <span ng-show="formInvalid && donorDetails.zip.$invalid" class="error">This is required.</span>
+                                     <span ng-show="!(formInvalid && donorDetails.zip.$invalid)" class="error">&nbsp;</span>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor" ng-if="pan">
+                                        <h4 class="formTags" >
+                                            PAN:<span style="color:#ff0000" ng-if="pan">*</span><span style="color:#ff0000" ng-if="!pan">&nbsp;</span>
+                                        </h4>
+                                        <input type="text" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" name="pan" class="inputfileds"  ng-required="pan"  ng-model="donor.DN_PAN__c" maxlength='10' minlength='10' ng-pattern="/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/"/>
+                                        <span ng-show="formInvalid && donorDetails.pan.$invalid" class="error" >This is required. Please Enter below format <br/>(First 5 digits alpha followed by 4 numbers followed by one alpha, e.g - ABCDE1234F)</span>
+                                        <span class="error" ng-show="(!donorDetails.pan.$invalid && donorDetails.pan.$error.minlength)">Invalid PAN details</span>
+                                        <span class="error" ng-show="!(!donorDetails.pan.$invalid && donorDetails.pan.$error.minlength)">&nbsp;</span>
+                                    </div>
+                                    <div class="row rowNewDonor" ng-if="passport">
+                                        <h4 class="formTags" >
+                                            Passport Number:<span style="color:#ff0000" ng-if="passport">*</span><span style="color:#ff0000" ng-if="!passport">&nbsp;</span>
+                                        </h4>
+                                        <input type="text" name="passport" class="inputfileds"  ng-required="passport"  ng-model="donor.DN_Passport_Number__c" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" maxlength='15'/>
+                                        <span ng-show="formInvalid && donorDetails.passport.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.passport.$invalid)" class="error">&nbsp;</span>
+                                    </div>
+                                </td>
+                                <td style="width:50%">
+                                    <div class="row rowNewDonor" ng-if="pan">
+                                        <h4 class="formTags" >
+                                            Aadhar No:<!--span style="color:#ff0000">*</span-->
+                                        </h4>
+                                        <input type="text" name="aadharNo" class="inputfileds" ng-model="donor.Aadhar_number__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="12" minlength="12"/>
+                                        <!--span ng-show="formInvalid && donorDetails.aadharNo.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formInvalid && donorDetails.aadharNo.$invalid)" class="error">&nbsp;</span!-->
+                                    </div> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="buttonsdiv" align="right" style="width: 20%;margin-top:10px;padding: 1%;margin-left:72%">
+                        <!-- <input style="
+                                      height: 50px;
+                                      width: 100%;
+                                      position: relative;
+                                      top: -18px;
+                                      " type="button" value="Pay Now" class="buttons"  ng-click="donate(getTotalAmount(),getNoOfstudents(),currency);" ng-disabled="!totalAmountForDonate || minAmountRequired"/> -->
+                        <md-button class="md-raised mdproceed-btn" style="
+                                      height: 50px;
+                                      width: 100%;
+                                      position: relative;
+                                      top: -18px;" ng-click="donate(getTotalAmount(),getNoOfstudents(),currency);" ng-disabled="!totalAmountForDonate || minAmountRequired">Pay Now</md-button>
+                    </div>
+                </form>
+            </div>
+            <div class="background" ng-show="donorDetailsPopup" >
+            </div>
+        </body>
+    </html>
+</apex:page>

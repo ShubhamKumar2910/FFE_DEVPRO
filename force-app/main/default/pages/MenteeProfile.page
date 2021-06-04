@@ -1,0 +1,697 @@
+<apex:page sidebar="false" showHeader="false"
+           standardStylesheets="false"
+           applyhtmltag="false"
+           cache="false"
+           doctype="html-5.0"
+           controller="MentorDetailPageController"
+           >
+    
+    <html >
+        
+        <title>Student Profile</title>
+        <head>
+            <c:MentorshipScripts />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-animate.min.js')}"/>  
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-aria.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-sanitize.min.js')}"/>  
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/ui-bootstrap-tpls.min.js')}"/>  
+            <apex:stylesheet value="{!URLFOR($Resource.mentorship_resource, '/styles/w3.min.css')}"/>
+           
+          
+            <script >
+                var app = angular.module('Student', []);
+                app.controller('studentProfile', function($scope) {
+                    $scope.studentDetails;
+                    var menteeId = '{!$CurrentPage.parameters.MenteeId}';
+                    var mentorId = '{!$CurrentPage.parameters.Id}';
+                    $scope.showSpinner = false;
+                    //var menteeId = window.location.origin+'/?id=';
+                    $scope.getMenteeInfo = function(){
+                        $scope.showSpinner = true;
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorDetailPageController.getMenteeProfileDetails}',
+                                menteeId,
+                            function(result,event){
+                                if(event.status){
+                                    $scope.studentDetails = result;
+                                }
+                                else if (event.type==='exception'){
+                                    alert(event.message);
+                                }else{
+                                    alert(event.message);
+                                }
+                                $scope.showSpinner = false;
+                                $scope.$apply();
+                            },
+                            {escape:true}
+                        );
+                    }
+                    $scope.getMenteeInfo();
+                    
+                        
+                    $scope.goBack = function(){
+                        let mainURL = window.location.origin+'/mentorship';
+                        window.location.replace(mainURL + "/"+'MentorPortal?id='+mentorId+'&pageType=Student');
+                    }
+                });
+
+            </script>
+           
+            <style>
+                
+                html{
+                    font-size: 10pt !important;
+                }
+                body{
+                    font-family: 'Source Sans Pro', sans-serif;
+                    color:#373c44;
+                    background: #fff;
+                    width: 100% !important;
+                    margin: 0 auto !important;
+                    margin-left:0% !important;
+                }
+                .materialIcons{
+                    width:18px;
+                    cursor:pointer;
+                }
+                input,textarea{
+                    font-family: 'Source Sans Pro', sans-serif;
+                }
+                .header{
+                    width:100%;
+                    float:left;
+                    background-color:#4c4c4c;
+                    
+                }
+                .headerTags{
+                    color:#ffad41;
+                }
+                .row{
+                    width: 47%;
+                    float: left;
+                    padding: 1%;
+                    margin-left: 0px;
+                }
+                .formTags,.tagnames{
+                    margin:0;
+                    padding:0px 0px;
+                    color: #032559;
+                    font-size:10pt;
+                }
+                .inputfileds{
+                    width: 90%;
+                    float: left;
+                    min-height: 30px;
+                    border: 1px solid rgba(99, 97, 121, 0.49);
+                    border-radius: 5px;
+                    padding: 0;
+                    resize:none;
+                    padding-left: 8px;
+                }
+                .inputfiledsSelect{
+                    width: 90%;
+                    float: left;
+                    min-height: 32px;
+                    border: 1px solid rgba(99, 97, 121, 0.49);
+                    border-radius: 5px;
+                    padding: 0;
+                    padding-left: 8px;
+                }
+                .inputfiledsmdSelect{
+                    width: 90%;
+                    float: left;
+                    min-height: 32px;
+                    border-radius: 5px;
+                    padding: 0;
+                }
+                .formDiv {
+                    width: 97%;
+                    float: left;
+                    margin-bottom: 30px;
+                    margin-left: 1.5%;
+                    border: 2px solid #032559;
+                    padding-bottom: 15px;
+                }
+                .formheadings{
+                    width: 100%;
+                    float: left;
+                    margin: 0;
+                    padding: 10px 0px 10px 0;
+                    background: #032559;
+                    color: #fff;
+                }
+                .rowsHistoryDiv>.historyTable:nth-child(even) {background: #eee}
+                .radioInputs{
+                    float: left;
+                    margin-top: 6px;
+                }
+                .buttonsdiv{
+                    width:100%;
+                    float:left;
+                    margin-bottom:30px;
+                }
+                .buttons{
+                    border-radius:3px;
+                    height: 30px;
+                    color: #fff;
+                    font-size: 11pt;
+                    border: none;
+                    cursor: pointer;
+                    min-width: 10%;
+                    background: #ff793c;
+                    max-width:100%;
+                }
+                .logo{
+                    float:left;
+                }
+                
+                .headermenuSelection ul li{
+                    padding: 10px 2px;
+                    color: rgb(84,84,80);
+                    text-decoration: none;
+                    font-weight: bold;
+                    font-size: 0.8em;
+                    cursor: pointer;
+                    outline: none;
+                    text-align: center;
+                    display: inline-block;
+                    outline: none;
+                }
+                .headermenuSelection ul {
+                    list-style-type: none;
+                    color: #000;
+                    margin: 0PX 0PX 0PX 0PX;
+                    font-size:large;
+                }
+
+                .headermenuSelection {
+                    float: left;
+                    background: #032559;
+                    width: 90%;
+                    margin: 0 auto;
+                    position: fixed;
+                    margin-top: 112px;
+                    z-index: 111;
+                    left: 5%;
+                    top: 0;
+                    
+                }
+                .headermenuSelection ul li a{
+                    padding: 10px 30px;
+                    text-decoration:none;
+                    font-weight: bold;
+                    color: rgb(84,84,80);
+                    cursor: pointer;
+                    outline: none;
+                    color:#fff;
+                    font-size:11pt;
+                    
+                }
+                .headermenuSelection ul li a:hover {
+                    color: #f8d308;
+                }
+                .headermenuSelection ul li:hover {
+                    color: #f8d308;
+                }
+                .common {
+                    position:relative;
+                    top:150px;
+                    //overflow: auto;
+                    width: 97%;
+                    margin: 0 auto;
+                    border-top: none;
+                    padding: 0 20px;
+                    margin-top: 30px;
+                }
+                .active {
+                    background: #ff793c;
+                }
+
+                .historyTable{
+                    margin: 10px 0;
+                    float:left;
+                    width:100%;
+                    table-layout:fixed;
+                    border: 1px solid #dddddd;
+                    border-collapse: collapse;
+                    background: #fff;
+                }
+                .rowsHistory th, .rowsHistory td{
+                    word-wrap: break-word;
+                    border: 1px solid #dddddd;
+                    padding: 8px 4px;
+                    font-size: 10pt;
+                }
+                .rowsHistory th{
+                    color: #fff;
+                }
+                .currencyDiv{
+                    margin-bottom:20px;
+                }
+                .searchDiv{
+                    margin-top:150px;
+                    margin-bottom:25px;
+                    background: #fff;
+                    padding-bottom:10px;
+                }
+                .searchDiv, .searchRow{
+                    float:left;
+                    width:100%;
+                }
+
+                .searchCol{
+                    float: left;
+                    width: 45%;
+                    padding: 1% 2%;
+                }
+                .searchColPopup{
+                    float:left;
+                    width:45%;
+                }
+                .searchTags{
+                    float:left;
+                    margin-right:10px;
+                    color: #032559;
+                    font-size:11pt;
+                }
+                .searchTagsPopup{
+                    float:left;
+                    margin-right:10px;
+                    color: #032559;
+                    font-size:10pt;
+                    min-width: 40%;
+                }
+                .searchRadio{
+                    float: left;
+                    margin-top: 16px;
+                }
+                .tableHeading{
+                    float: left;
+                    width: 100%;
+                    color: #ff793c;
+                }
+                .searchFields{
+                    min-width:40%;
+                }
+                .studentAllocationPopUp{
+                    width: 87%;
+                    margin: 0 auto;
+                    position: fixed;
+                    top: 50px;
+                    z-index: 130;
+                    background: #fff;
+                    left: 5%;
+                    box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+                    min-height: 200px;
+                    max-height: 520px;
+                    overflow: auto;
+                    padding: 20px;
+                    border-radius: 0px 10px 10px 10px;
+                    
+                }
+                .studentAllocationPopUpExtraDonors{
+                    width: 87%;
+                    margin: 0 auto;
+                    position: fixed;
+                    top: 50px;
+                    z-index: 141;
+                    background: #fff;
+                    left: 5%;
+                    box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+                    min-height: 200px;
+                    max-height: 520px;
+                    overflow: auto;
+                    padding: 20px;
+                    border-radius: 0px 10px 10px 10px;    
+                }
+                .background{
+                    width: 100%;
+                    height: 100%;
+                    position: fixed;
+                    opacity: 0.2;
+                    background: #000;
+                    top: 0;
+                    z-index: 129;
+                    left:0;
+                }
+                .backgroundForExtraDonor{
+                    width: 100%;
+                    height: 100%;
+                    position: fixed;
+                    opacity: 0.5;
+                    background: #000;
+                    top: 0;
+                    z-index:140;
+                    left:0;
+                }
+                .titleHead{
+                    margin-top: 125px;
+                }
+                .inputfileds:-moz-read-only {
+                    background-color: #eee;
+                }
+
+                .inputfileds:read-only { 
+                    background-color: #eee;
+                }
+
+                /*.tdInput :read-only { 
+                    background-color: #eee;
+                }*/
+
+                .inputfileds:disabled { 
+                    background-color: #eee;
+                }
+                textarea:-moz-read-only { 
+                    background-color: #eee;
+                }
+
+                textarea:read-only { 
+                    background-color: #eee;
+                }
+                .buttons:disabled { 
+                    cursor: not-allowed;
+                    color:#ccc;
+                }
+                .inputfiledsSelect:disabled{
+                    background-color: #eee;
+                }
+                md-datepicker[disabled] .md-datepicker-input-container {
+                    border-bottom-color: transparent;
+                    background: #eee;
+                    margin: 0;
+                    width: 100%;
+                }
+                .loadingBackground {
+                    position: fixed;
+                    height: 100%;
+                    width: 100%;
+                    background: #F6F6F6;
+                    z-index: 11111;
+                    opacity: 0.7;
+                    top: 0px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                }
+
+                .loading {
+                    top: 50%;
+                    left: 50%;
+                    margin: -50px 0px 0px -50px;
+                    z-index: 111111;
+                    position: fixed;
+                }
+                .tdInput{
+                    max-width: 100%;
+                    min-height: 25px;
+                    border: 1px solid rgba(99, 97, 121, 0.49);
+                    border-radius: 5px;
+                }
+                .mdCont{
+                    margin: 0;
+                    width: 76%;
+                    margin-top: 0px !important;
+                    padding: 9px 9px;
+                }
+                .mdContPopup{ 
+                    margin: 0;
+                    width: 50%;
+                    margin-top: 0px !important;
+                    padding: 2px 2px;
+                }
+                .thRow{
+                    background: #032559;
+                }
+                .error{
+                    color: rgb(255, 0, 0);
+                    float: left;
+                    display:block;
+                    width:100%;
+                }
+                input[type=number]{
+                    text-align:right;
+                }
+                .tdInputSelection{
+                    min-width: 80%;
+                    max-width: 80%;
+                }
+                .imagesLogin{
+                    width: 43%;
+                    float: left;
+                    padding:3%;
+                }
+
+                .loginDiv {
+                    width: 40%;
+                    float: left;
+                    position: relative;
+                    top: 155px;
+                    left: 27%;
+                    min-height: 300px;
+                    border: 1px solid #ccc;
+                }
+                .or-container{
+                    text-align: center;
+                    margin: 0;
+                    margin-bottom: 10px;
+                    clear: both;
+                    color: #6a737c;
+                }
+                .or-hr{
+                    margin-bottom: 0;
+                    position: relative;
+                    top: 19px;
+                    height: 0;
+                    border: 0;
+                    border-top: 1px solid #e4e6e8;
+                }
+                hr {
+                    border: 0;
+                    color: #9fa6ad;
+                    background-color: #9fa6ad;
+                    height: 1px;
+                    margin-bottom: 20px;
+                }
+                #or{
+                    display: inline-block;
+                    position: relative;
+                    padding: 10px;
+                    background-color: #FFF;
+                }
+                .buttonDiv{
+                    width:100%;
+                    float:left;
+                    padding-bottom: 40px;
+                }
+                .sweet-alert button.cancel{
+                    background-color:#ff793c !important;
+                }
+                @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+                    body{
+                        font-size:12px;
+                    }
+                }
+                .logout{
+                    float: right;
+                    padding-top: 27px;
+                    padding-right: 23px;
+                }
+                .buttonDropdown{
+                    padding: 0 12px;
+                    margin: 0 0px;
+                    width: 100%;
+                    text-transform: none;
+                    text-align:left;
+                    background-color:#ff793c !important;
+                    color:#fff;
+                }
+                .closePopUp{
+                    position: fixed;
+                    width: 2.5%;
+                    /* text-decoration: none !important; */
+                    /* font-size: 17px !important; */
+                    /* float: left; */
+                    margin-left: -30px;
+                    margin-top: -36px;
+                    border-radius: 100%;
+                    /* padding: 0; */
+                    background: #032559;
+                    outline: none;
+                }
+                .closeIcon{
+                    width: 25px;
+                    margin-left: 5px;
+                    margin-top: 3px;
+                }
+                .tags{
+                    color: #f38b05
+                }
+                ng-form{
+                    float: left;
+                    background: #fff;
+                    width:100%;
+                }
+                .headersHistory {
+                    width: 89.85%;
+                }
+                .switchPages{
+                    width: 100%;
+                }
+
+                .renewalPopup {
+                    width: 60%;
+                    margin: 0 auto;
+                    position: fixed;
+                    top: 8%;
+                    z-index: 130;
+                    background: #fff;
+                    left: 20%;
+                    box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+                    min-height: 125px;
+                    max-height: 520px;
+                    overflow: auto;
+                    padding: 20px;
+                    border-radius: 10px;
+                }
+                .readInput{
+                    background:#eee;
+                }
+                input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+                    -webkit-box-shadow: 0 0 0px 1000px white inset;
+                }
+               
+            </style>
+        </head>
+        <body ng-app="Student" ng-controller="studentProfile" id="myContainerDiv">
+            <div class="loadingSection" id="spinner" ng-if="showSpinner">
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+           
+            <nav class="navbar fixed-top navbar-light bg-light navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <apex:image url="{!$Resource.FFEbanner}" width="50%" height="50%"/>
+                    </a>
+                   
+                   
+                   
+                </div>
+            </nav>
+            <button type="button" ng-click="goBack()" class="btn btn-primary" style="Background-color:#032559;margin-top: 6%;margin-left: 90%;">Back</button>
+            <div style="width:80%;margin-left:10%;">
+                <div class="formDiv" style="margin-top:70px;">
+                    <h4 class="formheadings" align="center">
+                        Basic Information    
+                    </h4>
+                    <div style="width:73%;float:left">
+                        <div class="row">
+                        <h4 class="tagnames" >
+                            Name: 
+                            <span class="tags">{{studentDetails.FirstName}}&nbsp;{{studentDetails.LastName}}</span>
+                        </h4>
+                        </div>
+                        <div class="row">
+                        <h4 class="tagnames" >
+                            Gender: 
+                            <span class="tags">{{studentDetails.Gender__c}}</span>
+                        </h4>
+                        </div>
+                        <div class="row">
+                        <h4 class="tagnames" >
+                            Email: 
+                            <span class="tags">{{studentDetails.Email}}</span>
+                        </h4>
+                        </div>
+                       
+                        <div class="row">
+                        <h4 class="tagnames" >
+                            Student Id: 
+                            <span class="tags">{{studentDetails.FFE_ID__c}}</span>
+                        </h4>
+                        </div>
+                       
+                        <div class="row">
+                        <h4 class="tagnames" >
+                            Phone No: 
+                            <span class="tags">{{studentDetails.Phone}}</span>
+                        </h4>
+                        </div>
+                       
+                    </div>
+                </div>
+              <div class="formDiv">
+                    <h4 class="formheadings" align="center">
+                        Course/College Details
+                    </h4>
+                    <div class="row" >
+                        <h4 class="tagnames" >
+                        College Name: 
+                        <span class="tags" ng-show="studentDetails.College_Name__r.Name!='Other'">{{studentDetails.College_Name__r.Name}}</span>
+                        <span class="tags" ng-show="studentDetails.College_Name__r.Name=='Other'">{{studentDetails.College_Other__c}}</span>
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                        College City: 
+                        <span class="tags">{{studentDetails.College_City__c}}</span>
+                        </h4>
+                    </div>
+                    <!--div class="row" >
+                        <h4 class="tagnames" >
+                        Course: 
+                        <span class="tags">{{studentDetails.Course__c}}</span>
+                        </h4>
+                    </div-->
+                    <div class="row" >
+                        <h4 class="tagnames" >
+                        College State: 
+                        <span class="tags">{{studentDetails.College_State__c}}</span>
+                        </h4>
+                    </div>
+                    <div class="row" >
+                        <h4 class="tagnames" >
+                        Branch/Stream: 
+                        <span class="tags" ng-show="studentDetails.Branch_Stream__c!='Other'">{{studentDetails.Branch_Stream__c}}</span>
+                        <span class="tags" ng-show="studentDetails.Branch_Stream__c=='Other'">{{studentDetails. Branch_Other__c}}</span>
+                        </h4>
+                    </div>
+                    <!--div class="row" >
+                        <h4 class="tagnames" >
+                        College Type: 
+                        <span class="tags">{{studentDetails.Type__c}}</span>
+                        </h4>
+                    </div-->
+                </div>
+                <div class="formDiv">
+                    <h4 class="formheadings" align="center">
+                        Other Details
+                    </h4>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                        Top 4 Mentoring Needs: 
+                        <span class="tags">{{studentDetails.Modules__c}}</span>
+                        </h4>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                        Top two career goals: 
+                        <span class="tags">{{studentDetails.What_are_your_top_two_career_goals__c}}</span>
+                        </h4>
+                    </div>
+                    <div class="row" >
+                        <h4 class="tagnames" >
+                        hobbies and interests: 
+                        <span class="tags">{{studentDetails.hobbies_and_interests__c}}</span>
+                        </h4>
+                    </div>
+                   
+                </div>
+            </div>
+            </body>
+    </html>
+</apex:page>

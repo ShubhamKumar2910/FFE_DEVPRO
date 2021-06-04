@@ -1,0 +1,264 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0">
+    <style>
+        .formDiv {
+        width: 97%;
+        float: left;
+        margin-bottom: 30px;
+        margin-left: 1.5%;
+        border: 2px solid #032559;
+        padding-bottom: 15px;
+        }
+    </style>
+    
+    <div class="formDiv" ng-init="showTabcontent(0)">
+        <h4 class="formheadings" align="center">
+            General Information      
+        </h4> 
+        <form name="regForm" novalidate="true">
+            <div class="row">
+                <h4 class="formTags" >
+                    First Name:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="fName" ng-model="donor.FirstName" class="inputfileds" required="true" ng-readonly="true" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.fName.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.fName.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags">
+                    Last Name:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="lName" class="inputfileds" required="true" ng-model="donor.LastName" ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.lName.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.lName.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags">
+                    Organization:<!--span style="color:#ff0000">*</span-->
+                </h4>
+                <input type="text"  name="organization" class="inputfileds"  ng-model="donor.DN_Organization__c" ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Email:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="text" name="email" class="inputfileds" required="true"  ng-model="donor.Email" ng-readonly="editRead" ng-change="valid(donor.Email)" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.email.$invalid" class="error">This is required.</span>
+                <span class="error" ng-show="(!(regForm.email.$invalid) && invalidEmail)">Invalid email address</span>
+                <span ng-show="!(formInvalid && regForm.email.$invalid) && !(!(regForm.email.$invalid) && invalidEmail)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Mobile:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="tel" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" name="mobile" ng-model="donor.MobilePhone" required="true" class="inputfileds" maxlength="11" minlength="10"  ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.mobile.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.mobile.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Phone:
+                </h4>
+                <input  name="phoneNo" class="inputfileds" ng-model="donor.Phone" onpaste="return isNumber(event)" onkeypress="return isNumber(event)"  ng-maxlength="11" ng-minlength="7" max="11" ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                <span  class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Mailing Address:<span style="color:#ff0000">*</span>
+                </h4>
+                <textarea  name="Permanent" class="inputfileds" required="true"  ng-model="donor.MailingStreet" ng-readonly="editRead" style="min-height: 98px;" ng-class="{readInput: editRead}"></textarea>
+                <span ng-show="formInvalid && regForm.Permanent.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.Permanent.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <!--div class="row">
+<h4 class="formTags" >
+Communication Address:<span style="color:#ff0000">*</span>
+</h4>
+<textarea  name="Communication" class="inputfileds" required="true"  ng-model="donor.Communication_Address__c" ng-readonly="editRead"></textarea>
+<span ng-show="formInvalid && regForm.Communication.$invalid" style="color:#ff0000">This is required.</span>
+</div-->
+            <div class="row">
+                <h4 class="formTags" >
+                    City:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="city" class="inputfileds" required="true"  ng-model="donor.MailingCity" ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.city.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.city.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags">
+                    State:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="State" class="inputfileds" required="true"  ng-model="donor.MailingState" ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.State.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.State.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Country:<span style="color:#ff0000">*</span>
+                </h4>
+                <input type="text" onpaste="return isChar(event)" onkeypress="return isChar(event)" name="country" class="inputfileds" required="true"  ng-model="donor.MailingCountry" ng-readonly="editRead" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.country.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.country.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Zip:<span style="color:#ff0000">*</span>
+                </h4>
+                <input style="text-align:left" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" type="text" name="zip" class="inputfileds" required="true"  ng-model="donor.MailingPostalCode" ng-readonly="editRead" maxlength="10" ng-class="{readInput: editRead}"/ >
+                <span ng-show="formInvalid && regForm.zip.$invalid" class="error">This is required.</span>
+                <span ng-show="!(formInvalid && regForm.zip.$invalid)" class="error">&nbsp;</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Citizenship :<span style="color:#ff0000">*</span>
+                </h4> 
+                <select name="ResidentialStatus" required="true"  class="inputfiledsSelect" ng-model="donor.DN_Citizenship__c"  ng-disabled="editRead" ng-change="residential(donor.DN_Citizenship__c);">
+                    <option ng-repeat="scholarResidenstilPickValue in scholarResidenstilPickValues" value="{{scholarResidenstilPickValue}}">{{scholarResidenstilPickValue}}</option>
+                </select>
+                <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">This is required.</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    PAN:<span style="color:#ff0000" ng-if="pan">*</span><span style="color:#ff0000" ng-if="!pan">&nbsp;</span>
+                </h4>
+                <input type="text" name="pan" ng-readonly="displayPassport" class="inputfileds"  ng-required="pan"  ng-model="donor.DN_PAN__c" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" minlength='10' maxlength='10' ng-pattern="/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/" ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">&nbsp;</span>
+                <span ng-show="formInvalid && regForm.pan.$invalid" class="error">This is required. Please Enter this format (First 5 digits alpha followed by 4 numbers <br/>followed by one alpha, e.g - ABCD1234E)</span>
+                <span class="error" ng-show="(!regForm.pan.$invalid && regForm.pan.$error.minlength)">Invalid PAN details</span>
+            </div>
+            <div class="row" >
+                <h4 class="formTags" >
+                    Aadhaar No:<span style="color:#ff0000" ng-if="pan">*</span>
+                </h4>
+                <input type="text" name="userAadhar" ng-readonly="editRead" ng-model="donor.Aadhar_number__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="12" minlength="12" />
+                <span ng-show="AadharMandatory" class="error">&nbsp;Enter your 12 digit Aadhar number.</span>
+                <!--span ng-show="(formInvalid && studentForm.userAadhar.$error.minlength) || (formInvalid &&studentForm.userAadhar.$error.maxlength)" class="error">Adhar Number length should be 12 digits</span-->
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Passport Number:<span style="color:#ff0000" ng-if="passport">*</span><span style="color:#ff0000" ng-if="!passport">&nbsp;</span>
+                </h4>
+                <input type="text" name="passport" ng-readonly="displayPan" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" class="inputfileds"  ng-required="passport"  ng-model="donor.DN_Passport_Number__c"  maxlength='15' ng-class="{readInput: editRead}"/>
+                <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">&nbsp;</span>
+                <span ng-show="formInvalid && regForm.passport.$invalid" class="error">This is required.</span>
+            </div>{{donor.Passport_File__c}}
+            <div class="row" ng-if="donor.IsPassportUploaded__c && editRead">
+                <h4 class="formTags" >
+                    Attached Passport File 
+                </h4>
+                <div class="inputfileds" >
+                    <a style="position: relative;top: 4px;left: 1px;" href="/donor/servlet/servlet.FileDownload?file={{passportFileId}}" target="_blank">{{passportFileName}}</a>
+                </div>
+                <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">&nbsp;</span>
+            </div>
+            <div class="row" ng-if="!editRead">
+                <h4 class="formTags" >
+                    Choose file (Passport):<span style="color:#ff0000" ng-if="passport">*</span><span style="color:#ff0000" ng-if="!passport">&nbsp;</span>
+                </h4>
+                <input type="file" name="passportatch" class="inputfileds" id="passportfile" ng-disabled="displayPan"/>
+                <span ng-show="formInvalid && regForm.ResidentialStatus.$invalid" class="error">&nbsp;</span>
+                <span ng-show="Nofile" class="error">This is required.</span>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    FFE UID:
+                </h4>
+                <input type="text" name="scholorId" class="inputfileds readInput" ng-model="donor.FFE_ID__c" ng-readonly="true"/>
+            </div>
+            <div class="row"><!-- if not to display donor category type for scholar use ng-if="showCategoryForNonScholarDonor"-->
+                <h4 class="formTags" >
+                    Category:
+                </h4>
+                <!--input type="text" name="ResidentialStatus" class="inputfileds" required="true"  ng-model="donor.Residential_Status__c" /-->
+                <select name="DN_Donor_Category__c"   class="inputfiledsSelect" ng-model="donor.DN_Donor_Category__c" ng-disabled="true">
+                    <option value='' label="--Select--"/>
+                    <option ng-repeat="donorCategories in donorCategory" value="{{donorCategories}}"> {{donorCategories}}</option>
+                </select>
+            </div>
+            <h5 style="float: left;width: 96%;margin: 0;color:#ff793c;font-size:11pt;padding-left: 13px;margin-top: 16px;">
+                For FFE Alumni, please provide following details
+            </h5>
+            <div class="row">
+                <h4 class="formTags" >
+                    FFE Scholar ID:
+                </h4>
+                <input type="text" name="scholorId" class="inputfileds" ng-model="donor.DN_FFE_Scholar_ID__c" ng-readonly="true" ng-class="{readInput: editRead}"/>
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Scholar year of Graduation:
+                </h4>
+                <input type="text" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" name="scholorId" class="inputfileds" ng-model="donor.DN_Year_Of_Graduation__c" ng-readonly="displayYearOfGraduation" maxlength="4" ng-class="{readInput: editRead}"/>
+            </div>
+        </form>
+    </div>
+    
+    <div class="formDiv">
+        <h4 class="formheadings" align="center">
+            Donor Preferences Information
+        </h4>
+        <div class="row" style="width:95%">
+            <h4 class="formTags" >
+                Special Requests/Comments 
+            </h4>
+            <textarea  name="Permanent" class="inputfileds" required="true"  ng-model="donor.DN_Special_Request_Comments__c" style="width:97%;min-height:98px;" ng-readonly="editRead" ng-class="{readInput: editRead}"></textarea>
+        </div>
+    </div>
+    
+    <div class="formDiv">
+        <h4 class="formheadings" align="center">
+            Login Information
+        </h4>	
+        <div style="width:100%;float:left">
+            <form name="gmailvalidation">
+                <div class="row">
+                    <h4 class="formTags" >
+                        Do you have Google login:
+                    </h4>
+                    <div class="radioInputs">
+                        <input type="radio" name="Glogin" ng-model="donor.Do_you_have_Google_login__c" ng-value="true" class="" ng-disabled="editRead" ng-change='gValue(donor.Do_you_have_Google_login__c)'/>Yes
+                        <input type="radio" name="Glogin" ng-model="donor.Do_you_have_Google_login__c" ng-value="false" class="" ng-disabled="editRead" ng-change='gValue(donor.Do_you_have_Google_login__c)'/>No
+                    </div>
+                </div>
+                <div class="row" ng-if="donor.Do_you_have_Google_login__c">
+                    <h4 class="formTags" >
+                        Google Email Id:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="gmail" class="inputfileds" ng-model="donor.Google_login_ID__c" ng-readonly="editRead" ng-change="valid(donor.Google_login_ID__c)" required="true" ng-class="{readInput: editRead}"/>
+                    <span ng-show="formInvalid && gmailvalidation.gmail.$invalid" class="error">This is required.</span>
+                    <span class="error" ng-show=" (!(gmailvalidation.gmail.$invalid) && invalidGmail)">Invalid  gmail address</span>
+                    <span class="error" ng-show="notGmail">Please Enter your gmail Id</span>
+                </div>
+            </form>
+        </div>
+        <div style="width:100%;float:left">
+            <form name="emailvalidation">
+                <div class="row">
+                    <h4 class="formTags" >
+                        Do you have Facebook login:
+                    </h4>
+                    <div class="radioInputs">
+                        <input type="radio" name="Flogin" ng-model="donor.Do_you_have_Facebook_login__c" ng-value="true" class="" ng-disabled="editRead" ng-change='fbValue(donor.Do_you_have_Facebook_login__c)'/>Yes
+                        <input type="radio" name="Flogin" ng-model="donor.Do_you_have_Facebook_login__c" ng-value="false" class="" ng-disabled="editRead" ng-change='fbValue(donor.Do_you_have_Facebook_login__c)'/>No
+                    </div>
+                </div> 
+                <div class="row" ng-if="donor.Do_you_have_Facebook_login__c">
+                    <h4 class="formTags" >
+                        Email Id used for Facebook:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="fmail" class="inputfileds" ng-model="donor.Facebook_login_ID__c" ng-readonly="editRead" ng-change="valid(donor.Facebook_login_ID__c)" required="true" ng-class="{readInput: editRead}"/>
+                    <span ng-show="formInvalid && emailvalidation.fmail.$invalid" class="error">This is required.</span>
+                    <span class="error" ng-show="(!(emailvalidation.fmail.$invalid) && invalidFEmail)">Invalid email address</span>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="buttonsdiv" align="center"> 
+        <div ng-if="!disableEditandMakeDonationForLiveImpact">
+            <input type="button" value="Edit" class="buttons" ng-disabled="disableEditandMakeDonationForLiveImpact" ng-click="edit();" ng-show="editRead"/>
+        </div>
+        <input type="button" value="Save" class="buttons"  ng-click="updateInfo();" ng-show="!editRead"/>
+        <input type="button" value="Cancel" class="buttons" ng-click="cancelChanges();" ng-show="!editRead"/>
+    </div>
+</apex:page>

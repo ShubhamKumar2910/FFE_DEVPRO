@@ -1,0 +1,193 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="AP_FacilitatorAssignment_CTRL">
+    <html ng-app="Facilitator">
+        <title>Facilitator Assignment</title>
+        <head>
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.facilitator}">
+            </script>
+            <script>
+             var listOfStates ={!listOfStates};
+            </script>
+            <style>
+                .tdInput {
+                max-width: 80%;
+                min-height: 25px;
+                border: 1px solid rgba(99, 97, 121, 0.49);
+                border-radius: 5px;
+                min-width: 80%;
+                }
+                 .md-select-menu-container{
+                z-index: 1311;
+                }
+                md-backdrop.md-select-backdrop{
+                z-index:1311;
+                }
+                
+            </style>
+        </head>
+        <body ng-controller="FacilitatorAssign" id="myContainerDiv">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                  <div style="float:right;position: relative;top: 35px;">
+                    <a href="/home/home.jsp">
+                    <apex:image url="{!$Resource.home}" styleClass="logo"/>
+                    </a>
+                </div> 
+            </div>
+            <div class="headermenuSelection">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                    Facilitator Assignment
+                </h3>
+            </div>
+                
+            <div class="searchRow" style="margin-top:170px;">
+                <div class="searchCol">
+                    <h3 class="searchTags" align="right" >
+                      State
+                    </h3> 
+                    <md-input-container class="mdCont">
+                        <md-select  ng-model="state" style="border: 1px solid #ccc;" ng-change="getCities(state)">
+                            <md-optgroup >
+                                <md-option ng-value="listOfState.Label" ng-repeat="listOfState in listOfStates">{{listOfState.Label}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div class="searchCol">
+                    <h3 class="searchTags" align="right" >
+                      City
+                    </h3> 
+                    <md-input-container class="mdCont" >
+                        <md-select  ng-model="city" style="border: 1px solid #ccc;">
+                            <md-optgroup >
+                                <md-option value="" label="--Select Frequency--" selected="true">--Select--</md-option>
+                                <md-option ng-value="listOfCity.City__c" ng-repeat="listOfCity in listOfCities">{{listOfCity.City__c}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+            
+                <div class="searchRow" align="center" style="margin-top: 16px;">
+                    <input type="button" value="Search by Mailing Address" class="buttons"  ng-click="search(1);"/>
+                    <input type="button" value="Search by Current Address" class="buttons"  ng-click="search(2);"/>
+                    <input type="button" value="Clear" class="buttons"  ng-click="clear();"/>
+                </div>
+            
+            <!-- gourab start -->
+             
+            <!-- gourab end -->
+            
+            <table class="historyTable" ng-show="isStudents">
+                <thead>
+                    <tr class="rowsHistory thRow" >
+                        <th>Student Name</th>
+                        <th>Student ID</th> 
+                        <th>Student Mobile No.</th>
+                        <th>Parent Mobile No.</th>
+                        <th>Student Location</th>
+                        <th>Referred by Facilitator</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody> 
+                    <tr align="center" class="rowsHistory" ng-repeat="list in listofstudents">
+                        <td>{{list.Name}}</td>
+                        <td><a href='/{{list.Id}}' target="_blank">{{list.FFE_ID__c}}</a></td>
+                        <td>{{list.MobilePhone}}</td>
+                        <td>{{list.Parent_Mobile__c}}</td>
+                        <td>{{list.MailingCity}}</td>
+                        <td >{{list.Refered_by_Facilitator_Name__c}}<span ng-if="list.Refered_by_Facilitator_Id__c !=undefined">({{list.Refered_by_Facilitator_Id__c}})</span></td>
+                        <td>
+                          <input type="button" value="Match Facilitator" class="buttons" ng-click="matchFacilitator(state,city,list)"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            <div class="studentAllocationPopUpExtraDonors" ng-if="facilitatorMap">
+                <div class="material-icons closePopUp" ng-click="closePopup();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                     <div class="searchCol" style="width:95%">
+                    <h3 class="searchTags" align="right" style="width:25%"> 
+                      City
+                    </h3> 
+                    <md-input-container class="mdCont" style="width:45%">
+                        <md-select  ng-model="cityValue" style="border: 1px solid #ccc;" ng-change="matchFacilitator(state,cityValue,student)">
+                            <md-optgroup >
+                                <md-option ng-value="listOfCity.City__c" ng-repeat="listOfCity in listOfCities">{{listOfCity.City__c}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                </div>
+             
+                 <table class="historyTable" ng-show="isFacils">
+                <thead>
+                    <tr class="rowsHistory thRow" >
+                        <th>Facilitator Name</th>
+                        <th>Facilitator ID</th> 
+                        <th>Facilitator Street</th>
+                        <th>Facilitator City</th>
+                        <th>Facilitator State</th>
+                        <th>Facilitator PostalCode</th>
+                        <th>Working Mode</th>
+                        <th>Mobile No</th>
+                        <th>Facilitator Load</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody> 
+                    <tr align="center" class="rowsHistory" ng-repeat="list in listofFacilitators">
+                        <td>{{list.Name}}</td>
+                        <td><a href='/{{list.Id}}' target="_blank">{{list.FFE_ID__c}}</a></td>
+                        <td>{{list.MailingStreet}}</td>
+                        <td>{{list.MailingCity}}</td>
+                        <td>{{list.MailingState}}</td>
+                        <td>{{list.MailingPostalCode}}</td>
+                        <td>{{list.Working_Mode__c}}</td>
+                        <td>{{list.MobilePhone}}</td>
+                        <td ng-if="list.Facilitator_Load__c != undefined">{{list.Facilitator_Load__c}}</td>
+                        <td ng-if="list.Facilitator_Load__c == undefined">0</td>
+                        <td>
+                          <input type="radio" value="radioButton" class="buttons" ng-model="isChecked" name="list" ng-change="selectedRow(list);"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+                
+                 <div class="searchRow" align="center" style="margin-top: 16px;" ng-if="isFacils">
+                    <input type="button" value="Create Facilitator Mapping" class="buttons"  ng-click="createMapping();"/>
+                    <input type="button" value="Cancel" class="buttons"  ng-click="closePopup();"/>
+                </div>
+            </div>
+             <div class="background" ng-if="facilitatorMap">
+            </div>
+        </body>
+    </html>
+</apex:page>

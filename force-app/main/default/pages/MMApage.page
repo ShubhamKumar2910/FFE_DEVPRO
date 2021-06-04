@@ -1,0 +1,73 @@
+<apex:page standardController="Mentor_Mentee_Association__c" extensions="MMAcontroller" recordSetVar="Member" showHeader="false" sidebar="false">
+    <!--apex:pageBlock >
+        <apex:pageBlockTable value="{!memList}" var="M">
+            <apex:column value="{!M.mentee_del__c}"/>
+            <apex:column value="{!M.Mentor__c}"/>
+            <apex:column value="{!M.Status__c}"/>
+       </apex:pageBlockTable>
+    </apex:pageBlock-->
+    <html>
+        <head>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.js">
+            </script>
+            <style>
+            </style>
+        </head>
+        <body ng-app="myapp" ng-controller="myctrl">
+            <div>
+                <select ng-model="selectedName" >
+                    <option ng-repeat="x in emailTempList" >{{x.Name}}</option>
+                </select>
+                <button ng-click="sendTempId(selectedName)">
+                    Submit
+                </button>
+            </div>
+        </body>
+        <script>
+        
+        var app=angular.module('myapp',[]);
+        app.controller('myctrl',function($scope){
+            
+            debugger;
+            $scope.selectedName;
+            $scope.getTemplateList=function(){
+                $scope.emailTempList=[];
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.MMAcontroller.ffeEmailTemps}',
+                    function(result,event){
+                        if(event.status){
+                            $scope.emailTempList=result;
+                            $scope.$apply();
+                        }
+                        else if (event.type==='exception'){
+                            alert(event.message);
+                        }else{
+                            alert(event.message);
+                        }
+                    },
+                    {escape:true}
+                );
+            } 
+            $scope.getTemplateList();
+            $scope.sendTempId = function(param){
+                debugger;
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.MMAcontroller.sendEmail}',
+                    param,
+                    function(result,event){
+                        debugger;
+                        if(result,event){
+                            alert(result);
+                        }else if (event.type==='exception'){
+                            alert(event.message);
+                        }else{
+                            alert(event.message);
+                        }
+                    },
+                    {escape:true}
+                );
+            }
+        });
+        </script>
+    </html>
+</apex:page>

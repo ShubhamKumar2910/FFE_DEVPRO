@@ -1,0 +1,505 @@
+<apex:page doctype="html-5.0" showheader="false"
+           sidebar="false"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false"
+           controller="DN_DonorAllocation_CTRL">
+    <html ng-app="DonorAllocation">
+        <title>Multi Donor Allocation</title>
+        <head>
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <script src="{!$Resource.angular_min}"></script>
+            <script src="{!$Resource.angular_route}"></script>
+            <script src="{!$Resource.angular_animate}"></script>
+            <script src="{!$Resource.angular_aria}"></script>
+            <script src="{!$Resource.angular_msg}"></script>
+            <script src="{!$Resource.angularMaterialJs}"></script>
+            <script src="{!$Resource.sweetalertsJs}"></script>
+            <script src="{!$Resource.sliderJS}"></script>
+            <script src="{!$Resource.donorAllocation}"></script>
+            <style>
+                /*body.md-default-theme, body, html.md-default-theme, html {
+                color: rgba(0,0,0,0.87);
+                background-color: #fff;
+                }*/
+                .md-select-menu-container{
+                    z-index: 131;
+                }
+            md-backdrop.md-select-backdrop{
+                z-index:131;
+            }
+            input[type=search]{
+                width: 98%;
+                border: 1px solid #ccc;
+                height: 30px;
+                padding: 2px;
+                outline:none;
+            }
+            .studentAllocationPopUp{
+                overflow-x: hidden;
+            }
+            </style>
+            <script>
+                var studentClzRatingPicklistValues  = {!studentClzRatingPicklistValues};
+            var studentCoursePicklistValues     = {!studentCoursePicklistValues};
+            var studentCourseYearPicklistValues = '{!studentCourseYearPicklistValues}';
+            var CourseBEBTech                   = {!CourseBEBTech};
+            var CourseMBBS                      = {!CourseMBBS};
+            var CourseIntegratedMTech           = {!CourseIntegratedMTech};
+            //var listOfGAUS                        = {!listOfGAUS};
+             var DonorCategory = {!DonorCategory1};
+            var listOfPrgms                     = {!listOfPrgms};
+            var listOfStates                    = {!listOfStates};
+            var genderList                      = {!genderList};
+            var branchList                      = {!branchList};
+            var maxIncome                       = '{!maxIncome}';
+            var countryList                     = {!countryList};
+            var ScholarList                     = {!ScholarList};
+            var priorityList                    = {!priorityList};
+            </script>
+        </head>
+        <body ng-controller="donorAllocation">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                <div style="float:right;position: relative;top: 35px;">
+                    <a href="/home/home.jsp">
+                        <apex:image url="{!$Resource.home}" styleClass="logo"/>
+                    </a>
+                </div>
+            </div>
+            <div class="headermenuSelection">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                    Multi Donor Allocation
+                </h3>
+            </div>
+            <br/>
+
+            <div class="studentAllocationPopUp" style="margin-bottom:10px" ng-show="chooseDonorMapping">
+                <div class="material-icons closePopUp" ng-click="cancelDonorMapping();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="searchRow">
+                    <div class="searchCol">
+                        <h3 class="searchTags" align="right">
+                            Country
+                        </h3>
+                        <md-input-container class="mdCont" >
+                            <md-select  ng-model="countrySelected" style="border: 1px solid #ccc;" ng-change="getCityList(countrySelected)">
+                                <md-optgroup >
+                                    <md-option ng-value="country.DeveloperName" ng-repeat="country in countryList">{{country.Label}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchCol">
+                        <h3 class="searchTags" align="right">
+                            State
+                        </h3>
+                        <md-input-container class="mdCont" >
+                            <md-select  ng-model="locationSelected" multiple="true" style="border: 1px solid #ccc;"  md-on-close="clearLocation()" ng-change="">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="searchLoc" type="search" class="demo-header-searchbox md-text"  />
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelected" layout-fill='' value="all" ng-click="locations()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelected" layout-fill='' value="all" ng-click="locations()">Deselect All</md-button>
+                                    <md-option ng-value="location" ng-repeat="location in listOfStates | filter:searchLoc">{{location}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                
+                <div class="searchRow">
+                    <div class="searchCol" >
+                        <h3 class="searchTags" align="right">
+                            Program
+                        </h3>
+                        <md-input-container class="mdCont" >
+                            <md-select ng-model="gauSelected" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearGau()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="searchGau" type="search" class="demo-header-searchbox md-text"/>
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedGau" layout-fill='' value="all" ng-click="gau()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedGau" layout-fill='' value="all" ng-click="gau()">Deselect All</md-button>
+                                    <md-option ng-value="prgm.Id" ng-repeat="prgm in listOfPrgms | filter:searchGau">{{prgm.Name}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                   <!-- <div class="searchCol">
+                        <h3 class="searchTags" align="right">
+                            Donor Balance
+                        </h3>
+                        <div class="searchRadio">
+                            <input type="radio" name="Flogin" ng-model="donorBalance" ng-value="true" class=""/>Yes
+                            
+                            <input type="radio" name="Flogin" ng-model="donorBalance" ng-value="false" class=""/>No
+                            
+                        </div>
+                    </div> -->
+                    <div class="searchCol">
+                        <h3 class="searchTags" align="left">
+                            Donor Category
+                        </h3>
+                        <md-input-container class="mdCont" style="max-width: 65%;" >
+                            <md-select  ng-model="DonorCategoryselected" style="border: 1px solid #ccc;">
+                                <md-optgroup >
+                                    <md-option ng-value="donorCatSel" ng-repeat="donorCatSel in DonorCategory">{{donorCatSel}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <!--  <div class="searchRow">
+                     <div class="searchCol">
+                        <h3 class="searchTags" align="left">
+                            Donor Category
+                        </h3>
+                        <md-input-container class="mdCont" style="max-width: 68%;" >
+                            <md-select  ng-model="DonorCategoryselected" style="border: 1px solid #ccc;">
+                                <md-optgroup >
+                                    <md-option ng-value="donorCatSel" ng-repeat="donorCatSel in DonorCategory">{{donorCatSel}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    </div> -->
+                </div>
+           
+                <div class="searchRow" align="center">
+                    <input type="button" value="Search" class="buttons"  ng-click="search_multidonor();"/>
+                    <input type="button" value="Clear" class="buttons"  ng-click="clear();"/>
+                </div>
+              <span>&nbsp;</span>
+                <!-- <div class="buttonDiv" align="center" ng-if='donorDetails.length>0' style="margin-bottom:20px;">
+                    <input type="button" value="Save" class="buttons"  ng-click="save_multiDonor();"/>
+                    <input type="button" value="Cancel" class="buttons" ng-click="cancel_multiDonor();"/>
+                </div> -->
+                
+                <div ng-if='donorDetails.length>0' style="margin-left: 46.5rem;">
+
+                    <div class="">
+                        <h3 class="searchTags" style="margin-left:38%">
+                            Total Approved Scholarship Amount :
+                        </h3>
+                        <input style="width:7%" type="text" ng-readonly="true" class="inputfileds" ng-model="totalScholarshipAmount"/>
+                        
+                    </div>
+                    <div class="">
+                        <h3 class="searchTags" style="margin-left:57%">
+                            &nbsp;&nbsp;Total Amount :
+                        </h3>
+                        <input style="width:15%" type="text" ng-readonly="true" class="inputfileds" ng-model="totalEnteredAmount"/>
+                    </div>
+                    <div class="buttonDiv" align="left" ng-if='donorDetails.length>0' style="margin-bottom:20px;">
+                        <input type="button" value="Save" class="buttons"  ng-click="save_multiDonor();"/>
+                        <input type="button" value="Cancel" class="buttons" ng-click="cancel_multiDonor();"/>
+                    </div>
+                </div>
+                
+                
+                     <table class="historyTable" style="margin-top: 8px;margin-bottom:25px;" ng-if="donorDetails.length>0">
+                <thead>
+                    <tr class="rowsHistory thRow">
+                        <th>Donor Name</th>
+                        <th>Donor Id</th>
+                        <th>Donor Location</th>
+                         <th>GAU Name</th>
+                        <th>Current Balance</th>
+                       <th>Mapped Fund</th>
+                        <th>Enter Amount to Disburse</th>
+                        <th>Donor Remarks</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tr align="center" class="rowsHistory" ng-repeat="donordetail in matchedDonors">
+                    <td>{{donordetail.donorInfo.Name}}</td>
+                    <td><a href="/{{donordetail.donorInfo.Id}}" target="_blank">{{donordetail.donorInfo.FFE_ID__c}}</a></td>
+                    <td>{{donordetail.donorInfo.MailingState}}</td>
+                     <td>{{donordetail.gauName}}</td>
+                    <td>{{donordetail.currentBalance | number:2}}</td>
+                     <td>{{donordetail.mappedFund | number:2}}</td>
+                     <td ><input type="number" style="width:90%" class="inputfileds" ng-model="donordetail.Mapped_Fund__c" ng-readonly="donordetail.isReadOnly" ng-change="checkDisburseAmount(donordetail, $index)" /></td>
+                     <td><textarea class="inputfileds"  ng-model="donordetail.Donor_Remark__c"></textarea></td>
+                    <td><input type="checkbox" ng-model="donordetail.selectedDonor" ng-change="selectDonor(donordetail, $index)" /></td>
+                    
+                </tr> 
+            </table>
+            </div>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            <div class="searchDiv" style="margin-bottom:20px">
+                <div class="searchRow">
+                    <div class="searchColPopup">
+                        <h3 class="searchTagsPopup" align="right">
+                            Permanent State
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="permState" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearState()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="state" type="search" />
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedpState" layout-fill='' value="all" ng-click="pState()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedpState" layout-fill='' value="all" ng-click="pState()">Deselect All</md-button>
+                                    <md-option ng-value="stat" ng-repeat="stat in indianStates | filter:state">{{stat}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup" >
+                        <h3 class="searchTagsPopup" align="right">
+                            Current State
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="CurrState" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearCstate()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="cstate" type="search" class="demo-header-searchbox md-text" />
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedcState" layout-fill='' value="all" ng-click="cState()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedcState" layout-fill='' value="all" ng-click="cState()">Deselect All</md-button>
+                                    <md-option ng-value="cstate" ng-repeat="cstate in indianStates | filter:cstate">{{cstate}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                <div class="searchRow">
+                    <div class="searchColPopup">
+                        <h3 class="searchTagsPopup" align="right">
+                            Institution City
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="instState" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearinstState(instState)">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="city" type="search" class="demo-header-searchbox md-text" ng-change="getinstState(city)"/>
+                                </md-select-header>
+                                <md-optgroup ng-if="isIState">
+                                    <md-button class="buttonDropdown" ng-if="isSelectediState" layout-fill='' value="all" ng-click="iState()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectediState" layout-fill='' value="all" ng-click="iState()">Deselect All</md-button>
+                                    <md-option ng-value="icity" ng-repeat="icity in insCities">{{icity}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup" >
+                        <h3 class="searchTagsPopup" align="right">
+                            Name of the Institution
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="inst" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearInst(inst)">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="institue" type="search" class="demo-header-searchbox md-text" ng-change="getInst(institue)"/>
+                                </md-select-header>
+                                <md-optgroup ng-if="isInst">
+                                    <md-button class="buttonDropdown" ng-if="isSelectedinstit" layout-fill='' value="all" ng-click="instit()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedinstit" layout-fill='' value="all" ng-click="instit()">Deselect All</md-button>
+                                    <md-option ng-value="instit" ng-repeat="instit in institues">{{instit}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                <div class="searchRow">
+                    <div class="searchColPopup">
+                        <h3 class="searchTagsPopup" align="right">
+                            Course
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="course" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearCourse()" ng-change="getCourseYear(course);">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="cour" type="search" class="demo-header-searchbox md-text"/>
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedcours" layout-fill='' value="all" ng-click="cours();getCourseYear(course);">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedcours" layout-fill='' value="all" ng-click="cours();clearCourseYear();">Deselect All</md-button>
+                                    <md-option ng-value="cours" ng-repeat="cours in studentCoursePicklistValues | filter:cour">{{cours}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup">
+                        <h3 class="searchTagsPopup" align="right">
+                            Course Year
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="courseYear" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearCourseyear()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="courYear" type="search" class="demo-header-searchbox md-text"/>
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedcoursYear" layout-fill='' value="all" ng-click="coursYear()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedcoursYear" layout-fill='' value="all" ng-click="coursYear()">Deselect All</md-button>
+                                    <md-option ng-value="coursyear" ng-repeat="coursyear in studentCourseYearPicklistValues | filter:courYear">{{coursyear}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </div>
+                <div class="searchRow">
+                    <div class="searchColPopup">
+                        <h3 class="searchTagsPopup" align="right">
+                            Gender
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="gender" multiple="true" style="border: 1px solid #ccc;" >
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedGender" layout-fill='' value="all" ng-click="genders()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedGender" layout-fill='' value="all" ng-click="genders()">Deselect All</md-button>
+                                    <md-option ng-value="genders" ng-repeat="genders in genderList">{{genders}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup" >
+                        <h3 class="searchTagsPopup" align="right">
+                            Branch/Stream
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="branch" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearbranch()" ng-disabled="course=='MBBS'">
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedbranch" layout-fill='' value="all" ng-click="branchs()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedbranch" layout-fill='' value="all" ng-click="branchs()">Deselect All</md-button>
+                                    <md-option ng-value="branchL" ng-repeat="branchL in branchList ">{{branchL}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup" >
+                        <h3 class="searchTagsPopup" align="right">
+                            College Rating
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="cRate" multiple="true" style="border: 1px solid #ccc;" md-on-close="clearCRate()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="cRating" type="search" class="demo-header-searchbox md-text" />
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-button class="buttonDropdown" ng-if="isSelectedrating" layout-fill='' value="all" ng-click="rating()">Select All</md-button >
+                                    <md-button class="buttonDropdown" ng-if="!isSelectedrating" layout-fill='' value="all" ng-click="rating()">Deselect All</md-button>
+                                    <md-option ng-value="rating" ng-repeat="rating in studentClzRatingPicklistValues | filter:cRating">{{rating}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup" >
+                        <h3 class="searchTagsPopup" align="right">
+                            Student Priority
+                        </h3>
+                        <md-input-container class="mdContPopup">
+                            <md-select ng-model="cPriority" multiple="false" style="border: 1px solid #ccc;" md-on-close="clearcPriority()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="cprioritying" type="search" class="demo-header-searchbox md-text" />
+                                </md-select-header>
+                                <md-optgroup>
+                                    <md-option ng-value="priorityvalue" ng-repeat="priorityvalue in priorityList | filter:cprioritying">{{priorityvalue}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <div class="searchColPopup" >
+                        <h3 class="searchTagsPopup" align="right">
+                            Scholarship Amount
+                        </h3>
+                        <md-input-container class="mdContPopup" >
+                            <md-select ng-model="cScholor" multiple="false" style="border: 1px solid #ccc;" md-on-close="clearCSchol()">
+                                <md-select-header class="demo-select-header">
+                                    <input ng-model="cschling" type="search" class="demo-header-searchbox md-text" />
+                                </md-select-header>
+                                <md-optgroup >
+                                    <md-option ng-value="scholorvalue" ng-repeat="scholorvalue in ScholarList | filter:cschling">{{scholorvalue}}</md-option>
+                                </md-optgroup>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                    <!-- End part gourab -->
+                </div>
+                <div class="searchRow">
+                    <div class="searchColPopup" style="width:90%">
+                        <h3 class="searchTagsPopup" align="right" style="min-width:20%">
+                            Family Income
+                        </h3>
+                        <rzslider  rz-slider-model="income.minValue"
+                                  rz-slider-high="income.maxValue"  
+                                  rz-slider-options="income.options" 
+                                  class="inputfields" style="WIDTH: 73%;MARGIN: 20PX;border:none;font-size:14px;"></rzslider>
+                    </div>
+                </div>
+                <div class="buttonDiv" align="center">
+                    <input type="button" value="Search" class="buttons"  ng-click="searchStudent(1);"/>
+                    <input type="button" value="Clear" class="buttons"  ng-click="clearStudent();"/>
+                </div>
+                <div class="searchRow"  style="text-align:center;margin-top: -20px;">
+                    <hr class="or-hr"/>
+                    <div id="or" style="color: #ff793c;font-weight: bold;">OR</div>
+                </div>
+                <div class="searchRow" style="margin-left: 26%;margin-bottom: 12px;">
+                    <h3 class="searchTags" align="right" style="margin-top: 10px;">
+                        Search by FFEUID
+                    </h3>
+                    <input type="text" class="inputfileds" style="margin: 2px 27px;width: 19%;" ng-model="FFEUIDofStudent"/>
+                </div>
+                <div class="buttonDiv" align="center">
+                    <input type="button" value="Search" class="buttons"  ng-click="searchStudent(2);"/>
+                    <input type="button" value="Clear" class="buttons"  ng-click="clearFFEuid();"/>
+                </div>
+                <h4 ng-if='showNoresults' align="center" style="margin-top: 20px;float: left;width: 100%;">
+                    No Results found 
+                </h4>
+                <table class="historyTable " style="margin-top: 0;margin-bottom:25px;margin-top:25px" ng-if='StudentsDetails.length>0'>
+                    <thead>
+                        <tr class="rowsHistory thRow" ng-if='!showNoresults'>
+                            <th>Student Name</th>
+                            <th>Student Id</th>
+                            <th>Gender</th>
+                            <th>Family Income</th>
+                            <th>Location</th>
+                            <th>Course</th>
+                            <th>Appvd. Schr. Amt</th>
+                            <th>Approved Date</th>
+                            <!-- <th>Funding Amount</th>
+                           <th>Donor Remarks</th> -->
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tr align="center" class="rowsHistory" ng-repeat="StudentsDetail in StudentsDetails" >
+                        <td>{{StudentsDetail.Student__r.Name}}</td>
+                        <td>
+                            <a href="/{{StudentsDetail.Student__c}}" target="_blank">{{StudentsDetail.Student__r.FFE_ID__c}}</a>
+                        </td>
+                        <td>{{StudentsDetail.Student__r.Gender__c}}</td>
+                        <td>{{StudentsDetail.Student__r.Annual_Family_Income__c}}</td>
+                        <td>{{StudentsDetail.Student__r.MailingState}}</td>
+                        <td>{{StudentsDetail.Student__r.Course__c}}</td>
+                        <td>{{StudentsDetail.Student__r.ScholarshipAmount__c}}</td>
+                        <td>{{StudentsDetail.Approval_Date__c}}</td>
+                      <!--  <td >
+                            <input type="number" style="width:90%" class="inputfileds" ng-model="StudentsDetail.Funding_amount__c"/>
+                        </td> -->
+                       <!-- <td>
+                            <textarea class="inputfileds"  ng-model="StudentsDetail.Donor_Remark__c"></textarea>
+                        </td> -->
+                        <!--id below-->
+                        <td><input type="button" value="Match Donors" class="buttons"  ng-click="matchDonors_multiDonor(StudentsDetail)"/></td>
+                    </tr>
+                </table>
+                <div class="buttonDiv" align="center" ng-if='StudentsDetails.length>0' style="margin-bottom:20px;">
+                    <input type="button" value="Save" class="buttons"  ng-click="save();" ng-if='!showNoresults'/>
+                    <input type="button" value="Cancel" class="buttons" ng-click="cancel();"/>
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

@@ -1,0 +1,703 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MenteePortal_Controller" action="{!checkUserAuth}">
+    <head>
+        <c:MentorshipScripts />
+        <style>
+            .loadingBackground {
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: #F6F6F6;
+                z-index: 11111;
+                opacity: 0.7;
+                top: 0px;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+
+            .loading {
+                top: 50%;
+                left: 50%;
+                margin: -50px 0px 0px -50px;
+                z-index: 111111;
+                position: fixed;
+            }
+            .card-profile-image img {
+                box-shadow: 0 0 2rem 0 rgba(136, 152, 170, .15) !important;
+            }
+
+            .card-profile-image {
+                position: relative;
+            }
+
+            .card-profile-image img {
+                position: absolute;
+                left: 50%;
+                max-width: 70px;
+                transition: all .15s ease;
+                transform: translate(-50%, -30%);
+                border-radius: .375rem;
+            }
+
+            .card-profile-image img:hover {
+                transform: translate(-50%, -33%);
+            }
+
+            .rounded-circle {
+                border-radius: 50% !important;
+            }
+
+            .profileDetailCard {
+                box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.2);
+                transition: 0.3s;
+                Fwidth: 73%;
+            }
+
+            .card {
+                box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.2);
+                transition: 0.3s;
+                width: 100%;
+            }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            .container {
+                padding: 2px 16px;
+                /* margin-left: 20%;  */
+                width: 90%;
+            }
+
+            .cardContainer {
+                padding: 2px 16px;
+                margin-left: 20%;
+            }
+
+           
+
+            /* button {
+                background-color: #032559 !important;
+                color: white !important;
+                border-color: white !important;
+                padding: 5px 20px;
+                cursor: pointer;
+                font-size: 13px;
+            } */
+
+            button:hover {
+                opacity: 0.7;
+            }
+
+            input:hover {
+                background-color: #d2d2d2 !important;
+            }
+
+            .card {
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                transition: 0.3s;
+                width: 60%;
+                margin-left: 23%;
+                margin-top: 6% !important;
+            }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            .topnav .login-container {
+                float: right;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .topnav input[type=text] {
+                padding: 6px;
+                margin-top: 8px;
+                font-size: 17px;
+                border: none;
+                width: 120px;
+            }
+
+            .topnav .login-container button {
+                float: right;
+                padding: 6px 10px;
+                margin-top: 8px;
+                margin-right: 16px;
+                background-color: #555;
+                color: white;
+                font-size: 17px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .topnav .login-container button:hover {
+                background-color: green;
+            }
+
+            @media screen and (max-width: 600px) {
+                .topnav .login-container {
+                    float: none;
+                }
+                .topnav a,
+                .topnav input[type=text],
+                .topnav .login-container button {
+                    float: none;
+                    display: block;
+                    text-align: left;
+                    width: 100%;
+                    margin: 0;
+                    padding: 14px;
+                }
+            }
+            .download {
+                background-color: #F39C12;
+                color: white;
+                padding: 5px 20px;
+                cursor: pointer;
+            }
+
+            .download:hover {
+                opacity: 0.7;
+            }
+            
+        </style>
+    </head>
+    <body ng-app="mentorRegApp" ng-controller="mentorRegistrationCtrl">
+        <div class="loadingSection" id="spinner" ng-if="showSpinner">
+            <div class="loadingBackground"></div>
+            <div>
+                <apex:image url="{!$Resource.loading}" styleClass="loading" />
+            </div>
+        </div>
+        <nav class="navbar fixed-top navbar-light bg-light navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <apex:image url="{!$Resource.FFEbanner}" width="50%" height="50%"/>
+                </a>
+                
+                
+                
+            </div>
+        </nav>
+            <div class="card">
+            <div class="card-header">
+                <h3 style="text-align:center;font-weight: 700;">
+                    Mentor Registration Form
+                </h3>
+            </div>
+            <div class="card-body">
+                <form style="padding:40px;">
+                    <h4 class="heading-small text-muted mb-4">User information</h4>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">Username</label><span style="color:red">*</span>
+                                <input type="text" class="form-control form-control-alternative" placeholder="Username" value="{{mentorDetail.Name}}" ng-model="mentorDetail.Name"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label" >Email address</label><span style="color:red">*</span>
+                                <input type="email" class="form-control form-control-alternative" placeholder="Email address" value="{{mentorDetail.Email}}" ng-model="mentorDetail.Email" disabled="true"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">Contact Number</label><span style="color:red">*</span>
+                                <input type="text" class="form-control form-control-alternative" placeholder="Phone number" value="{{mentorDetail.Phone}}" ng-model="mentorDetail.Phone"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">Gender</label><span style="color:red">*</span>
+                                <select class="form-control" style="width:100%;" ng-model="mentorDetail.Gender__c" >
+                                    <option ng-repeat="x in genderPicklist" >
+                                    {{x}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">Languages Known</label><span style="color:red">*</span>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-6" ng-repeat="item in spokenLangPicklist | limitTo: spokenLangPicklist.length /2: 0">
+                                           <input type="checkbox" ng-model="respo" ng-click="selectedLang(item,respo)"/><span >{{item}}</span> <br ng-if="$index > 0 && $index % 2 != 0"/>
+    
+                                       </div>
+                                       <div class="col-md-6" ng-repeat="item in spokenLangPicklist | limitTo: spokenLangPicklist.length /2: spokenLangPicklist.length /2">
+                                           <input type="checkbox" ng-model="respo" ng-click="selectedLang(item,respo)"/><span >{{item}}</span> <br ng-if="$index > 0 && $index % 2 != 0"/>
+    
+                                       </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">Native Tongue</label>
+                                <input type="text"  class="form-control form-control-alternative" placeholder="Native Tongue" value="{{mentorDetail.Native_Tongue__c}}" ng-model="mentorDetail.Native_Tongue__c" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4" />
+                    <h4 class="heading-small text-muted mb-4">Professional information</h4>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">LinkedIn Profile</label>
+                                <input type="text" class="form-control form-control-alternative" placeholder="LinkedIn Profile" value="{{mentorDetail.Linkedin_Profile_Link__c}}" ng-model="mentorDetail.Linkedin_Profile_Link__c" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" >Are you currently employed?</label><span style="color:red">*</span>
+                                <select class="form-control" style="width:100%;" ng-model="mentorDetail.Are_you_currently_employed__c" >
+                                    <option ng-repeat="x in currentlyEmployedPickList" >
+                                    {{x}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" >Employer Company</label> <span style="color:red">*</span>
+                                <select class="form-control" style="width:100%;" ng-model="mentorDetail.Corporate__c" >
+                                    <option ng-repeat="x in CorporateName" >
+                                    {{x}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" >Job Title / Professional Designation</label><span style="color:red">*</span>
+                                <input type="text"  class="form-control form-control-alternative" placeholder="Designation" value="{{mentorDetail.Professional_Designation__c}}" ng-model="mentorDetail.Professional_Designation__c"  />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" >Years of Work Experience</label><span style="color:red">*</span>
+                                <input type="text" class="form-control form-control-alternative" placeholder="Years of Work Experience" value="{{mentorDetail.Years_of_Work_Experience__c}}" ng-keyup="validateYearsOfExperience(mentorDetail.Years_of_Work_Experience__c)" ng-model="mentorDetail.Years_of_Work_Experience__c"/>
+                                <span ng-show="showExperienceError" style="color:red">*Years of work Experience should not be less than 5 years</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Area of Specialization</label><span style="color:red">*</span>
+                                <input type="text" class="form-control form-control-alternative" placeholder="Area of Specialization" value="" ng-model="mentorDetail.Area_of_Specialization__c" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label">Are you Self-Employed?</label>
+                                <input type="checkbox" ng-model="SelfEmployed" />
+                                <div class="form-group focused" ng-show="SelfEmployed">
+                                    <label class="form-control-label" >Employer Name</label>
+                                    <input type="text"  class="form-control form-control-alternative" placeholder="Employer Name" value="{{mentorDetail.Employer_Name__c}}" ng-model="mentorDetail.Employer_Name__c" />
+                                    <label class="form-control-label" >Job Title / Professional Designation</label>
+                                    <input type="text"  class="form-control form-control-alternative" placeholder="Designation" ng-model="mentorDetail.Self_Empoyee_Designation__c" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused" ng-show="SelfEmployed">
+                                <div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <h4 class="heading-small text-muted mb-4">Educational information</h4>
+                    <div class="row pl-lg-4">
+                    <div class="col-lg-6">
+                        <div class="form-group focused">
+                            <label class="form-control-label" >College Name</label>
+                            <input type="text" class="form-control form-control-alternative" placeholder="College name" value="{{mentorDetail.Mentor_College_Name__c}}" ng-model="mentorDetail.Mentor_College_Name__c"  />
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                    </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                    <div class="col-lg-6">
+                        <div class="form-group focused">
+                            <label class="form-control-label">Highest Educational Qualification</label>
+                            <select class="form-control" style="width:100%;" ng-model="mentorDetail.Highest_Educational_Qualification__c" ng-change="highest_Education(mentorDetail.Highest_Educational_Qualification__c)">
+                                <option ng-repeat="x in HighestQualification" >
+                                {{x}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" >Branch Areas of Practice Study</label><span style="color:red">*</span>
+                                <select class="form-control" style="width:100%;" ng-model="mentorDetail.Branch_Areas_of_Practice_Study__c" ng-change="branchOfPractice(mentorDetail.Branch_Areas_of_Practice_Study__c)">
+                                    <option ng-repeat="x in branchOfStudy" >
+                                    {{x}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        </div>
+                       
+                        <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div  class="form-group focused"  ng-if="showHighestQualificationInput">
+                                <label class="form-control-label" >Highest Qualification</label>
+                                <input type="text" class="form-control form-control-alternative" value="{{mentorDetail.Other_Highest_Educational_Qualification__c}}" ng-model="mentorDetail.Other_Highest_Educational_Qualification__c" />
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div  class="form-group focused"  ng-show="showBranchOfPractice">
+                                <label class="form-control-label" >Branch of study</label>
+                                <input type="text" class="form-control form-control-alternative" value="{{mentorDetail.Mentor_Branch_Of_Study__c}}" ng-model="mentorDetail.Mentor_Branch_Of_Study__c" />
+                            </div>
+                        </div>
+                        </div>
+                    <hr class="my-4"/>
+                    <!-- Address -->
+                    <h4 class="heading-small text-muted mb-4">Contact information</h4>
+                    <div class="pl-lg-6">
+                       
+                        <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" for="input-city">City</label>
+                                <input type="text" id="input-city" class="form-control form-control-alternative" placeholder="City" value="{{mentorDetail.MailingCity}}" ng-model="mentorDetail.MailingCity"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" for="input-country">Country</label>
+                                <input type="text" id="input-country" class="form-control form-control-alternative" placeholder="Country" value="{{mentorDetail.MailingCountry}}" ng-model="mentorDetail.MailingCountry"/>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <h4 class="heading-small text-muted mb-4">About me</h4>
+                    <div class="row pl-lg-4">
+                    <div class="col-lg-6">
+                        <div class="form-group focused">
+                            <label>Have you been a mentor before?</label>
+                            <input type="checkbox"   ng-model="mentorDetail.Been_a_mentor_before__c"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group focused" ng-show="mentorDetail.Been_a_mentor_before__c">
+                            <label>Please provide us some more information regarding the mentorship, and if you are continuing to mentor:
+                            </label>
+                            <textarea rows="3" class="form-control form-control-alternative" ng-model="mentorDetail.More_info_on_mentoring__c" placeholder="A few words on mentorship ..." >A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                    <div class="col-lg-6">
+                        <div class="form-group focused">
+                            <label>Please tell us a bit more about yourself to help us pair you with an appropriate mentee (Hobbies, interests,etc)</label>
+                            <textarea rows="2" class="form-control form-control-alternative" ng-model="mentorDetail.hobbies_and_interests__c" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group focused">
+                            <label>Please tell us why you would like to mentor FFE scholars</label>
+                            <textarea rows="3" class="form-control form-control-alternative" ng-model="mentorDetail.TYS_How_would_you_help_other_Students__c" placeholder="A few words about you would like to mentor FFE scholars ..." >A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row pl-lg-4">
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" for="input-city">Are you prepared (and have capacity) to commit a minimum of 2 hours per month to this 6-8 month programme (per mentee)?</label>
+                                <input type="checkbox"  value="" ng-model="mentorDetail.prepared_to_commit_2hr_per_mentee__c"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group focused">
+                                <label class="form-control-label" for="input-country">Your preferred time to conduct the mentoring session:</label><span style="color:red">*</span>
+                                <select class="form-control" style="width:100%;" ng-model="mentorDetail.Preferred_time_to_conduct_session__c" >
+                                    <option ng-repeat="x in timeToConductSession" >
+                                    {{x}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <hr class="my-4" />
+                    <div class="row pl-lg-4">
+                        <div class="col-lg">
+                            <div class="form-group focused">
+                                <label>General comments that you feel are important for us to know</label>
+                                <textarea rows="3" class="form-control form-control-alternative" ng-model="mentorDetail.General_comments_on_us__c" placeholder="A few words about us ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+                            </div>
+                            <div align="center"> 
+                                <button class="download btn btn-lg" ng-click="saveMentorDetails()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+        
+    </body>
+    <script>
+        var app = angular.module('mentorRegApp', []);
+        app.controller('mentorRegistrationCtrl', function ($scope) {
+            $scope.showSpinner = false;
+            var pageLoadData = JSON.parse('{!pageLoadInstanceString}');
+            $scope.genderPicklist = pageLoadData.picklistValues.mentorGender;
+            $scope.spokenLangPicklist = pageLoadData.picklistValues.spokenLang;
+            $scope.branchPicklist = pageLoadData.picklistValues.branch;
+            $scope.mentoringNeedsPicklist = pageLoadData.picklistValues.mentoringNeeds;
+            $scope.currentlyEmployedPickList = pageLoadData.picklistValues.AreYouCurrentlyEmployed;
+            $scope.HighestQualification = pageLoadData.picklistValues.HighestEducationalQualification;
+            $scope.branchOfStudy = pageLoadData.picklistValues.BranchofPracticeStudy;
+            $scope.timeToConductSession = pageLoadData.picklistValues.PreferredTimeToConductSession;
+            $scope.CorporateName = pageLoadData.picklistValues.CorporateName;
+            $scope.selected;
+            $scope.obj = {
+                menteeForm: false,
+                menteeLogin: true
+            };
+           
+            $scope.spokenLangList = [];
+            $scope.selectedSpokenLang = [];
+            $scope.idToVerify;
+            $scope.emailToverify;
+            $scope.menteeModules = [];
+            $scope.SelfEmployed = false;
+            $scope.aadhar;
+            $scope.err;
+            $scope.mentorDetail;
+
+            var mentorId = '{!$CurrentPage.parameters.Id}';
+
+            $scope.getMentorDetails = function () {
+                $scope.showSpinner = true;
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.MenteePortal_Controller.getMentorContactDetails}',
+                    mentorId,
+                    function (result, event) {
+
+                        if (event.status) {
+                            $scope.mentorDetail = result;
+                            
+                        }
+                        $scope.showSpinner = false;
+                        $scope.$apply();
+                    }, {
+                        escape: true
+                    }
+                );
+
+            }
+            $scope.getMentorDetails();
+
+            $scope.saveMentorDetails = function () {
+                 if($scope.mentorDetail.Preferred_time_to_conduct_session__c == "" || $scope.mentorDetail.Preferred_time_to_conduct_session__c == undefined || 
+                  $scope.mentorDetail.Branch_Areas_of_Practice_Study__c == "" || $scope.mentorDetail.Branch_Areas_of_Practice_Study__c == undefined || 
+                  $scope.mentorDetail.Area_of_Specialization__c == "" || $scope.mentorDetail.Area_of_Specialization__c == undefined || 
+                  $scope.mentorDetail.Years_of_Work_Experience__c == "" || $scope.mentorDetail.Years_of_Work_Experience__c == undefined || 
+                  $scope.mentorDetail.Professional_Designation__c == "" || $scope.mentorDetail.Professional_Designation__c == undefined ||
+                  $scope.mentorDetail.Corporate__c == "" || $scope.mentorDetail.Corporate__c == undefined || 
+                  $scope.mentorDetail.Are_you_currently_employed__c == "" || $scope.mentorDetail.Are_you_currently_employed__c == undefined ||
+                    $scope.mentorDetail.Gender__c == "" || $scope.mentorDetail.Gender__c == undefined ||
+                    $scope.mentorDetail.Phone == "" || $scope.mentorDetail.Phone == undefined ||
+                    $scope.mentorDetail.Email == "" || $scope.mentorDetail.Email == undefined ||
+                    $scope.mentorDetail.Name == "" || $scope.mentorDetail.Name == undefined ||
+                  $scope.selectedSpokenLang.length == 0 ){
+                 Swal.fire({
+                                    icon: 'error',
+                                    title: '',
+                                    text: 'Please fill the mandatory fileds(*)',
+                                })
+                    return;
+                }
+                
+                 if($scope.mentorDetail.Years_of_Work_Experience__c  < 5){
+                             Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Years of work Experience should not be less than 5',
+                            })
+                             return;
+                        
+                        }
+                $scope.showSpinner = true;
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.MenteePortal_Controller.saveMentorDetails}',
+                    $scope.mentorDetail, $scope.selectedSpokenLang,
+                    function (result, event) {
+                        $scope.showSpinner = false;
+                        if (event.status) {
+                            Swal.fire(
+                                '',
+                                'Submitted successfully!',
+                                'success'
+                            )
+                            let mainURL = window.location.origin + '/mentorship';
+                            window.location.replace(mainURL + '/MentorPortal?id=' + $scope.mentorDetail.Login_Hash_Code__c);
+
+                        } else if (event.type === 'exception') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Please refresh the page',
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Please refresh the page',
+                            })
+                        }
+                    }, {
+                        escape: true
+                    }
+                );
+            }
+            $scope.selectedLang = function (param, respo) {
+                if (respo == true) {
+                    
+                     $scope.selectedSpokenLang.push(param);
+                } else if (respo == false) {
+                    var index = $scope.selectedSpokenLang.indexOf($scope.spokenLangPicklist[param]);
+                    if (index !== -1) {
+                        $scope.selectedSpokenLang.splice(index, 1);
+                    }
+                }
+            }
+
+            $scope.selectedMentoringNeeds = function (param, respo, e) {
+
+                if (respo == true) {
+                    if ($scope.menteeModules.length < 3) {
+                        $scope.menteeModules.push($scope.mentoringNeedsPicklist[param]);
+                    } else {
+                        e.preventDefault();
+                        // $scope.mentorRec.selected = false;
+                        alert('Select only 3 Mentoring Needs');
+                        return;
+                    }
+                } else if (respo == false) {
+                    var index = $scope.menteeModules.indexOf($scope.mentoringNeedsPicklist[param]);
+                    if (index !== -1) {
+                        $scope.menteeModules.splice(index, 1);
+                    }
+
+                }
+            }
+
+            $scope.contactId;
+
+
+            $scope.submit = function () {
+                $scope.showSpinner = true;
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.MenteePortal_Controller.submit}',
+                    $scope.idToVerify, $scope.emailToverify,
+                    function (result, event) {
+                        $scope.showSpinner = false;
+                        if (event.status) {
+                            if (result != null || result != undefined) {
+                                if (result.Id.length == 18) {
+                                    //alert("Mentee Already exist ");
+                                    /*let mainURL = window.location.origin+'/mentorship';
+                                    window.location.replace(mainURL + "/"+"MenteePortal?id="+result);*/
+                                    //$scope.mentorRec.Id = result.Id;
+                                    $scope.mentorRec = result;
+                                    $scope.obj = {
+                                        menteeForm: true,
+                                        menteeLogin: false
+                                    };
+                                    $scope.$apply();
+
+                                }
+
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'Please enter valid FFEUID and EmailId',
+                                    icon: 'error',
+                                })
+                            }
+
+                        } else if (event.type === 'exception') {
+                            alert(event.message);
+                        } else if (result == 'notFound') {
+                            alert("Mentee Not-Found");
+
+                            $scope.$apply(function () {
+                                $scope.obj.menteeForm = true;
+                            })
+
+
+                            $scope.$apply(function () {
+                                $scope.obj.menteeLogin = false;
+                            })
+
+                        } else {
+                            alert(event.message);
+                        }
+                    }, {
+                        escape: true
+                    }
+                );
+            }
+
+            
+            $scope.validateYearsOfExperience = function (param) {
+                if (param < 5) {
+                    $scope.showExperienceError = true;
+                } else {
+                    $scope.showExperienceError = false;
+                }
+            }
+
+
+            $scope.redirectURL = function (param) {
+                let mainURL = window.location.origin + '/mentorship';
+                window.location.replace(mainURL + "/" + param + "?id=" + result);
+
+            }
+            $scope.showHighestQualificationInput = false;
+            $scope.showBranchOfPractice = false;
+            $scope.highest_Education = function (param) {
+                debugger;
+
+                if (param.includes("Other") ) {
+                    $scope.showHighestQualificationInput = true;
+                } else {
+                    $scope.showHighestQualificationInput = false;
+                }
+            }
+            $scope.branchOfPractice = function (param) {
+                debugger;
+
+                if (param.includes("Other") ) {
+                    $scope.showBranchOfPractice = true;
+                } else {
+                    $scope.showBranchOfPractice = false;
+                }
+            }
+        });
+    </script>
+</apex:page>

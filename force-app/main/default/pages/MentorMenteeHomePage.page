@@ -1,0 +1,410 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js">
+            </script>  
+        
+        <style>
+            .logo {
+            float: left;
+            padding: 5px 0px;
+            width: 383px;
+            }
+            div {
+            display: block;
+            }
+            a {
+            color: inherit;
+            outline: 0 !important;
+            }
+            
+            .menu, .menu li, .menu a {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            list-style: none;
+            font-weight: normal;
+            text-decoration: none;
+            line-height: 1;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            }
+            .mobile_menu {
+            display: none;
+            }
+            .mobile_menu {
+            margin-top: 10px;
+            width: 100%;
+            float: left;
+            display: none;
+            position: relative;
+            }
+            .topNav {
+            display: block;
+            margin: 0 auto 0px;
+            /* border: 1px solid #222; */
+            position: relative;
+            background: #062a3d;
+            font-family: 'Roboto Condensed', sans-serif;
+            font-weight: 400;
+            width: 100%;
+            float: left;
+            }
+            ul {
+            display: block;
+            list-style-type: disc;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            padding-inline-start: 40px;
+            }
+            .topNav li a {
+            font-size: 15px;
+            font-family: "Roboto",sans-serif;
+            display: block;
+            padding: 0px 0px 0px 5%;
+            color: #eee;
+            width: 95%;
+            text-align: right;
+            text-decoration: none;
+            float: left;
+            color: #fff;
+            text-align: left;
+            line-height: 2em;
+            }
+            .cssmenu {
+            position: absolute;
+            box-sizing: border-box;
+            z-index: 200;
+            margin: 0;
+            float: left;
+            line-height: 1;
+            width: 100%;
+            top: 36px;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+            }
+            .cssmenu > ul > li:last-child > a {
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            border-bottom: 1px solid #000000;
+            }
+            .cssmenu > ul > li > a {
+            font-weight: 400;
+            color: #666;
+            border-bottom: 1px solid #ccc;
+            display: block;
+            padding: 11px 20px 11px;
+            background-color: #fff;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            letter-spacing: 1px;
+            font-size: 14px;
+            font-weight: 500;
+            -webkit-transition: all 0.25s ease-in;
+            -moz-transition: all 0.25s ease-in;
+            -ms-transition: all 0.25s ease-in;
+            -o-transition: all 0.25s ease-in;
+            transition: all 0.25s ease-in;
+            position: relative;
+            }
+            .cssmenu ul li a {
+            text-decoration: none;
+            cursor: pointer;
+            }
+            a {
+            color: inherit;
+            outline: 0 !important;
+            }
+            [role=button], a, area, button, input, label, select, summary, textarea {
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            }
+            a {
+            color: #0275d8;
+            text-decoration: none;
+            }
+            a {
+            background-color: transparent;
+            }
+            *, ::after, ::before {
+            -webkit-box-sizing: inherit;
+            box-sizing: inherit;
+            }
+            user agent stylesheet
+            a:-webkit-any-link {
+            color: -webkit-link;
+            cursor: pointer;
+            text-decoration: underline;
+            }
+            ul li {
+            list-style-type: none;
+            }
+            user agent stylesheet
+            li {
+            text-align: -webkit-match-parent;
+            }
+            .cssmenu ul {
+            margin-top: 0;
+            width: 100%;
+            float: left;
+            padding: 0;
+            list-style: none;
+            display: none;
+            }
+            user agent stylesheet
+            ul {
+            list-style-type: disc;
+            }
+            .cssmenu {
+            position: absolute;
+            box-sizing: border-box;
+            z-index: 200;
+            margin: 0;
+            float: left;
+            line-height: 1;
+            width: 100%;
+            top: 36px;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+            }
+            
+            .container {
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 15px;
+            padding-right: 15px;
+            }
+            .ffe_indextop {
+            margin-top: 140px;
+            }
+            .banner_top {
+            margin-top: 80px;
+            float: left;
+            width: 100%;
+            }
+            .h4, h4 {
+            font-size: 1.5rem;
+            }
+            .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+            margin-bottom: .5rem;
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.1;
+            color: inherit;
+            }
+            h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            }
+            *, ::after, ::before {
+            box-sizing: inherit;
+            }
+            user agent stylesheet
+            h4 {
+            display: block;
+            margin-block-start: 1.33em;
+            margin-block-end: 1.33em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            }
+            @media (min-width: 1200px)
+            .container {
+            max-width: 1140px;
+            }
+            .top-menu {
+            display: inline-block;
+            margin-top: 40px;
+            }
+            img {
+            vertical-align: middle;
+            width: 480px;
+            }
+            .h4, h4 {
+            font-size: 1.5rem;
+            }
+            .top-menu li {
+            padding: 0px 15px 25px;
+            position: relative;
+            }
+            .top-menu li {
+            float: left;
+            text-transform: uppercase;
+            font-family: 'robotoregular';
+            padding: 10px 20px;
+            color: #1a104d;
+            }
+            .btn-success.active.focus, .btn-success.active:focus, .btn-success.active:hover, .btn-success:active.focus, .btn-success:active:focus, .btn-success:active:hover, .open>.btn-success.dropdown-toggle.focus, .open>.btn-success.dropdown-toggle:focus, .open>.btn-success.dropdown-toggle:hover {
+            color: #fff;
+            background-color: #398439;
+            border-color: #2d672d;
+            }
+            .form1:active {
+            background-color: #f29b29;
+            border-color: #f29b29;
+            }
+            .form1:hover {
+            background-color: #f29b29;
+            border-color: #f29b29;
+            }
+            .btn-success.active, .btn-success:active, .open>.btn-success.dropdown-toggle {
+            color: #fff;
+            background-color: #449d44;
+            border-color: #419641;
+            background-image: none;
+            }
+            .btn-success:hover {
+            color: #fff;
+            background-color: #449d44;
+            border-color: #419641;
+            }
+            .btn.active, .btn:active {
+            background-image: none;
+            outline: 0;
+            }
+            .btn:focus, .btn:hover {
+            text-decoration: none;
+            }
+            a:hover, a:focus {
+            text-decoration: none;
+            }
+            a:focus, a:hover {
+            color: #014c8c;
+            text-decoration: underline;
+            }
+            
+        </style>
+    </head>
+    
+    
+    <body>
+        <header>
+            <div>
+                <div class="container">
+                    <div clas="logo">
+                        <a>
+                            <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                        </a>  
+                    </div> 
+                    <div class="menu" style="text-align:center">
+                        <div>
+                            <ul class="top-menu">
+                                <li>
+                                    <a> Mentee Registration  </a>
+                                </li>
+                                <li>
+                                    <a> Mentor Registration  </a>
+                                </li>
+                                <li>
+                                    <a> Login  </a>
+                                </li>
+                            </ul>   
+                        </div>   
+                    </div>
+                    <div class="mobile_menu">
+                        <nav class="topNav">
+                            <ul>
+                                <li>
+                                    <a class="menu-toggle">
+                                        "Menu"
+                                        <span>Menu icon</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav> 
+                        <div class="cssmenu" id="menu1">
+                            <ul style="display: none;">
+                                <li>
+                                    <a> Mentee Registration  </a>
+                                </li>
+                                <li>
+                                    <a> Mentor Registration  </a>
+                                </li>
+                                <li>
+                                    <a> Login  </a>
+                                </li>   
+                            </ul>    
+                            
+                        </div>
+                    </div>
+                </div>
+                <hr/> 
+            </div>
+            
+        </header> 
+        <section>
+            <div class="container">
+                <div class="banner_top ffe_indextop">
+                    <h3 style="text-align: center;">
+                        Foundation For Excellence-Mentoring Program
+                    </h3>  <br/>
+                    <div class="col-md-5">
+                        <h4>
+                            About FFE:
+                        </h4> 
+                        <p>
+                            The Foundation For Excellence (FFE) is a registered, US based non-profit -organization founded by the renowned serial entrepreneur, Dr. Prabhu Goel and Mrs. Poonam Goel. The Foundation for Excellence India Trust (FFEIT) is a registered, public Charitable Trust in India and works in association with FFE.
+                        </p>
+                        <p>
+                            The mission of FFE is to transform the lives of academically brilliant but financially needy students in India by awarding merit cum means scholarships. In the twenty three years since its inception in 1994, FFE has already helped over 20,300 scholars across India awarding over 50,449 scholarships in excess of ~Rs.160 Crores. 
+                        </p>
+                        <p>
+                            FFE currently supports close to 4000 Engineering students enrolled in different Engineering degree courses across India through merit cum means scholarships. FFE is committed to the overall well-being, skill development and employability of its scholars.
+                        </p>
+                        <p>
+                            To meet these objectives, Skill Development/Training programs (for 1st and 2nd year scholars)  and a Mentoring Program (for 3rd year scholars) are  being offered to FFE scholars.  FFE is striving to make our scholars more confident individuals who can  transition from “Campus to Corporate” smoothly .
+                        </p>
+                        <apex:image url="{!$Resource.MentorMenteeChart}"/>
+                        <p>
+                            * AY 2009-10 onwards FFE started including engineering and medicine and the focused more on these professions in the following years.* Data is from the start of the FFE India trust.
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>
+                            MENTORING PROGRAM OVERVIEW:
+                        </h4> 
+                        <p>
+                            <em>
+                                Mentoring is to support and encourage people to manage their own learning in order that they may maximise their potential, develop their skills, improve their performance and become the person they want to be.
+                            </em>
+                            " Eric Parsloe, The Oxford School of Coaching and Mentoring.
+                        </p>
+                        <p>
+                            FFE has identified key skill gaps and mentoring needs of its Engineering scholars, designed a curriculum to address those needs and through mentors, plans to implement the curriculum. We are confident that Mentors who are experienced, senior professionals from industry, through this program can enable scholars succeed in acquiring confidence, skills and other attributes, towards job-readiness.  
+                        </p>
+                        <p>
+                            FFE scholars are currently pursuing degrees in more than 300 Engineering colleges across India.  In order to maximize its reach, the mentoring program will be offered in two forms:
+                        </p>
+                        <ol>
+                            <li>
+                                ::marker
+                                In-Person Mentoring Program for mentors and mentees from a common geographical location. Meetings can be held at the mentor’s office or at a convenient location.
+                            </li>
+                            <li>
+                                ::marker
+                                Remote Mentoring Program which will allow mentors and mentees located in different cities/towns to connect. Meetings will be conducted over skype/ phone call.
+                            </li>
+                        </ol>
+                        <p>
+                            The program can be a hybrid model with some face to face sessions and many more remote modules. The curriculum provides the framework and guidelines for the sessions to be conducted but also allows some flexibility.   
+                        </p>
+                        <p>
+                            Thank you for your interest in this Program. 
+                        </p>
+                    </div>
+                </div>  
+            </div>
+            <div class="col-sm-11" style="margin-bottom: 60px;">
+                <div class="form-group row" style="text-align: center;">
+                    <a class="btn btn-success form1">Register as Mentee</a>
+                    <a class="btn btn-success form1">Register as Mentor</a>
+                </div>
+            </div>
+            
+        </section>
+        
+        
+    </body>
+</apex:page>

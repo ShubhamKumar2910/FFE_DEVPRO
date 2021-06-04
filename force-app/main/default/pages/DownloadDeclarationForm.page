@@ -1,0 +1,133 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0" controller="DeclarationFormController" standardStylesheets="false">
+    <head>
+        <style>
+            @media (min-width: 768px) {
+                .container {
+                    width: 750px;
+                }
+            }
+            
+            @media (min-width: 992px) {
+                .container {
+                    width: 970px;
+                }
+            }
+            
+            @media (min-width: 1200px) {
+                .container {
+                    width: 1170px;
+                }
+            }
+            
+            .container {
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            @media screen and (min-width: 768px) {
+                .container .jumbotron, .container-fluid .jumbotron {
+                    padding-right: 60px;
+                    padding-left: 60px;
+                }
+            }
+            
+            .container .jumbotron, .container-fluid .jumbotron {
+                padding-right: 15px;
+                padding-left: 15px;
+                border-radius: 6px;
+            }
+            .jumbotron {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+                position: relative;
+                top: 60px;
+                background-color: #032559;
+                color: #FFFFFF;
+                font-size: 45px;
+            }
+            @media screen and (min-width: 768px) {
+                .jumbotron {
+                    padding-top: 48px;
+                    padding-bottom: 48px;
+                }
+            }
+            body
+            {
+                background-color:#FFFFFF;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+            }
+            .download-btn {
+                position: relative;
+                top: 60px;
+            }
+
+            button {
+                background-color: #F39C12 !important; 
+                border: none !important;
+                color: white !important;
+                padding: 15px 32px !important;
+                text-align: center !important;
+                text-decoration: none !important;
+                display: inline-block !important;
+                font-size: 16px !important;
+                margin: 4px 2px !important;
+                cursor: pointer !important;
+            }
+        </style>
+        <script>
+            function downloadDoc() {
+                let initial_url = window.location.href;
+                let url = initial_url.split('DownloadDeclarationForm?id=');
+                if(url.length == 2) {
+                    let anchorTagA = document.createElement('a');
+                    anchorTagA.href = url[0]+'DeclarationForm?id='+url[1];
+                    anchorTagA.download = 'Declaration_form';
+                    document.body.appendChild(anchorTagA);  
+                    anchorTagA.click();
+                    document.body.removeChild(anchorTagA);
+                }
+                
+            }
+        </script>
+    </head>
+    
+    <div class="container">
+        <div class="banner" align="center">
+            <a href="http://www.ffe.org/" target="_blank"  >
+                <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+            </a>
+        </div>
+        <div class="jumbotron">
+            <table class="student"  width="100%" style="font-size:15pt;font-weight: 200;margin-left:5%;">
+                <tbody>
+                    <tr>
+                        <td width="20%" align="left">Name:</td>
+                        <td width="80%" align="left" >{!application.Student__r.Name}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%" align="left">FFEUID:</td>
+                        <td width="80%" align="left" >{!application.Student__r.FFE_ID__c}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%" align="left">Application No:</td>
+                        <td width="80%" align="left" >{!application.Name}</td>
+                    </tr>
+                    <tr>
+                        <td width="20%" align="left">Financial Year:</td>
+                        <td width="80%" align="left" >{!application.RPT_Financial_Year__c}</td>
+                    </tr> 
+                </tbody>            
+            </table>
+        </div>
+        <div class="download-btn">
+            <p style="font-size:13pt;font-weight: 400;">Click on the Button below to download the Student Declaration Form.<br/>
+<b>Note:</b> Do not alter the amount in the declaration form, please sign it and use the link provided in the email to upload  the signed document.</p>
+            <center><button class="button" onclick="downloadDoc();">Download</button></center>
+        </div>
+        
+    </div>  
+    
+</apex:page>

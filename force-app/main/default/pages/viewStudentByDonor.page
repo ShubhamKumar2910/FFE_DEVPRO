@@ -1,0 +1,543 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+    <title>Student Profile</title>
+    <head>
+        
+        <style>
+            html{
+            background:#fff;
+            }
+            
+            .switchDiv{
+            top: 170px;
+            position: relative;
+            }
+            .rowView{
+            width:98%;
+            padding:1%;
+            }
+            .inputfiledsSelect,.inputfileds{
+            width: 95%;
+            }
+            .uploadDocsDiv{
+            float: left;
+            width: 100%;
+            }
+            .tags{
+            color: #f38b05
+            }
+            
+            .profile {
+            padding: 15px;
+            margin: 4px 30px;
+            width: 18%;
+            height: 170px;
+            border: 1px solid #ccc;
+            margin-top: 18px;
+            }
+            .rowsHistory th {
+            color: #373c44;
+            }
+        </style>
+    </head> <br/>
+    <div ng-init="loadStudentProfile();">
+        <div class="formDiv">
+            <h4 class="formheadings" align="center">
+                Basic Information
+            </h4>
+            <div style="width:60%;float:left;">
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Name: <span class="tags">{{studentDetails.Student__r.FirstName}}&nbsp;{{studentDetails.Student__r.LastName}}</span>
+                    </h4>
+                </div>
+                <div class="row" >
+                    <h4 class="tagnames" >
+                        Gender: <span class="tags">{{studentDetails.Student__r.Gender__c}}</span>
+                    </h4>
+                </div>
+                
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Date of Birth: <span class="tags">{{studentDetails.Student__r.Birthdate}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Student Id: <span class="tags">{{studentDetails.Student__r.FFE_ID__c}}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Registered for Mentoring:
+                        <span class="tags" ng-if="studentDetails.Student__r.Has_Mentor__c">Yes</span>
+                        <span class="tags" ng-if="!studentDetails.Student__r.Has_Mentor__c">No</span>
+                    </h4>
+                </div>
+                
+            </div>
+            <div style="float:right" class="profile" ng-if="!noImage">
+                <apex:image url="{{imageSFIdURL}}" styleClass="logo" style="width:50%;position: relative;left: 34px;top: 12px;"/>
+            </div>
+            <div style="float:right" class="profile" ng-if="noImage">
+                <apex:image url="{!$Resource.NoImage}" styleClass="logo" style="width:70%;position: relative;left: 34px;top: -5px;" />
+            </div>
+        </div>
+        
+        <div class="formDiv" ng-if="displayPlacementData">
+            <h4 class="formheadings" align="center">
+                Placement information
+            </h4>
+            <div class="row" ng-if="studentDetails.Student__r.Company_Name__c!=null">
+                <h4 class="tagnames" >
+                    Company Name: <span class="tags">{{studentDetails.Student__r.Company_Name__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Designation__c!=null">
+                <h4 class="tagnames" >
+                    Designation: <span class="tags">{{studentDetails.Student__r.Designation__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.CTC__c!=null">
+                <h4 class="tagnames" >
+                    CTC (PA): <span class="tags">{{studentDetails.Student__r.CTC__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Location__c!=null">
+                <h4 class="tagnames" >
+                    Location: <span class="tags">{{studentDetails.Student__r.Location__c}}</span>
+                </h4>
+            </div>
+        </div>
+        
+        <div class="formDiv" ng-if="displayNotPlacedTab">
+            <h4 class="formheadings" align="center">
+                Student Resume(Looking for opportunity)
+            </h4>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Placement status: <span class="tags">{{studentDetails.Student__r.Placement_Info__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    <a href="/application/servlet/servlet.FileDownload?file={{resumeLink}}" target="_blank"> View Resume</a>
+                </h4>
+            </div>
+        </div>
+        
+        <div class="formDiv" ng-if="displayOtherTextTab">
+            <h4 class="formheadings" align="center">
+                Current status
+            </h4>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Status: <span class="tags">{{studentDetails.Student__r.Placement_Info__c}}</span>
+                </h4>
+            </div>
+            <div class="row">
+                <h4 class="tagnames" >
+                    Comments: <span class="tags">{{studentDetails.Student__r.Other__c}}</span>
+                </h4>
+            </div>
+        </div>
+        
+        
+        <div class="formDiv" ng-if="collegeInformation">
+            <h4 class="formheadings" align="center">
+                Course/College Details
+            </h4>
+            <div class="row" ng-if="collegeNameDetails">
+                <h4 class="tagnames" >
+                    College Name: <span class="tags" ng-show="studentDetails.Student__r.College_Name__r.Name!='Other'">{{studentDetails.Student__r.College_Name__r.Name}}</span>
+                    <span class="tags" ng-show="studentDetails.Student__r.College_Name__r.Name=='Other'">{{studentDetails.Student__r.College_Other__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.College_City__c!=null">
+                <h4 class="tagnames" >
+                    College City: <span class="tags">{{studentDetails.Student__r.College_City__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Course__c!=null">
+                <h4 class="tagnames" >
+                    Course: <span class="tags">{{studentDetails.Student__r.Course__c}}</span>
+                </h4>
+            </div>
+            <!--<div class="row" ng-if="studentDetails.Student__r.Current_year__c!=null"> -->
+            <div class="row" ng-if="studentDetails.Year__c!=null">
+                <h4 class="tagnames" >
+                    <!--  Course Year: <span class="tags">{{studentDetails.Student__r.Current_year__c}}</span> -->
+                    Course Year: <span class="tags">{{studentDetails.Year__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.College_State__c!=null">
+                <h4 class="tagnames" >
+                    College State: <span class="tags">{{studentDetails.Student__r.College_State__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="branchDetails">
+                <h4 class="tagnames" >
+                    Branch/Stream:
+                    <span class="tags" ng-show="studentDetails.Student__r.Branch_Stream__c!='Other'">{{studentDetails.Student__r.Branch_Stream__c}}</span>
+                    <span class="tags" ng-show="studentDetails.Student__r.Branch_Stream__c=='Other'">{{studentDetails.Student__r.Branch_Other__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Type__c!=null">
+                <h4 class="tagnames" >
+                    College Type: <span class="tags">{{studentDetails.Student__r.Type__c}}</span>
+                </h4>
+            </div>
+        </div>
+        
+        <div class="formDiv" ng-if="tenthTwelthDetails">
+            <h4 class="formheadings" align="center">
+                Educational Information    
+            </h4>
+            <div class="row" ng-if="studentDetails.Student__r.X10th_Year_Passed__c!=null">
+                <h4 class="tagnames" >
+                    10th Passed Year: <span class="tags">{{studentDetails.Student__r.X10th_Year_Passed__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X12th_Year_Passed__c!=null">
+                <h4 class="tagnames" >
+                    12th Passed Year: <span class="tags">{{studentDetails.Student__r.X12th_Year_Passed__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X10th__c!=null">
+                <h4 class="tagnames" >
+                    10th%: <span class="tags">{{studentDetails.Student__r.X10th__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X12th__c!=null">
+                <h4 class="tagnames" >
+                    12th%: <span class="tags">{{studentDetails.Student__r.X12th__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X10th_Marks_Obtained__c!=null">
+                <h4 class="tagnames" >
+                    10th Marks Obtained: <span class="tags">{{studentDetails.Student__r.X10th_Marks_Obtained__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X12th_Marks_Obtained__c!=null" >
+                <h4 class="tagnames" >
+                    12th Marks Obtained: <span class="tags">{{studentDetails.Student__r.X12th_Marks_Obtained__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X10th_Maximum_Marks__c!=null" >
+                <h4 class="tagnames" >
+                    10th Maximum Marks: <span class="tags">{{studentDetails.Student__r.X10th_Maximum_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X12th_Maximum_Marks__c!=null" >
+                <h4 class="tagnames" >
+                    12th Maximum Marks: <span class="tags">{{studentDetails.Student__r.X12th_Maximum_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X10th_Medium_Of_Instruction__c!=null" >
+                <h4 class="tagnames" >
+                    10th Medium Of Instruction: <span class="tags">{{studentDetails.Student__r.X10th_Medium_Of_Instruction__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X12th_Medium_Of_Instruction__c!=null" >
+                <h4 class="tagnames" >
+                    12th Medium Of Instruction: <span class="tags">{{studentDetails.Student__r.X12th_Medium_Of_Instruction__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X10th_Type__c!=null" >
+                <h4 class="tagnames" >
+                    10th Type: <span class="tags">{{studentDetails.Student__r.X10th_Type__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.X12th_Type__c!=null" >
+                <h4 class="tagnames" >
+                    12th Type: <span class="tags">{{studentDetails.Student__r.X12th_Type__c}}</span>
+                </h4>
+            </div>
+        </div>
+        
+        
+        
+        <div class="formDiv" ng-if="entranceExamInformation">
+            <h4 class="formheadings" align="center">
+                Entrance Test information
+            </h4>
+            <div class="row" ng-if="entranceTestName">
+                <h4 class="tagnames" >
+                    Entrance Test Name: <span class="tags" ng-if="studentDetails.Student__r.Entrance_Test_Name__c!='Other'">{{studentDetails.Student__r.Entrance_Test_Name__c}}</span>
+                    <span class="tags" ng-if="studentDetails.Student__r.Entrance_Test_Name__c=='Other'">{{studentDetails.Student__r.Other_Entrance_Test__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Entrance_Exam_Taken_In_Year__c!=null">
+                <h4 class="tagnames" >
+                    Entrance Exam Taken In Year: <span class="tags">{{studentDetails.Student__r.Entrance_Exam_Taken_In_Year__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Entrance_Exam_Maximum_Marks__c!=null">
+                <h4 class="tagnames" >
+                    Entrance Exam Maximum Marks: <span class="tags">{{studentDetails.Student__r.Entrance_Exam_Maximum_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Entrance_Test_Marks__c!=null">
+                <h4 class="tagnames" >
+                    Entrance Test Marks: <span class="tags">{{studentDetails.Student__r.Entrance_Test_Marks__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Entrance_Test_Rank__c!=null">
+                <h4 class="tagnames" >
+                    Entrance Test Rank: <span class="tags">{{studentDetails.Student__r.Entrance_Test_Rank__c}}</span>
+                </h4>
+            </div>
+        </div>
+        
+        
+        <!-- -->
+        <div class="formDiv" ng-if="semesterInformation">
+            <h4 class="formheadings" align="center">
+                Engineering Academic Scores
+            </h4>
+            <div class="row" ng-if="studentDetails.Student__r.Semester1__c!=null">
+                <h4 class="tagnames" >
+                    Semester I: <span class="tags">{{studentDetails.Student__r.Semester1__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester2__c!=null">
+                <h4 class="tagnames" >
+                    Semester II: <span class="tags">{{studentDetails.Student__r.Semester2__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester3__c!=null">
+                <h4 class="tagnames" >
+                    Semester III: <span class="tags">{{studentDetails.Student__r.Semester3__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester4__c!=null">
+                <h4 class="tagnames" >
+                    Semester IV: <span class="tags">{{studentDetails.Student__r.Semester4__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester5__c!=null">
+                <h4 class="tagnames" >
+                    Semester V: <span class="tags">{{studentDetails.Student__r.Semester5__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester6__c!=null">
+                <h4 class="tagnames" >
+                    Semester VI: <span class="tags">{{studentDetails.Student__r.Semester6__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester7__c!=null">
+                <h4 class="tagnames" >
+                    Semester VII: <span class="tags">{{studentDetails.Student__r.Semester7__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Semester8__c!=null">
+                <h4 class="tagnames" >
+                    Semester VIII: <span class="tags">{{studentDetails.Student__r.Semester8__c}}%</span>
+                </h4>
+            </div>        
+        </div>
+        
+        
+        
+        <div class="formDiv" ng-if="MbbsScoreInformation">
+            <h4 class="formheadings" align="center">
+                Medical Academic Scores
+            </h4>
+            <div class="row" ng-if="studentDetails.Student__r.MBBS_Year_1__c!=null">
+                <h4 class="tagnames" >
+                    Year I: <span class="tags">{{studentDetails.Student__r.MBBS_Year_1__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.MBBS_Year_2__c!=null">
+                <h4 class="tagnames" >
+                    Year II: <span class="tags">{{studentDetails.Student__r.MBBS_Year_2__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.MBBS_Year_3_Part_1__c!=null">
+                <h4 class="tagnames" >
+                    Year III(Part I): <span class="tags">{{studentDetails.Student__r.MBBS_Year_3_Part_1__c}}%</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.MBBS_Year_3_Part_2__c!=null">
+                <h4 class="tagnames" >
+                    Year III(Part II): <span class="tags">{{studentDetails.Student__r.MBBS_Year_3_Part_2__c}}%</span>
+                </h4>
+            </div>  
+        </div>
+        
+        
+        <div class="formDiv" ng-if="familyInformation">
+            <h4 class="formheadings" align="center">
+                Family Information    
+            </h4>
+            <!--div class="row" style="width:90%">
+<h4 class="tagnames" >
+Permanent Address: <span class="tags">{{studentDetails.Student__r.MailingStreet}}<br/>{{studentDetails.Student__r.MailingCity}}, <br/>{{studentDetails.Student__r.MailingState}},<br/> {{studentDetails.Student__r.MailingCountry}}, <br/>{{studentDetails.Student__r.MailingPostalCode}}</span>
+</h4>
+</div-->
+            <div class="row" ng-if="studentDetails.Student__r.Father_Name__c!=null">
+                <h4 class="tagnames" >
+                    Father's Name: <span class="tags">{{studentDetails.Student__r.Father_Name__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Mother_Name__c!=null">
+                <h4 class="tagnames" >
+                    Mother's Name: <span class="tags">{{studentDetails.Student__r.Mother_Name__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Father_Age__c!=null">
+                <h4 class="tagnames" >
+                    Father's Age: <span class="tags">{{studentDetails.Student__r.Father_Age__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Mother_Age__c!=null">
+                <h4 class="tagnames" >
+                    Mother's Age: <span class="tags">{{studentDetails.Student__r.Mother_Age__c}}</span>
+                </h4>
+            </div>  
+            <div class="row" ng-if="studentDetails.Student__r.Father_Education__c!=null">
+                <h4 class="tagnames" >
+                    Father's Education: <span class="tags">{{studentDetails.Student__r.Father_Education__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Mother_Education__c!=null">
+                <h4 class="tagnames" >
+                    Mother's Education: <span class="tags">{{studentDetails.Student__r.Mother_Education__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Father_Occupation__c!=null">
+                <h4 class="tagnames" >
+                    Father's Occupation: <span class="tags">{{studentDetails.Student__r.Father_Occupation__c}}</span>
+                </h4>
+            </div>
+            <div class="row" ng-if="studentDetails.Student__r.Mother_Occupation__c!=null">
+                <h4 class="tagnames" >
+                    Mother's Occupation: <span class="tags">{{studentDetails.Student__r.Mother_Occupation__c}}</span>
+                </h4>
+            </div>                
+            <div class="row" ng-if="studentDetails.Student__r.Annual_Family_Income__c!=null">
+                <h4 class="tagnames" >
+                    Annual Family Income: <span class="tags">{{studentDetails.Student__r.Annual_Family_Income__c}}</span>
+                </h4>
+            </div>
+            
+        </div>
+        
+        
+        <div class="formDiv" ng-if="applicationAttachments.length">
+            <h4 class="formheadings" align="center">
+                Letter of Thanks By Scholar
+            </h4>
+            <br/><br/>
+            <span ng-repeat="app in applicationAttachments"  >
+                <li ng-repeat="att in app.Attachments.records" style="margin-left:1%;margin-top:1%;">
+                    <a href="/donor/servlet/servlet.FileDownload?file={{att.Id}}" target="_blank">Letter of Thanks to Donor -- {{app.RPT_Financial_Year__c}}</a>
+                </li>
+            </span>
+        </div>
+        
+        <div class="loadingSection" ng-show="loading" >
+            <div class="loadingBackground"></div>
+            <div>
+                <apex:image url="{!$Resource.loading}" styleClass="loading" />
+            </div>
+        </div>
+        <div class="formDiv " ng-if="allAttachments.length>0">
+            
+            <h4 class="formheadings" align="center">
+                Documents Uploaded by the Student
+            </h4>
+            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;">
+                <thead>
+                    <tr class="rowsHistory">
+                        <th>S.No.</th>
+                        <th>Uploaded Date</th>
+                        <th>Document Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tr align="center" class="rowsHistory" ng-repeat="attachment in allAttachments">
+                    <td>{{allAttachments.indexOf(attachment) + 1}}</td>
+                    <td>{{attachment.CreatedDate | date:"dd/MM/yyyy"}}</td>
+                    <td>{{attachment.Name}}</td>
+                    <td>
+                        <a href="/application/servlet/servlet.FileDownload?file={{attachment.Id}}" class="material-icons"  style="text-decoration:none;font-size:19px" target="_blank">
+                            <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </div> 
+        
+        <div class="formDiv" ng-if="renderSkillDev">
+            <h4 class="formheadings" align="center">
+                Skills Development
+            </h4>
+            <div class="row" ng-if="displayAmcatTaken">
+                <h4 class="tagnames" >
+                    AMCAT Taken: <span class="tags">{{amcatTakenValue}}</span>
+                </h4>
+            </div> 
+            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;" ng-if="studentTrainingList.length>0;">
+            
+            <thead>
+                <tr class="rowsHistory thRow">
+                    <th>Training Name</th>
+                    <th>Year</th>
+                    <th>Completion Status</th>
+                    <th>IT-Reskilling Specialization</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr align="center" class="rowsHistory" ng-repeat="trainingRec in studentTrainingList">
+                    <td><a href="">{{trainingRec.name}}</a></td>
+                    <td>{{trainingRec.date1}}</td>
+                    <td>{{trainingRec.status}}</td>
+                    <td>{{trainingRec.specialization}}</td>
+                </tr>
+            </tbody>       
+        </table>
+        </div>
+        
+         <div class="formDiv" ng-if="studentMentoringList.length>0;">
+            <h4 class="formheadings" align="center">
+                Mentoring Details
+            </h4>
+             
+             <br/><br/>
+              <span class="tags">&nbsp;</span>
+             <div class="row">
+                 <h4 class="tagnames">
+                     Mentor Name : <span class="tags">{{mentorName}}</span>
+                 </h4>
+                 <br/>
+                 <h4 class="tagnames" >
+                     Mentor Organisation : <span class="tags">{{mentorOrg}}</span>
+                 </h4>
+             </div>
+             
+             
+             <br/><br/>
+            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;" ng-if="studentMentoringList.length>0;">
+            
+            <thead>
+                <tr class="rowsHistory thRow">
+                  <!--  <th>Mentor Name</th>
+                    <th>Mentor Organisation</th> -->
+                    <th>Current Session Name</th>
+                    <th>Session status</th>
+                    <th>Feedback</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr align="center" class="rowsHistory" ng-repeat="mentoringRec in studentMentoringList">
+                 <!--   <td><a href="">{{mentoringRec.Mentor_Name__c }}</a></td>
+                    <td>{{mentoringRec.Mentor_Organisation__c}}</td> -->
+                    <td>{{mentoringRec.Current_Session_Name__c}}</td>
+                    <td>{{mentoringRec.Session_status__c}}</td>
+                     <td>{{mentoringRec.Feedback__c}}</td>
+                </tr>
+            </tbody>       
+        </table>
+        </div>
+    </div>
+</apex:page>

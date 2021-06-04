@@ -1,0 +1,258 @@
+<apex:page sidebar="false" showHeader="false" docType="html-5.0" controller="DeclarationFormController" standardStylesheets="false">
+    <head>
+        <style>
+            @media (min-width: 768px) {
+                .container {
+                    width: 750px;
+                }
+            }
+            
+            @media (min-width: 992px) {
+                .container {
+                    width: 970px;
+                }
+            }
+            
+            @media (min-width: 1200px) {
+                .container {
+                    width: 1170px;
+                }
+            }
+            
+            .container {
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            @media screen and (min-width: 768px) {
+                .container .jumbotron, .container-fluid .jumbotron {
+                    padding-right: 60px;
+                    padding-left: 60px;
+                }
+            }
+            
+            .container .jumbotron, .container-fluid .jumbotron {
+                padding-right: 15px;
+                padding-left: 15px;
+                border-radius: 6px;
+            }
+            .jumbotron {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+                position: relative;
+                top: 60px;
+                background-color: #032559;
+                color: #FFFFFF;
+                font-size: 45px;
+            }
+            @media screen and (min-width: 768px) {
+                .jumbotron {
+                    padding-top: 48px;
+                    padding-bottom: 48px;
+                }
+            }
+            body
+            {
+                background-color:#FFFFFF;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+            }
+            .download-btn {
+                position: relative;
+                top: 60px;
+            }
+
+            button {
+                background-color: #F39C12 !important; 
+                border: none !important;
+                color: white !important;
+                padding: 15px 32px !important;
+                text-align: center !important;
+                text-decoration: none !important;
+                display: inline-block !important;
+                font-size: 16px !important;
+                margin: 4px 2px !important;
+                cursor: pointer !important;
+            }
+
+            .loadingBackground {
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: #F6F6F6;
+                z-index: 11111;
+                opacity: 0.7;
+                top: 0px;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+
+            .loading {
+                top: 50%;
+                left: 50%;
+                margin: -50px 0px 0px -50px;
+                z-index: 111111;
+                position: fixed;
+            }
+            #spinner {
+                display: none;
+            }
+        </style>
+        <script>
+            var maxStringSize = 6000000;    //Maximum String size is 6,000,000 characters
+            var maxFileSize = 4350000;      //After Base64 Encoding, this is the max file size
+            var chunkSize = 950000;         //Maximum Javascript Remoting message size is 1,000,000 characters
+            var attachment;
+            var attachmentName;
+            var fileSize;
+            var positionIndex;
+            var doneUploading;
+            var appId = "{!$CurrentPage.parameters.id}";
+            //Method to prepare a file to be attached to the Account bound to the page by the standardController
+            function uploadFile() {
+                
+                if(appId != "") {
+                    var file = document.getElementById('attachmentFile').files[0];
+                    console.log(file);
+                    if(file != undefined) {
+                        if(file.size <= maxFileSize) {
+                        attachmentName = file.name;
+                        var fileReader = new FileReader();
+                        fileReader.onloadend = function(e) {
+                            attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                            positionIndex=0;
+                            fileSize = attachment.length;
+                            console.log("Total Attachment Length: " + fileSize);
+                            doneUploading = false;
+                            if(fileSize < maxStringSize) {
+                                document.getElementById('spinner').style.display = 'block';
+                                uploadAttachment(null);
+                            } else {
+                                alert("Base 64 Encoded file is too large.  Maximum size is " + maxStringSize + " your file is " + fileSize + ".");
+                            }
+                            
+                        }
+                        fileReader.onerror = function(e) {
+                            alert("There was an error reading the file.  Please try again.");
+                        }
+                        fileReader.onabort = function(e) {
+                            alert("There was an error reading the file.  Please try again.");
+                        }
+                        
+                        fileReader.readAsBinaryString(file);  //Read the body of the file
+                        
+                        } else {
+                            alert("File must be under 4.3 MB in size.  Your file is too large.  Please try again.");
+                        }
+                    } else {
+                        alert("You must choose a file before trying to upload it");
+                    }
+                }else {
+                    alert("Cannot upload document");
+                }
+                
+            }
+        
+            //Method to send a file to be attached to the Account bound to the page by the standardController
+            //Sends parameters: Account Id, Attachment (body), Attachment Name, and the Id of the Attachment if it exists to the controller   
+            function uploadAttachment(fileId) {
+                var attachmentBody = "";
+                if(fileSize <= positionIndex + chunkSize) {
+                    attachmentBody = attachment.substring(positionIndex);
+                    doneUploading = true;
+                } else {
+                    attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+                }
+                console.log("Uploading " + attachmentBody.length + " chars of " + fileSize);
+                DeclarationFormController.doUploadAttachment(
+                appId, attachmentBody, attachmentName, fileId, 
+                    function(result, event) {
+                    console.log(result);
+                    if(event.type === 'exception') {
+                        console.log("exception");
+                        console.log(event);
+                    } else if(event.status) {
+                        if(result.substring(0,3) == '00P') {
+                            if(doneUploading == true) {
+                                DeclarationFormController.updateApplication(appId, function(result, event) {
+                                    debugger;
+                                    if(event.status && result) {
+                                        document.getElementById('jumboText').innerHTML = 'Document uploaded successfully.';
+                                        document.getElementById('buttonSection').style.display = 'none';
+                                        document.getElementById('spinner').style.display = 'none';
+                                    }
+                                    
+                                });
+                                /* window.open("/", "_blank");
+                                window.location.reload(); */
+                            } else {
+                                positionIndex += chunkSize;
+                                uploadAttachment(result);
+                            }
+                        }
+                    } else {
+                        console.log(event.message);
+                    }
+                    },
+                    {buffer: true, escape: true, timeout: 120000}
+                );
+            }
+        </script>
+    </head>
+    <body>
+        <div class="loadingSection" id="spinner">
+            <div class="loadingBackground"></div>
+            <div>
+                <apex:image url="{!$Resource.loading}" styleClass="loading" />
+            </div>
+        </div>
+        <apex:outputPanel layout="block" rendered="{!!isError}">
+            <div class="container">
+                <div class="banner" align="center">
+                    <a href="http://www.ffe.org/" target="_blank"  >
+                        <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                    </a>
+                </div>
+                <div class="jumbotron">
+                    <table class="student"  width="100%" style="font-size:15pt;font-weight: 200;margin-left:5%;">
+                        <tbody>
+                            <tr>
+                                <td width="20%" align="left">Name:</td>
+                                <td width="80%" align="left" >{!application.Student__r.Name}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%" align="left">FFEUID:</td>
+                                <td width="80%" align="left" >{!application.Student__r.FFE_ID__c}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%" align="left">Application No:</td>
+                                <td width="80%" align="left" >{!application.Name}</td>
+                            </tr>
+                            <tr>
+                                <td width="20%" align="left">Financial Year:</td>
+                                <td width="80%" align="left" >{!application.RPT_Financial_Year__c}</td>
+                            </tr> 
+                        </tbody>            
+                    </table>
+                </div>
+                <div class="download-btn">
+                    <p style="font-size:13pt;font-weight: 400;" id="jumboText">Click on Choose file to select the file and use Upload button to upload the Declaration Form.<br/>
+                    <b>Note:</b> Do not alter the amount in the declaration form.</p>
+                    <center>
+                        <div id="buttonSection">
+                            <input type="file" style="font-size: 12pt;" id="attachmentFile" accept="application/pdf"/><button class="button" onclick="uploadFile();">Upload</button>
+                        </div>
+                    </center>
+                </div>
+                
+            </div>
+            
+        </apex:outputPanel>
+        <apex:outputPanel layout="block" rendered="{!isError}">
+            <center><h3>You cannot proceed, please email us at: india_support@ffe.org</h3></center>
+        </apex:outputPanel>
+    </body>
+</apex:page>

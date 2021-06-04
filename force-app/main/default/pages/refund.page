@@ -1,0 +1,49 @@
+<apex:page controller="AP_Refund_CTRL" showHeader="false" sidebar="false" id="refundPG">
+    <html>
+        <title>Refund</title> 
+        <script>
+        function callServer(){
+            CallApexMethod();
+            
+        }
+        
+        function closeCurrentPopup(){  
+            window.opener.location.href="/{!refundedID}";
+            self.close();        
+        }
+        </script>
+        <apex:form >            
+            <apex:actionFunction name="CallApexMethod" action="{!doSave}" reRender="mainPb"/>            
+            <apex:pageBlock id="mainPb"> 
+                <div style="margin-right: 35%;margin-left:35%;"><apex:pageMessages ></apex:pageMessages></div>
+                <apex:pageBlock title="Refund Info." rendered="{!isDisplay}">
+                    <apex:pageBlockSection >
+                        <apex:outputField value="{!rWrap.refund.Application__c}"/>
+                        <apex:inputField value="{!rWrap.refund.Refunded_Amount__c}" required="true"/>
+                        <apex:inputField value="{!rWrap.refund.Refund_Transaction_No__c}" required="true"/>
+                    </apex:pageBlockSection>
+                    
+                    <apex:pageBlock title="Associated Fund Utilization">
+                        <apex:pageblockTable value="{!rWrap.fundUtilz}" var="utz">
+                            <apex:column value="{!utz.Donor__c}"/>
+                            <apex:column value="{!utz.General_Accounting_Unit__c}"/>
+                            <apex:column value="{!utz.Donor_Balance__c}"/>
+                            <apex:column value="{!utz.Disbursed_Amount__c}"/>
+                            <apex:column headerValue="Donor balance Refund (Rs.)">
+                                <apex:inputField value="{!utz.Refunded_Amount__c}"/>
+                            </apex:column>
+                        </apex:pageblockTable>
+                    </apex:pageBlock>
+                    
+                    <apex:commandButton style="margin-left:36%;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;" id="cmdSaveBtn" value="Save" onclick="callServer();return false;" />
+                    <apex:commandButton style="margin-left:0%;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;" id="cmdCancelBtn" value="Cancel" oncomplete="closeCurrentPopup();" immediate="true" html-formnovalidate="formnovalidate"/>
+                    
+                </apex:pageBlock>
+                
+                <apex:commandButton Id="completed" value="Close" style="margin-left: 42%;;background-color:#ff793c;background-image:none;color:#fff;border:none;width: 110px;height: 30px;font-size: 13px;" oncomplete="closeCurrentPopup();"  rendered="{!!isDisplay}">
+                </apex:commandButton><br/>
+                
+            </apex:pageBlock>                 
+        </apex:form>
+    </html>
+</apex:page>

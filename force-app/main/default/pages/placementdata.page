@@ -1,0 +1,170 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0">
+    <style>
+    .md-select-menu-container.md-active{
+                z-index: 1111;
+                }
+    </style>
+    <script src="{!$Resource.studentProfileJs}">
+    </script>
+    <script>
+    function selectedPlacementIfno(selectedInfo){
+   					 alert(selectedInfo);
+  					}
+    </script>
+    
+    <div ng-init="showTabcontent(3);" style="background:#fff">
+        <ng-form name="basicInfo" novalidate="true" class="switchDiv">
+            <div class="searchRow">
+                <div class="searchCol">
+                    <h3 class="searchTags" align="right">
+                        Select : 
+                    </h3> 
+                    <md-input-container class="mdCont" >
+                        <md-select ng-model="selectedplacementInfo" style="border: 1px solid #ccc;" ng-change="selectedPlacementOption(selectedplacementInfo)" placeholder="Placement info">
+                            <md-optgroup >
+                                <md-option  ng-repeat="plcmntopt in placementOptions" value="{{plcmntopt.value}}">{{plcmntopt.value}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                    
+
+                    
+                </div>
+            </div> 
+            <div class="formDiv" ng-if="displayPlacement">
+                <h4 class="formheadings" align="center">
+                    Please provide your Placement details 
+                </h4>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Company Name:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="companyName" ng-model="student.Company_Name__c"  class="inputfileds" ng-readonly="editplacementFileds"  ng-class="{readInput: editplacementFileds}" required='true'/>
+                    <span ng-show="formInvalidplacement && basicInfo.companyName.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalidplacement && basicInfo.companyName.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Designation:<span style="color:#ff0000"></span>
+                    </h4>
+                    <input type="text" name="Designation" ng-model="student.Designation__c"  class="inputfileds" ng-readonly="editplacementFileds"    />
+                </div>
+                <div class="row">
+                    <h4 class="tagnames" >
+                        Location:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <textarea  name="location" class="inputfileds"  ng-model="student.Location__c" required='true' ng-readonly="editplacementFileds"  ng-class="{readInput: editplacementFileds}" style="min-height:98px;width:width: 90%;" ></textarea>
+                	<span ng-show="formInvalidplacement && basicInfo.location.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalidplacement && basicInfo.location.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="row">
+                    <h4 class="tagnames">
+                        CTC (PA):<span style="color:#ff0000">*</span>
+                    </h4>
+                    <input type="text" name="CTC" ng-model="student.CTC__c"  class="inputfileds" required='true' ng-readonly="editplacementFileds"  ng-class="{readInput: editplacementFileds}" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="9"/>
+                	<span ng-show="formInvalidplacement && basicInfo.CTC.$invalid" class="error">This is required.</span>
+                    <span ng-show="!(formInvalidplacement && basicInfo.CTC.$invalid) && showSpace" class="error">&nbsp;</span>
+                </div>
+                <div class="buttonDiv" align="center" style="margin-bottom:0px;padding-bottom: 0px;">
+                <input type="button" value="Edit" class="buttons"  ng-click="editplacement();" ng-if="editplacementFileds"/>
+                <input type="button" value="Submit" class="buttons"  ng-click="submitPlacementInfo();" ng-if="!editplacementFileds"/>
+                <input type="button" value="Cancel" class="buttons"  ng-click="cancleplacementchanges();" ng-if="!editplacementFileds"/>
+            </div>
+            </div>
+            
+            
+            <div class="formDiv" ng-if="!resumeattachemts.length>0 && !displayUplodedDoc && displayResume">
+                <h4 class="formheadings" align="center">
+                    Please upload your resume, FFE might be able to help you out in getting opportunities
+                </h4>
+                <div class="uploadDocsDiv">
+                                    <div class="row" style="font-weight: bold;">  
+                                        <label >Please upload your resume</label>
+                                    </div>
+                                    <div class="row">                                    
+                                        <input type="file" name="{{resumeupload}}" class="inputfileds" id="{{resumeupload}}" style="width:75%"/>
+                                        <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(student.Id,resumeupload,resumeupload,student.Name+'-Resume','');" style="float: left;margin-left: 5%;"/>
+                                    </div>
+                                    <div class="row" style="font-weight: bold;">  
+                                        <label ></label>
+                                    </div>
+               </div>                                
+            </div>
+            
+            
+            
+            
+            
+            
+            
+            
+             <div class="formDiv" ng-if="resumeattachemts.length>0 && displayUplodedDoc && displayResume">
+                            
+                            <h4 class="formheadings" align="center">
+                                Uploaded Resume
+                            </h4>
+                            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;">
+                                <thead>
+                                    <tr class="rowsHistory">
+                                        <th>Uploaded Date</th>
+                                        <th>Document Name</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr align="center" class="rowsHistory" ng-repeat="attachemt in resumeattachemts">
+                                    <td>{{attachemt.CreatedDate | date:"dd/MM/yyyy"}}</td>
+                                    <td>{{attachemt.Name}}</td>
+                                    <td>
+                                        <a href="/application/servlet/servlet.FileDownload?file={{attachemt.Id}}" class="material-icons"  style="text-decoration:none;font-size:19px" target="_blank">
+                                            <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                                        </a> 
+                                        <span style=" position: relative;
+                                                     top: -2px;
+                                                     font-size: 23pt;
+                                                     ">|</span>
+                                        <input type="button" value="Replace" class="buttons"  ng-click="replace(attachemt,resumeupload)" style="position: relative;top: -5px;"/>
+                                    </td>
+                                </tr> 
+                            </table>
+                        </div>
+            
+            
+            <div class="renewalPopup" ng-show="replcaestudentDoc">
+                <div class="material-icons closePopUp" ng-click="closeReplaceDoc();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="uploadDocsDiv">
+                        <div class="row" style="font-weight: bold;margin-top: 8px;    width: 47%;" >  
+                            <label >{{replaceAttachments.Name}}</label>
+                        </div>
+                        <div class="row" style="    width: 47%;">    
+                            <input type="file" name="doc1" class="inputfileds" id="{{replaceAttachments.Name}}" required="true" valid-file='true'/>
+                        </div>
+                </div>
+                <div class="buttonDiv" align="center" style="margin-top:35px;padding-bottom: 14px;">
+                    <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(student.Id,replaceAttachments.Name,type,replaceAttachments.Name,replaceAttachments.Id);"/>
+                    <input type="button" value="Cancel" class="buttons"  ng-click="closeReplaceDoc();" />
+                </div>
+            </div>
+            
+            
+            
+            
+            <div class="formDivforOther" ng-if="displayOther">
+                <h4 class="formheadings" align="center">
+                    If any other aspiration please mention here 
+                </h4>
+                    <h4 class="tagnames" style="padding-top: 4%;padding-left: 1%;">
+                        Please enter your future plans:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <textarea  name="futurePlans" class="inputfileds" ng-readonly="otherFieldDisplay"  ng-class="{readInput: otherFieldDisplay}" ng-model="student.Other__c" required='true' style="min-height:98px;margin-left: 2%;width: 95%;" ></textarea>
+            <div class="buttonDiv" align="center" style="margin-top:35px;padding-bottom: 14px;">
+                    <input type="button" value="Save" class="buttons" ng-if="!otherFieldDisplay" ng-click="submitPlacementInfoforOther()"/>
+                    <input type="button" value="Edit" class="buttons" ng-if="otherFieldDisplay" ng-click="allowtoEnterValue()" />
+            </div>
+            </div>
+            
+            
+        </ng-form>
+    </div>
+</apex:page>

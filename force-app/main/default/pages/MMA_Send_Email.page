@@ -1,0 +1,38 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" standardController="Mentor_Mentee_Association__c" extensions="MMAcontroller" recordSetVar="Mentor_Mentee_Association__c">
+    <apex:includeScript value="/soap/ajax/18.0/connection.js"/>
+    <apex:includeScript value="/soap/ajax/30.0/apex.js"/>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:inputCheckbox value="{!isMentee}" >&nbsp;</apex:inputCheckbox>&nbsp; Mentee &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:inputCheckbox value="{!isMentor}" style="">&nbsp;</apex:inputCheckbox>&nbsp; Mentor 
+            
+            <apex:inputText value="{!moduleName}" title="" id="theTextInput" style="margin-left:10%"/> : Module Name
+            
+            <apex:commandButton action="{!sendEmail}" value="Send Email" oncomplete="location.reload();" style="float:right; margin-left:1%;">
+            </apex:commandButton>
+            <input type="button" onclick="location.reload();" value="Cancel" style="float:right;"/>
+            
+        </apex:pageBlock>
+        <br/>Select Template : <br/><br/>
+        <apex:selectList value="{!selectedEmailtemp}" multiselect="false" onchange="gettemplateBody()" onselect="gettemplateBody()">
+            <apex:selectOptions value="{!AllEmailTempaltes}" />
+        </apex:selectList>
+        
+        <apex:outputPanel id="selectedEmailtempTextss" >
+            <apex:outputText value="{!selectedEmailtempText}" escape="false" />
+        </apex:outputPanel>
+        
+        <apex:actionFunction action="{!getEmailTempContent}" name="callgetEmailTempContent" rerender="selectedEmailtempTextss">
+        </apex:actionFunction>
+        
+    </apex:form>   
+    <script>
+    debugger;
+    var allIds = {!GETRECORDIDS($ObjectType.Mentor_Mentee_Association__c)};
+    function gettemplateBody(){
+        callgetEmailTempContent();
+        sendEmail();
+        
+    }
+    </script>
+</apex:page>

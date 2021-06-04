@@ -1,0 +1,110 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0">
+    <style>
+        .headersHistory{
+        margin-top:148px;
+        border: 1px solid #032559;
+        background: #fff;
+        }
+        .activetabs { 
+        background: #ff793c;
+        } 
+        .headersHistory ul li a{
+        font-size: 14px;
+        color: #032559;
+        }
+        
+        .activetabs a{
+        color: #fff !important; 
+        }
+        .historyTable{
+        margin-top: 40px;
+        }
+        .sweet-alert p{
+        float: left;
+        width: 100%;
+        }
+        .sweet-alert h2{
+        margin:2px 0;
+        }
+        .buttonsHistory {
+        border-radius: 3px;
+        height: 30px;
+        color: #fff;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        background: #ff793c;
+        }
+    </style>
+    <!--div class="tableHeading">
+<h4 align="left" style="margin: 5px 0px;">
+Donation Histroy
+</h4>
+</div-->
+    <div class="headermenuSelection headersHistory" ng-init="loadDonationHistory();showTabcontent(1);pledgedDonationHistory()">
+        <ul style="width:100%">
+            <li ng-if="donationList.length>0" ng-click="switch(0,0)" ng-class="{activetabs: 0 == selectedtabs}" ><a  ng-click="moveToTop();">Donation History</a></li>
+            <li ng-if="pledgedDonationList.length>0" ng-click="switch(1,1)" ng-class="{activetabs: 1 == selectedtabs}"><a  ng-click="moveToTop();">Pledged Donations</a></li>
+        </ul>
+    </div>
+    <div ng-switch="indexValue">
+        <table class="historyTable" ng-switch-when="0">
+            <thead ng-if="donationList.length>0">
+                <tr class="rowsHistory thRow">
+                    <th>Program</th>
+                    <th>Frequency</th>
+                    <!--th>No. of Students</th-->
+                    <th >Amount</th>
+                    <th>Order ID</th>
+                    <th>Payment Status</th>
+                    <th>Payment Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="pastDn in donationList " align="left" class="rowsHistory">
+                    <td>{{pastDn.Program_Frequency__r.Program__r.Program__c}}</td>
+                    <td>{{pastDn.Program_Frequency__r.Name}}</td>
+                    <!--td align="right">{{pastDn.No_of_Student__c}}</td-->
+                    <td align="right">{{pastDn.Amount}}</td>
+                    <td>{{pastDn.Payment_Order__r.Order_No__c}}</td>
+                    <td>{{pastDn.Payment_Order__r.CCAvenue_Payment_Status__c}}</td>
+                    <td>{{pastDn.Payment_Order__r.Transaction_Date__c | date:"dd/MM/yyyy"}}</td>
+                    <td><input type="button" value="Make Payment" class="buttons buttonsHistory" ng-click="reDonate(pastDn);" ng-if="pastDn.Payment_Order__r.CCAvenue_Payment_Status__c !='Success'"/></td>
+                </tr> 
+            </tbody>           
+        </table>
+        <!--div class="tableHeading">
+<h4 align="left" style="margin: 5px 0px;">
+Pending Donations
+</h4>
+</div-->
+        <table class="historyTable" ng-switch-when="1">
+            <thead ng-if="pledgedDonationList.length>0">
+                <tr class="rowsHistory thRow">
+                    <th>Program</th>
+                    <th>Frequency</th>
+                    <th>No. of Students</th>
+                    <th ng-show="donor.DN_Citizenship__c == indian">Amount [INR]</th>
+                    <th ng-show="donor.DN_Citizenship__c == nonindian">Amount [USD]</th>
+                    <th>Installment Number</th>
+                    <th>Next Payment Date</th>
+                    <th></th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr ng-repeat="pendDn in pledgedDonationList" align="left" class="rowsHistory">
+                    <td>{{pendDn.npe03__Recurring_Donation__r.Program_Frequency__r.Program__r.Program__c}}</td>
+                    <td>{{pendDn.npe03__Recurring_Donation__r.Program_Frequency__r.Name}}</td>
+                    <td align="right">{{pendDn.npe03__Recurring_Donation__r.No_of_Student__c}}</td>
+                    <td align="right" ng-show="donor.DN_Citizenship__c == indian">{{pendDn.Amount}}</td>
+                    <td align="right" ng-show="donor.DN_Citizenship__c == nonindian">{{pendDn.Amount_USD__c}}</td>
+                    <td align="right">{{pendDn.npsp__Recurring_Donation_Installment_Name__c}}</td>
+                    <td>{{pendDn.CloseDate | date:"dd/MM/yyyy"}}</td>
+                    <td><input type="button" value="Make Payment" class="buttons buttonsHistory" ng-click="futureDonation(pendDn);"/></td>
+                </tr> 
+            </tbody>
+        </table>
+    </div>
+</apex:page>

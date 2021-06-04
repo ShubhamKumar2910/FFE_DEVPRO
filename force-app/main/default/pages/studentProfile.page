@@ -1,0 +1,923 @@
+<apex:page sidebar="false" showHeader="false"
+           standardStylesheets="false"
+           applyhtmltag="false"
+           cache="false"
+           doctype="html-5.0"
+           controller="AP_Application_CTRL"
+           action="{!checkUserAuth}">
+    
+    <html ng-app="Student">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+		
+        <title>Student Profile</title>
+        <head>
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.studentProfileJs}">
+            </script>
+            <script>
+            var studendId           = "{!currentUserId}";
+            var gradSystemList      = {!gradSystemList};
+            var accomTypesList          = {!accomTypesList};
+            var btechYearList       = {!btechYearList};     
+            var MtechYearList       = {!MtechYearList};       
+            var MbbsYearList        = {!MbbsYearList};   
+            var studentCourse       = {!studentCourse};
+            var typeOfBankAccounts  = {!typeOfBankAccounts};
+            var listOfStates        = {!listOfStates};
+            var isRenewalAvailable  = "{!isRenewalAvailable}";
+            var eligibleStatus      = "{!JSENCODE($Label.ScholarshipInternalStatusEligible)}";            
+            var errMsg              = "{!errMsg}";
+            var appSuccess          = "{!appSuccess}";
+            var StudentBranches     = {!studentBranch};
+            var StudentLawBranches =  {!studentLawBranch};
+            var studentUpload       = "{!JSENCODE($Label.Uploaded_for_Scholar)}";
+            var facilitatorUpload   = "{!JSENCODE($Label.Uploaded_for_Facilitator)}";
+            var maxAttchmentSize    = {!maxAttchmentSize};
+            var prelimFiles         = {!prelimFiles};
+            var renewalFiles        = {!renewalFiles};
+            var renewalNotification = "{!JSENCODE($Label.renewal_notification_message)}";
+            var StudentCourseBEBTECH= "{!JSENCODE($Label.StudentCourseBEBTECH)}";
+            var StudentCourseMTech  = "{!JSENCODE($Label.StudentCourseMTech)}";
+            var donorLogDescription = "{!donorLogoDescription}";
+            var placementOptions  = {!placementOptions};
+            var studentResumeUpload = "{!studentResumeUpload}"; 
+            var finalYearOddSem   = "{!finalYearOddSem}";
+            var finalYearEvenSem   = "{!finalYearEvenSem}";
+            var finalYearMarksnoti = "{!finalYearMarksnoti}";
+            var currentFinancialYear = "{!currentFinancialYear}";
+            function maxLengthCheck(object){
+                if (object.value.length > object.maxLength)
+                    object.value = object.value.slice(0, object.maxLength)
+                    }
+            
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            function openCity(cityName) {
+                var i;
+                var x = document.getElementsByClassName("city");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                document.getElementById(cityName).style.display = "block";
+            }
+            function onImageHover(){
+                console.log('working');
+                }
+            </script>
+            <style>
+                .md-datepicker-calendar-pane{
+                z-index: 1200}
+                input[type=search] {
+                width: 98%;
+                border: 1px solid #ccc;
+                height: 30px;
+                padding: 2px;
+                outline: none;
+                }
+                .studentDatailsDiv{
+                position:relative;
+                top:166px;
+                }
+                .md-icon-button+.md-datepicker-input-container {
+                background: #fff;
+                }
+                .md-datepicker-input-container{
+                width: 98%;
+                height: 30px;
+                margin: 0;
+                padding: 0;
+                border-bottom-width: 0px
+                }
+                .md-datepicker-input{
+                margin-top: 7px;
+                pointer-events: none;
+                }
+                .md-datepicker-triangle-button.md-button.md-icon-button{
+                margin-top: 8px;
+                margin-right: 11px;
+                }
+                .md-datepicker-button{
+                display:none;
+                }
+                ng-form{
+                background: #fff;
+                }
+                .mdContPopup{ 
+                margin: 0;
+                width: 100%;
+                margin-top: 0px !important;
+                padding: 2px 2px;
+                }
+                .ProfileUploadingDiv {
+                width: 20%;
+                margin: 0 auto;
+                position: fixed;
+                top: 16%;
+                z-index: 141;
+                background: #fff;
+                left: 67%;
+                box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+                min-height: 30%;
+                max-height: 30%;
+                overflow: auto;
+                padding: 20px;
+                border-radius: 5px;
+                }
+                .ProfileUploadingDivTwo{
+                width: 50%;
+                margin: 0 auto;
+                position: fixed;
+                top: 25%;
+                z-index: 145;
+                background: #fff;
+                left: 25%;
+                box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+                min-height: 50%;
+                max-height: 50%;
+                overflow: auto;
+                padding: 20px;
+                border-radius: 10px;
+                }
+                .backgroundForExtraDonor{
+                z-index:144
+                }
+                .profiles{
+                width:100%;
+                float:left;
+                }
+                .uploadDocsDiv{
+                float: left;
+                width: 100%;
+                }
+                .row{
+                width: 48%;
+                float: left;
+                padding: 1%;
+                }
+                .row11 {
+                width: 93%;
+                float: center;
+                padding: 0%;
+                }
+        .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 800px;
+        background-color: white;
+        color: #151313;
+        border-radius: 2px;
+        padding: 5px 0;
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 6;
+        }
+        .tooltip:hover .tooltiptext {
+        visibility: visible;
+        }
+                   .img__description {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: -680px;
+                color: rgb(221,44,0);
+                visibility: hidden;
+                opacity: 0;
+                }
+                
+                .img__wrap:hover .img__description {
+                visibility: visible;
+                opacity: 1;
+                }
+                .burger-icon{
+                
+                }
+                #uploaded_docs{
+                	 background-color:red;
+                }
+                #toggle{
+                	
+                }
+                #toggle:checked + .pdf{
+            		background-color:red;
+                	
+            		}
+                 @media screen and (max-width: 600px){
+                	.row{
+                		width:100%;
+                	}
+                    .formDiv{
+                    	margin-left:-5%;
+                		margin-top:5%;
+                		width:100%;
+                    }
+                	#uploaded_docs th:first-child{
+                		width:13%;
+                	}
+					#uploaded_docs th:nth-child(2){
+                		width:25%;
+                	}
+                    #uploaded_docs th:nth-child(3){
+                    width:35%;
+                    }
+                    .burger-icon{
+                        
+                    }
+                	
+                        .checkCss{
+                        display:inline-grid !important;
+                        }
+                		
+                		.disp{
+                			display:none;
+                		}
+                }
+                
+            </style>
+        </head>
+        <body ng-controller="studentProfile" id="myContainerDiv">
+            <div ng-show="DisplayLogoDesc" class="renewalPopup" style="border-radius: 10px 10px 10px 10px;width:24%" id='popUpDesc'>
+                <div  ta-bind="text" ng-model="logoDescription" id='textArea'>{{logoDescription}}</div>
+            </div>
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                
+                <div style="float:left; width:12%;" ng-show="primaryLogoDisplay">
+                    <img src="/application/servlet/servlet.FileDownload?file={{primaryLogo}}" id="primaryDonor" class="thumb" style="height: 100px;width: 100px;position: relative;top: 6px;outline:none;" ng-mouseover='ondonorLogoMousehover();' ng-mouseout="closeDescJs();"/>
+                </div>
+                <div style="float:left; width:12%;" ng-show="secondaryLogoDisplay">
+                    <img src="/application/servlet/servlet.FileDownload?file={{secondaryLogo}}" id="secondaryDonor" class="thumb" style="height: 100px;width: 100px;position: relative;top: 6px;outline:none;" ng-mouseover='ondonorLogoMousehover();' ng-mouseout="closeDescJs();"/>
+                </div>
+                
+                <div class="logout" align="right" >
+                    <input type="button" value="Sign out" name="Log out" class="buttons" style="margin-top:10px;" onclick="logOut();"/>
+                    <apex:form >             
+                        <apex:actionFunction action="{!logOutUser}" name="logOut"></apex:actionFunction>
+                    </apex:form>
+                </div>
+
+                <div style="float:right; width:12%;outline:none;" ng-show="NoImage" ng-click='showProfile();' class="img__wrap">
+                    <!--<p class="img__description">Ensure passport size photograph is uploaded.</p>-->
+                    <apex:image url="{!$Resource.profile}" onmouseover="onImageHover()" style="height: 100px;width: 100px;position: relative;top: 6px;outline:none;border: 1px solid rgb(221,44,0);"/>
+                </div>
+                <div style="float:right; width:12%;" ng-show="!NoImage" class="img__wrap">
+                  <!--  <p class="img__description">Ensure passport size photograph is uploaded.</p>-->
+                    <img src="/application/servlet/servlet.FileDownload?file={{profileImageSFId}}" onmouseover="onImageHover()" id="profilePicDiv" class="thumb" style="height: 100px;width: 100px;position: relative;top: 6px;outline:none;border: 1px solid rgb(221,44,0);" ng-click='showProfile();'/>
+                </div>
+             
+                
+            </div>
+            <div class="headermenuSelection">
+                <ul style="width:60%;float:left" ng-class="{checkCss:burgerToggle}" class="disp" >
+                    <li ng-click="showTabcontent(0);moveToTop()" ng-class="{active: 0 == selected}"  ><a href="#/profile" ng-click="moveToTop();"  >Profile</a></li>
+                    <li ng-if="trainings && trainigList.length > 0" ng-click="showTabcontent(1);moveToTop();getTrainings();" ng-class="{active: 1 == selected}" ><a href="#/trainings" ng-click="moveToTop();">Trainings</a></li>
+                    <li  ng-if='facilitaorInputDone == false && student.Facilitator_Name__c != undefined && student.DisplayFacilitatorSection__c' ng-click="showTabcontent(2);moveToTop()" ng-class="{active: 2 == selected}" ><a href="#/faciliatator" ng-click="moveToTop();">Facilitator Input</a></li>
+                    <li  ng-if="displayPlacementTab" ng-click="showTabcontent(3);moveToTop()" ng-class="{active: 3 == selected}" ><a href="#/placementdata" ng-click="showTabcontent(3);moveToTop();">Placement Information</a></li>
+                 <!--   <li  ng-if="displayTellYourStoryTab" ng-click="showTabcontent(4);moveToTop()" ng-class="{active: 4 == selected}" ><a href="#/tellYourStory" ng-click="showTabcontent(4);moveToTop();">Tell Your Story</a></li> -->
+                     <li  ng-class="{active: 1 == selected}" ><a href="#/trainings" ng-click="moveToTop();">Trainings</a></li>
+                    <li  ng-click="showTabcontent(2);moveToTop()" ng-class="{active: 2 == selected}" ><a href="#/faciliatator" ng-click="moveToTop();">Facilitator Input</a></li>
+                    <li ng-class="{active: 3 == selected}"  ><a href="#/placementdata" ng-click="showTabcontent(3);moveToTop();">Placement Information</a></li>
+                </ul>
+                <ul>
+                    <li style="color:white;float:right;" class="burger-icon" ><label for="toggle">&#9776;</label> <input type="checkbox" id="toggle" ng-model="burgerToggle"/></li>
+                </ul>
+                <div ng-if="displayRenewal && student.Has_Mentor__c && !student.Rejected__c">
+                    <ul style="width:30%;float:right" ng-if="(student.Active_Application_ID__c==undefined || student.Active_Application_ID__c==null)">
+                        <marquee style="color: #ffffff;padding-top: 12px;text-decoration:underline;cursor:pointer;outline:none;"  behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><a ng-click="renew();">&#8226; {{renewalNotification}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226; <a style="color:white" href="http://mentoring-ffe.org/login/" target="_blank">Click here to login for Mentoring Program</a></marquee>
+                    </ul>
+                </div>
+                <div ng-if="displayRenewal && !student.Has_Mentor__c && !student.Rejected__c">
+                    <ul style="width:30%;float:right" ng-if="(student.Active_Application_ID__c==undefined || student.Active_Application_ID__c==null)">
+                        <marquee style="color: #ffffff;padding-top: 12px;text-decoration:underline;cursor:pointer;outline:none;"  behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><a ng-click="renew();">&#8226; {{renewalNotification}}</a></marquee>
+                    </ul>
+                </div>
+                <div ng-if="student.Has_Mentor__c && !displayRenewal && !colletMarksSheet">
+                    <ul style="width:30%;float:right" >
+                        <marquee style="color: #ffffff;padding-top: 12px;text-decoration:underline;cursor:pointer;outline:none;"  behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">&#8226; <a style="color:white" href="http://mentoring-ffe.org/login/" target="_blank">Click here to login for Mentoring Program</a></marquee>
+                    
+                    </ul>
+                </div>
+                <div ng-if="colletMarksSheet && student.Has_Mentor__c">
+                    <ul style="width:30%;float:right">
+                        <marquee style="color: #ffffff;padding-top: 12px;text-decoration:underline;cursor:pointer;outline:none;"  behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><a ng-click="finalYearMarks();">&#8226; {{finalYearMarksnoti}}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226; <a style="color:white" href="http://mentoring-ffe.org/login/" target="_blank">Click here to login for Mentoring Program</a></marquee>
+                    </ul>
+                </div> 
+                <div ng-if="colletMarksSheet && !student.Has_Mentor__c">
+                    <ul style="width:30%;float:right">
+                        <marquee style="color: #ffffff;padding-top: 12px;text-decoration:underline;cursor:pointer;outline:none;"  behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();"><a ng-click="finalYearMarks();">&#8226; {{finalYearMarksnoti}}</a></marquee>
+                    </ul>
+                </div>
+                
+                
+            </div>    
+            <div class="common" id="myContainerDiv">
+                <div class="ng-view">
+                </div>
+            </div>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            <div class="background" ng-show="profilePopup" ng-click="closeSignOutPopUp();">
+            </div>
+            <div class="ProfileUploadingDiv" ng-show="showdiv">
+                <div class="profiles" >
+                    <div style="float:left; width:20%;outline:none;" ng-show="NoImage" >
+                        <apex:image url="{!$Resource.profile}" style="height: 100px;width: 100px;position: relative;top: 6px;outline:none;border: 1px solid rgb(221,44,0);cursor:pointer"/>
+                    </div>
+                    <div style="float:left; width:20%;outline:none;" ng-show="!NoImage" >
+                        <img src="/application/servlet/servlet.FileDownload?file={{profileImageSFId}}" id="profilePicDivPop" Class="thumb" style="height: 100px;width: 100px;position: relative;top: 6px;outline:none;border: 1px solid rgb(221,44,0);cursor:pointer" />
+                    </div>
+                    <h4 style="float: right;color:#032559">
+                        {{student.Name}}
+                    </h4>
+                    <!--input type="file" style="visibility: hidden;width:1px;height:1px;" ng-model="profilePic" id="profilePic" onchange="angular.element(this).scope().profile()"/-->
+                    <label class="buttons" style="position: relative;top: 91px;left: -12%;padding:2px;" ng-click="showUpload();">Change</label>
+                </div>
+                
+            </div> 
+            <div class="backgroundForExtraDonor" ng-if="choosePopUp">
+            </div>
+            <div class="ProfileUploadingDivTwo" ng-show="chooseDiv">
+                <img id="profilePicDi" src="/application/servlet/servlet.FileDownload?file={{profileImageSFId}}" class="thumb" style="position: relative;top: 6px;outline:none;min-height:250px;max-height:250px" ng-show="!NoImage"/>
+                <input type="file" ng-model="profilePic" id="profilePic" onchange="angular.element(this).scope().profile('validation')" style="position: relative;top: 10px;"/>
+                <div class="profiles" align="center" style="position:relative;top:20px;">
+                    <input type="button" value="Save" class="buttons"  ng-click="SaveProfile();"/>
+                    <input type="button" value="Cancel" class="buttons" ng-click="cancel();"/>
+                </div>
+            </div>
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            
+            <!--start-->
+            <div class="renewalPopup" ng-show="colletFinalYearDetail" style="width:68%;left:13%;top:9%;">
+                <div class="material-icons closePopUp" ng-click="closeFinalMarkcolletorSheet();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="formDiv">
+                    <h4 class="formheadings" align="center" style="font-size:15px;">
+                        Please Enter Final Year Academic Details  
+                    </h4>
+                    
+                    <table class="historyTable" style="margin-top: 20px;margin-bottom:20px;" ng-if="student.Course__c !='MBBS'">             
+                        <caption style="color: #032559;font-size: 12pt;"><b>Academic Marks<br/><b style="color:grey;">Provide applicable marks</b></b></caption>
+                        <thead>
+                            <tr class="rowsHistory">
+                                <th style="color: #032559;width:10%;"></th>
+                                <th><span  style="color:white;color: #032559;">Semester I</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester II</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester III</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester IV</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester V</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester VI</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester VII</span></th>
+                                <th><span  style="color:white;color: #032559;">Semester VIII</span></th>
+                                <th ng-if="displayIntMtchFinalYear"><span  style="color:white;color: #032559;">Semester XI</span></th>
+                                <th ng-if="displayIntMtchFinalYear"><span  style="color:white;color: #032559;">Semester X</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr align="center" class="rowsHistory">
+                                
+                                <td style="color: #032559;font-size: 10pt;width:10%;"><b>SGPA or % age</b></td>
+                                
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester3__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester4__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester5__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester6__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester7__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester8__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td ng-if="displayIntMtchFinalYear"><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester9__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td ng-if="displayIntMtchFinalYear"><input class="tdInput"  type="number" style="text-align:right;width: 93%;" ng-model="student.Semester10__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                            </tr>
+                        </tbody>
+                    </table>  
+                    
+                    
+                    
+                    <table class="historyTable" style="margin-top: 20px;margin-bottom:20px;" ng-if="student.Course__c =='MBBS'">             
+                        <caption style="color: #032559;font-size: 12pt;"><b>Academic Marks<br/><b style="color:grey;">Provide applicable marks</b></b></caption>
+                        <thead>
+                            <tr class="rowsHistory">
+                                <th style="color:white;width:10%;"></th>
+                                <th><span  style="color:white;color: #032559;" >MBBS Year I</span></th>
+                                <th><span  style="color:white;color: #032559;" >MBBS Year II</span></th>
+                                <th>   <span  style="color:white;color: #032559;">MBBS Year III Part 1</span></th>
+                                <th>  <span style="color:white;color: #032559;">MBBS Year III Part 2</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr align="center" class="rowsHistory">
+                                <td style="color: #032559;font-size: 10pt;"><b>% age</b></td>
+                                <td>
+                                    <input  class="tdInput" type="number" style="text-align:right;width: 93%;"  ng-model="student.MBBS_Year_1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td><input  class="tdInput" type="number" style="text-align:right;width: 93%;"  ng-model="student.MBBS_Year_2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td> <input  class="tdInput" type="number" style="text-align:right;width: 93%;" ng-model="student.MBBS_Year_3_Part_1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/></td>
+                                <td> <input  class="tdInput" type="number" style="text-align:right;width: 93%;" ng-model="student.MBBS_Year_3_Part_2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="buttonDiv" align="center" style="margin-top:10px;padding-bottom: 5px;">
+                    <input type="button" value="Submit" class="buttons"  ng-click="submitFinalYearMarksDetails()"/>
+                    </div>
+                </div> 
+                
+                
+                <div class="formDiv " ng-if="FinalYearAttachments.length>0">
+                            
+                            <h4 class="formheadings" align="center">
+                                Uploaded Documents
+                            </h4>
+                            <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;">
+                                <thead>
+                                    <tr class="rowsHistory " id="uploaded_docs">
+                                        <th>S.No.</th>
+                                        <th>Uploaded Date</th>
+                                        <th>Document Name</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tr align="center" class="rowsHistory" ng-repeat="attachemt in FinalYearAttachments">
+                                    <td>{{FinalYearAttachments.indexOf(attachemt) + 1}}</td>
+                                    <td>{{attachemt.CreatedDate | date:"dd/MM/yyyy"}}</td>
+                                    <td>{{attachemt.Name}}</td>
+                                    <td>
+                                        <a href="/application/servlet/servlet.FileDownload?file={{attachemt.Id}}" class="material-icons"  style="text-decoration:none;font-size:19px" target="_blank">
+                                            <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                                        </a> 
+                                        <span style=" position: relative;
+                                                     top: -2px;
+                                                     font-size: 23pt;
+                                                     ">|</span> 
+                                        <input type="button" value="Replace" class="buttons"  ng-click="replaceFinalYeardoc(attachemt,attachemt.Description)" style="position: relative;top: -5px;"/>
+                                    </td>
+                                </tr> 
+                            </table>
+                        </div>
+                
+                <div class="renewalPopup" ng-show="replcaefinalYearDoct">
+                <div class="material-icons closePopUp" ng-click="closeReplaceFinalDoc(replaceAttachments.Description);">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="uploadDocsDiv">
+                        <div class="row" style="font-weight: bold;margin-top: 8px;    width: 47%;" >  
+                            <label >{{replaceAttachments.Name}}</label>
+                        </div>
+                        <div class="row" style="    width: 47%;">    
+                            <input type="file" name="doc1" class="inputfileds" id="finalYearMarksDataUpload" required="true" valid-file='true'/>
+                        </div>
+                </div>
+                <div class="buttonDiv" align="center" style="margin-top:35px;padding-bottom: 14px;">
+                    <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(student.Id,'finalYearMarksDataUpload',type,replaceAttachments.Name,replaceAttachments.Id);"/>
+                    <input type="button" value="Cancel" class="buttons"  ng-click="closeReplaceFinalDoc(replaceAttachments.Description);" />
+                </div>
+            </div>
+                
+                
+                
+                <div class="formDiv" ng-if="oddIFDisplay || evenIFDisplay">
+                    <h4 class="formheadings" align="center">
+                        Upload document     
+                    </h4>
+                    <h4 align='center' style="font-weight: bold;color:#ff0000;POSITION: RELATIVE;
+                                              TOP: 7px;
+                                              FONT-SIZE: 11pT;
+                                              ">
+                        (* marked documents are mandatory )
+                    </h4>
+                    <h4 style="FONT-SIZE: 11pT;font-weight: bold;float: left;margin: 9px 14px;color: #032559;">
+                        Document Name
+                    </h4>
+                    <div class="uploadDocsDiv" ng-if="oddIFDisplay">
+                            <div class="row" style="font-weight: bold;">  
+                                <label >Odd Semester Mark Sheet of Final year<span style="color:#ff0000">*</span></label>
+                                
+                            </div>
+                            <div class="row">                                    
+                                <input type="file" name="{{finalYearOddSem}}" class="inputfileds" id="{{finalYearOddSem}}" style="width:75%"/>
+                                <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(student.Id,finalYearOddSem,finalYearOddSem,'Odd Semester Mark Sheet of Final year','');" style="float: left;margin-left: 5%;"/>
+                            </div>
+                            <div class="row" style="font-weight: bold;">  
+                                <label ></label>
+                            </div>
+                        </div> 
+                        <div class="uploadDocsDiv" ng-if="evenIFDisplay">
+                            <div class="row" style="font-weight: bold;">  
+                                <label >Even Semester Mark Sheet of Final year<span style="color:#ff0000">*</span></label>
+                                
+                            </div>
+                            <div class="row">                                    
+                                <input type="file" name="{{finalYearEvenSem}}" class="inputfileds" id="{{finalYearEvenSem}}" style="width:75%"/>
+                                <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(student.Id,finalYearEvenSem,finalYearEvenSem,'Even Semester Mark Sheet of Final year','');" style="float: left;margin-left: 5%;"/>
+                            </div>
+                            <div class="row" style="font-weight: bold;">  
+                                <label ></label>
+                            </div>
+                        </div>                                 
+                </div>
+                
+            </div>
+            <!--end-->
+            
+            <div class="renewalPopup" ng-show="renewalPopup" style="width:68%;left:13%;top:9%;">
+                <div class="material-icons closePopUp" ng-click="closeRenew();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="formDiv">
+                    <h4 class="formheadings" align="center" style="font-size:15px;">
+                        Renewal Related Info  
+                    </h4>
+                    <ng-form name="basicInfoRenew">
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Year in which studying:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select ng-model="studentRenew.Year__c" style="width:92%;" class="inputfiledsSelect" required='true' name="yearStud" readonly="true" ng-change="yearOnChange(studentRenew.Year__c)">
+                                <option ng-repeat="yr in displayedYears" value="{{yr}}">{{yr}}</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.yearStud.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.yearStud.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                        </div>
+                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Grading System:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" style="width:92%;" name="Grading_System__c" ng-model="studentRenew.Grading_System__c" required='true'>
+                                <option  value='{{grad}}' ng-repeat="grad in gradSystemList">{{grad}}</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Grading_System__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Grading_System__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                        </div>
+                        
+                        <div class="" ng-if="AcademicScores.length>0 && studentRenew.Year__c!=null">
+                            <table class="historyTable" style="margin-top: 20px;margin-bottom:20px;" ng-if="student.Course__c !='MBBS'">             
+                                <caption style="color: #032559;font-size: 12pt;"><b>Academic Marks<br/></b></caption>
+                                <thead>
+                                    <tr class="rowsHistory">
+                                        <th style="color: #032559;width:10%;"></th>
+                                        <th ng-repeat="acaYear in AcademicScores">
+                                            <span ng-if="acaYear == 'Semester1__c'" style="color:white;color: #032559;">Semester I</span>
+                                            <span ng-if="acaYear == 'Semester2__c'" style="color:white;color: #032559;">Semester II</span>
+                                            <span ng-if="acaYear == 'Semester3__c'" style="color:white;color: #032559;">Semester III</span>
+                                            <span ng-if="acaYear == 'Semester4__c'" style="color:white;color: #032559;">Semester IV</span>
+                                            <span ng-if="acaYear == 'Semester5__c'"  style="color:white;color: #032559;">Semester V</span>
+                                            <span ng-if="acaYear == 'Semester6__c'" style="color:white;color: #032559;">Semester VI</span>
+                                            <span ng-if="acaYear == 'Semester7__c'"  style="color:white;color: #032559;">Semester VII</span>
+                                            <span ng-if="acaYear == 'Semester8__c'" style="color:white;color: #032559;">Semester VIII</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr align="center" class="rowsHistory">
+                                        
+                                        <td style="color: #032559;font-size: 10pt;width:10%;"><b>SGPA or % age</b></td>
+                                        
+                                        <td ng-repeat="acaYear in AcademicScores">
+                                            
+                                            <input class="tdInput" ng-if="acaYear == 'Semester1__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester2__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester3__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester3__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester4__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester4__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester5__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester5__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester6__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester6__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester7__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester7__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input class="tdInput" ng-if="acaYear == 'Semester8__c'" type="number" style="text-align:right;width: 93%;" ng-model="student.Semester8__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>  
+                            
+                            
+                            
+                            <table class="historyTable" style="margin-top: 20px;margin-bottom:20px;" ng-if="student.Course__c =='MBBS'">             
+                                <caption style="color: #032559;font-size: 12pt;"><b>Academic Marks<br/><b style="color:grey;">Provide applicable marks</b></b></caption>
+                                <thead>
+                                    <tr class="rowsHistory">
+                                        <th style="color:white;width:10%;"></th>
+                                        <th ng-repeat="acaYear in AcademicScores">
+                                            <span ng-if="acaYear == 'MBBS_Year_1__c'" style="color:white;color: #032559;" >MBBS Year I</span>
+                                            <span ng-if="acaYear == 'MBBS_Year_2__c'" style="color:white;color: #032559;" >MBBS Year II</span>
+                                            <span ng-if="acaYear == 'MBBS_Year_3_Part_1__c'" style="color:white;color: #032559;">MBBS Year III Part 1</span>
+                                            <span ng-if="acaYear == 'MBBS_Year_3_Part_2__c'" style="color:white;color: #032559;">MBBS Year III Part 2</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr align="center" class="rowsHistory">
+                                        <td style="color: #032559;font-size: 10pt;"><b>% age</b></td>
+                                        <td ng-repeat="acaYear in AcademicScores">
+                                            <input ng-if="acaYear == 'MBBS_Year_1__c'" class="tdInput" type="number" style="text-align:right;width: 93%;"  ng-model="student.MBBS_Year_1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input ng-if="acaYear == 'MBBS_Year_2__c'" class="tdInput" type="number" style="text-align:right;width: 93%;"  ng-model="student.MBBS_Year_2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input ng-if="acaYear == 'MBBS_Year_3_Part_1__c'" class="tdInput" type="number" style="text-align:right;width: 93%;" ng-model="student.MBBS_Year_3_Part_1__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                            <input ng-if="acaYear == 'MBBS_Year_3_Part_2__c'" class="tdInput" type="number" style="text-align:right;width: 93%;" ng-model="student.MBBS_Year_3_Part_2__c" min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> 
+                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Failure/ATKT?:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" style="width:92%;" name="Failure_ATKT__c" ng-model="studentRenew.Failure_ATKT__c" required='true'>
+                                <option value='true'>Yes</option>
+                                <option value='false'>No</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Failure_ATKT__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Failure_ATKT__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        <div class="row" ng-if="studentRenew.Failure_ATKT__c=='true'">
+                            <h4 class="tagnames" >
+                                Failure Semester:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Failure_ATKT_Yes_If_Yes_Semester__c" ng-model="studentRenew.Failure_ATKT_Yes_If_Yes_Semester__c"  class="inputfileds"  required='true'/>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Failure_ATKT_Yes_If_Yes_Semester__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Failure_ATKT_Yes_If_Yes_Semester__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row" ng-if="studentRenew.Failure_ATKT__c=='true'">
+                            <h4 class="tagnames" >
+                                Failure Subject(s):<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Failure_Subject_s__c" ng-model="studentRenew.Failure_Subject_s__c"  class="inputfileds"  required='true'/>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Failure_Subject_s__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Failure_Subject_s__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div> 
+                        
+                        
+                        <!--div class="row">
+<h4 class="tagnames" >
+Odd Semester % Marks Scored SGPA:<span style="color:#ff0000"></span>
+</h4>
+<input type="text" name="Odd_Semester_Marks_Scored_SGPA__c" ng-model="studentRenew.Odd_Semester_Marks_Scored_SGPA__c"  class="inputfileds"  min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.Odd_Semester_Marks_Scored_SGPA__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalidRenew && basicInfoRenew.Odd_Semester_Marks_Scored_SGPA__c   .$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+</div>
+<div class="row">
+<h4 class="tagnames" >
+Even Semester % Marks Scored SGPA:<span style="color:#ff0000"></span>
+</h4>
+<input type="text" name="Even_Semester_Marks_Scored_SGPA__c" ng-model="studentRenew.Even_Semester_Marks_Scored_SGPA__c"  class="inputfileds"  min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.Even_Semester_Marks_Scored_SGPA__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalidRenew && basicInfoRenew.Even_Semester_Marks_Scored_SGPA__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>       
+</div>
+<div class="row">
+<h4 class="tagnames" >
+Annual % Marks Scored CGPA:<span style="color:#ff0000"></span>
+</h4>
+<input type="text" name="Annual_Marks_Scored_CGPA__c" ng-model="studentRenew.Annual_Marks_Scored_CGPA__c"  class="inputfileds"  min="1" max="100" maxlength = "5" oninput="maxLengthCheck(this)"/>
+<span ng-show="formInvalidRenew && basicInfoRenew.Annual_Marks_Scored_CGPA__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formInvalidRenew && basicInfoRenew.Annual_Marks_Scored_CGPA__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+</div-->
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Receiving Full AICTE/Fee Waiver from Gvt:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" style="width:92%;" name="Receiving_Full_AICTE_OtherTution_Fee_Wa__c" ng-model="studentRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c" required='true'>
+                                <option value='true'>Yes</option>
+                                <option value='false'>No</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        <div class="row" ng-if="studentRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c=='true'">
+                            <h4 class="tagnames" >
+                                If Yes How much?(AICTE/Fee Waiver from Govt):<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="If_Yes_How_much_AICTE_Fee_from_Govt__c" ng-model="studentRenew.If_Yes_How_much_AICTE_Fee_from_Govt__c"  class="inputfileds"  required="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="10"/>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.If_Yes_How_much_AICTE_Fee_from_Govt__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.If_Yes_How_much_AICTE_Fee_from_Govt__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Change in Annual Income of Parents?:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" style="width:92%;" name="Change_in_AnnualIncome_of_Parents__c" ng-model="studentRenew.Change_in_AnnualIncome_of_Parents__c" required='true'>
+                                <option value='true'>Yes</option>
+                                <option value='false'>No</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Change_in_AnnualIncome_of_Parents__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Change_in_AnnualIncome_of_Parents__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        <!-- New Change -->
+                        <div class="row" ng-if="studentRenew.Change_in_AnnualIncome_of_Parents__c == 'true'">
+                            <h4 class="tagnames" >
+                               Current Annual Family Income:<span style="color:#ff0000">*</span> 
+                            </h4>
+                            <input type="text" name="currentIncome" ng-model="student.Current_Annual_Family_Income__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="8"/>
+                            <span ng-show="formInvalid && basicInfoRenew.currentIncome.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && basicInfoRenew.currentIncome.$invalid) && showSpaceRenew" class="error">&nbsp;</span>
+                        </div>
+                        <!-- New Change Ends-->
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Scholarship/Financial Asst Other Than FFE?:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" style="width:92%;" name="SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-model="studentRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c" required='true'>
+                                <option value='true'>Yes</option>
+                                <option value='false'>No</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        <div class="row" ng-if="studentRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'">
+                            <h4 class="tagnames" >
+                                If Yes How much?(Other Source):<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="If_Yes_How_much_Other_Source__c" ng-model="studentRenew.If_Yes_How_much_Other_Source__c"  class="inputfileds"  required='true' onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="10"/>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.If_Yes_How_much_Other_Source__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.If_Yes_How_much_Other_Source__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        
+                        <div class="row" ng-if="studentRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'">
+                            <h4 class="tagnames" >
+                                Assistance Source?:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Assistance_Source__c" ng-model="studentRenew.Assistance_Source__c"  class="inputfileds"  required='true'/>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Assistance_Source__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Assistance_Source__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        
+                        <div ng-if="studentRenew.Receiving_Full_AICTE_OtherTution_Fee_Wa__c=='false' || studentRenew.Failure_ATKT__c=='false' || studentRenew.SchlrShp_FinancialAsst_Other_Than_FFE__c=='false'" >{{clearRenewalFieldValues()}}</div>        
+                        
+                        
+                    <h5 style="float: left;width: 96%;margin: 0;color:#ff793c;font-size:11pt;padding-left: 7px;margin: 16px 0;">
+                         Facilitator Meeting details:
+                         (Meeting or calling your facilitator at least once in a year is mandatory to share the progress of your education)
+
+                        </h5>    
+                        
+                        <div class="row">
+                            <h4 class="tagnames">
+                                Have you met/called your facilitator?: <span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" style="width:92%;" name="Have_you_called_met_your_facilitator__c" ng-model="studentRenew.Have_you_called_met_your_facilitator__c" required='true'>
+                                <option value='Called'>Called</option>
+                                <option value='Visited'>Visited</option>
+                                <option value='Called and Visited'>Called and Visited</option>
+                            </select>
+                            <span ng-show="formInvalidRenew && basicInfoRenew.Have_you_called_met_your_facilitator__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Have_you_called_met_your_facilitator__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span>  
+                        </div>
+                        
+                        <div class="row" >
+                    <h4 class="tagnames" >
+                        Date you met/called<span style="color:#ff0000">*</span>
+                    </h4>
+                            <md-datepicker style="min-height: 30px;" class="inputfiledsSelect" type="date" ng-model="studentRenew.Facilitator_meet_date__c" required="true" name="Facilitator_meet_date__c" id="mydate"></md-datepicker>
+                    <span ng-show="formInvalidRenew && basicInfoRenew.Facilitator_meet_date__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalidRenew && basicInfoRenew.Facilitator_meet_date__c.$invalid) && showSpaceRenew" class="error">&nbsp;</span> 
+                </div>
+                        
+                        
+                        
+                        
+                        <div class="buttonDiv" align="center" style="margin-top:40px;">
+                            <input ng-if="displayRenewal && student.Active_Application_ID__c==undefined" type="button" value="Continue" class="buttons"  ng-click="submitRenew();"/>
+                            <input type="button" value="Cancel" class="buttons"  ng-click="closeRenew();"/>
+                        </div>
+                        
+                    </ng-form>
+                
+                <!--div align="center" style="    margin-top: -1%;    font-size: 16px;    color: #ff793c;">
+                          <b> * Meeting the facilitator once in a year is mandatory. Else your scholarship will be withheld.
+                    </b>    </div--></div>
+            </div>
+            <div class="background" ng-show="renewalPopup" >
+            </div>
+            <div class="renewalPopup" ng-show="replcaeDoc">
+                <div class="material-icons closePopUp" ng-click="closeReplaceDoc();">
+                    <apex:image url="{!$Resource.close_Pop}" styleClass="materialIcons closeIcon" />
+                </div>
+                <div class="uploadDocsDiv">
+                    <div class="row" style="font-weight: bold;margin-top: 8px;    width: 47%;" >  
+                        <label >{{replaceAttachments.Name}}</label>
+                    </div>
+                    <div class="row" style="    width: 47%;">    
+                        <input type="file" name="doc1"  class="inputfileds" id="{{replaceAttachments.Id}}" required="true" valid-file='true'/>
+                    </div>
+                </div>
+                <div class="row" style="font-weight: bold;" ng-if="replaceAttachments.Name=='Income Certificate, Salary Certificate, Pension Certificate or Income Tax Return or Other document, as applicable' && student.Father_Occupation__c != 'Service'">  
+                    <h4 class="tagnames" >
+                        Certificate Expiry Date:<span style="color:#ff0000">*</span>
+                    </h4>
+                    <md-datepicker class="inputfiledsSelect" type="date" ng-model="student.Certificate_Expiry_Date__c" name="certificateExpiryDate" id="certificateExpiryDate"  md-min-date='minDate' onkeydown="return false" ng-change="checkCertificateDate(student.Certificate_Expiry_Date__c)"></md-datepicker>                                       
+                </div> 
+                <!-- EXPENSE DETAILS -->
+                <div class="row" ng-if="replaceAttachments.Name=='Receipts for Actual Expenses incurred for current year(College Fee/Hostel & Mess/Transport/Books/Uniform)' || replaceAttachments.Name=='Expense Receipts for Actual Expenses incurred for current academic year(College Fee/Hostel & Mess/Transport/Books/Uniform)'">
+                 <h4 class="formheadings" align="center">
+                        Actual Expense/Fee Details     
+                    </h4>
+                    <div class="row">
+                        <h4 class="tagnames">
+                            Actual College Fees<span style="color:#ff0000;font-size:18px;">*</span>:
+                        </h4>
+                        <input type="text" value="0" name="Student_College_Fees__c" ng-model="activeAppli.Student_College_Fees__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                            Actual Hostel/Mess Expenses<span style="color:#ff0000;font-size:18px;">*</span>:
+                        </h4>
+                        <input type="text" name="Student_Hostel_Mess_Expenses__c" ng-model="activeAppli.Student_Hostel_Mess_Expenses__c"  class="inputfileds " onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                            Actual Books Expenses<span style="color:#ff0000;font-size:18px;">*</span>:
+                        </h4>
+                        <input type="text" name="Student_Books_Expenses__c" ng-model="activeAppli.Student_Books_Expenses__c"  class="inputfileds " onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                            Actual Transportation Expenses<span style="color:#ff0000;font-size:18px;">*</span>:
+                        </h4>
+                        <input type="text" name="Student_Transportation_Expenses__c" ng-model="activeAppli.Student_Transportation_Expenses__c"  class="inputfileds "  onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                    </div>
+                    <div class="row">
+                        <h4 class="tagnames" >
+                            Actual Uniform Expenses<span style="color:#ff0000;font-size:18px;">*</span>:
+                        </h4>
+                        <input type="text" name="Student_Uniform_Expenses__c" ng-model="activeAppli.Student_Uniform_Expenses__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="6"/>
+                    </div>
+                </div>
+                                    <!-- EXPENSE DETAILS ENDS-->
+                
+                <div class="buttonDiv" align="center" style="margin-top:35px;padding-bottom: 14px;">
+                    <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(activeAppli.Id,replaceAttachments.Id,type,replaceAttachments.Name,replaceAttachments.Id);"/>
+                    <input type="button" value="Cancel" class="buttons"  ng-click="closeReplaceDoc();" />
+                </div>
+            </div>
+            <div class="background" ng-show="replcaeDoc" >
+            </div>
+        </body>
+    </html>
+</apex:page>

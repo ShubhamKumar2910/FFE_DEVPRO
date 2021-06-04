@@ -1,0 +1,1200 @@
+<apex:page doctype="html-5.0" showheader="false"
+           sidebar="false"
+           applyhtmltag="false"
+           standardstylesheets="false" 
+           cache="false"
+           controller="MentorMenteeAdminPortal_Controller">
+    <html ng-app="app">
+        <title>Mentor Allocation</title> 
+        <head>
+            <c:MentorshipScripts />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-animate.min.js')}"/>  
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-aria.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-sanitize.min.js')}"/>  
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/ui-bootstrap-tpls.min.js')}"/>  
+            <apex:stylesheet value="{!URLFOR($Resource.mentorship_resource, '/styles/w3.min.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.mentorship_resource, '/js/libs/angular-material.min.js')}"/>
+            <!-- <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"/> -->
+
+
+            <style>
+                /* body.md-default-theme, body, html.md-default-theme, html {
+                color: rgba(0,0,0,0.87);
+                background-color: #fff;
+                }*/
+
+                .md-select-menu-container {
+                    z-index: 141;
+                }
+
+                md-backdrop.md-select-backdrop {
+                    z-index: 141;
+                }
+
+                input[type=search] {
+                    width: 20%;
+                    border: 1px solid #ccc;
+                    height: 30px;
+                    padding: 2px;
+                    outline: none;
+                }
+
+                .mdCont {
+                    margin: 0;
+                    width: 90%;
+                    margin-top: 0px !important;
+                    padding: 9px 9px;
+                }
+
+                .nameField {
+                    color: #5888e4;
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+
+                .searchTagsPopup {
+                    float: left;
+                    margin: 10px;
+                    color: #032559;
+                    font-size: 12pt;
+                    min-width: 29%;
+                }
+
+                .mdContPopupchng {
+                    margin: 0;
+                    width: 60%;
+                    margin-top: 0px !important;
+                    padding: 2px 2px;
+                }
+
+                .searchTagsPopupchng {
+                    float: left;
+                    margin-right: 10px;
+                    color: #032559;
+                    font-size: 12pt;
+                    min-width: 15%;
+                }
+
+                .md-select-menu-container {
+                    z-index: 222;
+                }
+
+                md-backdrop.md-select-backdrop {
+                    z-index: 222;
+                }
+
+
+                /* .studentPopUp{
+                                margin-top: -20px;
+                                position: fixed;
+                                z-index: 1111111;
+                                background: #fff;
+                                width: 92.8%;
+                                }
+                                .DonorPopupTable{
+                                margin-top: 0;
+                                margin-bottom: 0px;
+                                top: 93px;
+                                position: relative;
+                                }
+                                {
+                                float: left;
+                                margin-bottom: 10px;
+                                border: 1px solid #ccc;
+                                position: relative;
+                                top: 92px;
+                                }*/
+
+                .rowsHistoryDiv>.historyTable:nth-child(even) {
+                    background: #fff;
+                }
+
+                .buttons {
+                    color: white;
+                    background-color: #F39C12;
+                    padding: 5px;
+                    width: 100px;
+                }
+
+            /*     .tableHeader tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+
+                .tableHeader tr:hover {
+                    background-color: #ddd;
+                }
+
+                .tableHeader th {
+                    padding-top: 12px;
+                    padding-bottom: 12px;
+                    background-color: #032559;
+                    color: white;
+                    font-size: x-large;
+                    text-align: center;
+                }
+
+                .tableHeader {
+                    font-family: Arial, Helvetica, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                    font-size: larger;
+                    font-weight: bolder;
+                    margin-bottom: 2%;
+                }
+
+                .tableHeader td,
+                .tableHeader th {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                }   */
+
+                .headermenuSelection ul {
+                    list-style-type: none;
+                    color: #000;
+                    margin: 0PX 0PX 0PX 0PX;
+                    font-size: large;
+                }
+
+                .headermenuSelection {
+                    float: left;
+                    background: #032559;
+                    width: 90%;
+                    margin-top: 7%;
+                    margin-left: 5%;
+                    top: 0;
+                    height: 50px;
+                }
+
+                .loadingBackground {
+                    position: fixed;
+                    height: 100%;
+                    width: 100%;
+                    background: #F6F6F6;
+                    z-index: 11111;
+                    opacity: 0.7;
+                    top: 0px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                }
+
+                .loading {
+                    top: 50%;
+                    left: 50%;
+                    margin: -50px 0px 0px -50px;
+                    z-index: 111111;
+                    position: fixed;
+                }
+                .btn-circle.btn-sm {
+                    width: 30px;
+                    height: 30px;
+                    padding: 6px 0px;
+                    border-radius: 15px;
+                    font-size: 8px;
+                    text-align: center;
+                }
+                .btn-circle.btn-md {
+                    width: 50px;
+                    height: 50px;
+                    padding: 7px 10px;
+                    border-radius: 25px;
+                    font-size: 10px;
+                    text-align: center;
+                }
+            
+             /* table css new */
+            .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            }
+            
+            .styled-table thead tr {
+            background-color: #2e3192;
+            color: #ffffff;
+            text-align: left;
+            }
+            
+            .styled-table th,
+            .styled-table td {
+            padding: 12px 15px;
+            }
+            
+            .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+            }
+            
+            .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+            }
+            
+            .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #2e3192;
+            }
+            
+            .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #2e3192;
+            }
+            
+            
+  
+            </style>         
+            <script>
+                var countryListJS = {!countryList};
+                var listOfStates = {!listOfStates};
+                var languagePickListValues = {!languagePickListValues};
+                var statusPickListValues = {!statusPickListValues};
+                var genderPickListValues = {!genderPickListValues};
+                var corporatePicklistValues = {!corporatePicklistValues};
+            	var branchPicklistValues = {!branchPicklistValues};
+
+                function dynamicsort(property, order) {
+                    var sort_order = 1;
+                    if (order === "desc") {
+                        sort_order = -1;
+                    }
+                    return function (a, b) {
+                        // a should come before b in the sorted order
+                        if (a[property] < b[property]) {
+                            return -1 * sort_order;
+                            // a should come after b in the sorted order
+                        } else if (a[property] > b[property]) {
+                            return 1 * sort_order;
+                            // a and b are the same
+                        } else {
+                            return 0 * sort_order;
+                        }
+                    }
+                }
+
+                var app = angular.module('app', ['ngAnimate', 'ngMaterial']);
+                app.controller('fundAllocation', function ($scope) {
+                    $scope.isSelected = true;
+                    $scope.allcountryList = countryListJS;
+                    $scope.listOfStates = listOfStates;
+                    $scope.statusPickListValues = statusPickListValues;
+                    $scope.corporatePicklistValues = corporatePicklistValues;
+                    $scope.branchPicklistValues = branchPicklistValues;
+                    $scope.genderPickListValues = [];
+                    $scope.showSpinner = false;
+                    $scope.mentorMenteeAssociationList;
+                    $scope.showTable = false;
+                    $scope.languagePickListValues = [];
+					
+                    $scope.allCorporates = [];
+                    for (var i = 0; i < $scope.corporatePicklistValues.length; i++) {
+                        $scope.allCorporates.push($scope.corporatePicklistValues[i].value.trim());
+                    }
+
+                    for (var i = 0; i < languagePickListValues.length; i++) {
+                        $scope.languagePickListValues.push(languagePickListValues[i].label);
+                    }
+
+                    for (var i = 0; i < genderPickListValues.length; i++) {
+                        $scope.genderPickListValues.push(genderPickListValues[i].label);
+                    }
+
+
+                    $scope.isSelectedAppl = true;
+                    $scope.isSelectedApp2 = true;
+                    $scope.languageSelected = [];
+                    $scope.genderSelected = [];
+
+                    $scope.cours = function () {
+                        debugger;
+                        if ($scope.isSelectedAppl) {
+                            for (var i = 0; i < $scope.languagePickListValues.length; i++) {
+                                $scope.languageSelected.push($scope.languagePickListValues[i]);
+                                $scope.isSelectedAppl = false;
+                            }
+                        } else if (!$scope.isSelectedAppl) {
+                            $scope.languageSelected = [];
+                            $scope.isSelectedAppl = true;
+                        }
+                    }
+
+                    $scope.gender = function () {
+                        if ($scope.isSelectedApp2) {
+                            for (var i = 0; i < $scope.genderPickListValues.length; i++) {
+                                $scope.genderSelected.push($scope.genderPickListValues[i]);
+                                $scope.isSelectedApp2 = false;
+                            }
+                        } else if (!$scope.isSelectedApp2) {
+                            $scope.genderSelected = [];
+                            $scope.isSelectedApp2 = true;
+                        }
+                    }
+
+                    $scope.listOfStates = [];
+                    $scope.listStates = [];
+                    $scope.getCityList = function (contryName) {
+                        $scope.showSpinner = true;
+                        $scope.listOfStates = [];
+                        debugger;
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.getStateList}',
+                            contryName,
+                            function (result, event) {
+                                if (event.status) {
+                                    $scope.listStates = result;
+                                    for (var i = 0; i < $scope.listStates.length; i++) {
+                                        $scope.listOfStates.push($scope.listStates[i].Label);
+                                    }
+                                } else if (event.type === 'exception') {
+                                    alert(event.message);
+                                } else {
+                                    alert(event.message);
+                                }
+                                $scope.showSpinner = false;
+                                $scope.$apply();
+                            }, {
+                                escape: true
+                            }
+                        );
+                    }
+
+                    $scope.locations = function () {
+                        if ($scope.isSelected) {
+                            $scope.locationSelected = $scope.listOfStates;
+                            $scope.isSelected = false;
+                        } else if (!$scope.isSelected) {
+                            $scope.locationSelected = '';
+                            $scope.isSelected = true;
+                        }
+
+                    }
+
+                    $scope.startDate = '';
+                    $scope.endDate = '';
+                    $scope.countrySelected = '';
+                    $scope.branchSelected = '';
+                    $scope.corporateSelected = '';
+                    $scope.locationSelected = [];
+                    $scope.noMenteesAvailable = false;
+
+                    $scope.searchStudents = function () {
+                        debugger;
+                            $scope.showSpinner = true;
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.MentorMenteeAdminPortal_Controller.getMentorMenteeAssociation}',
+                                $scope.startDate, $scope.endDate, $scope.countrySelected, $scope.branchSelected, $scope.locationSelected, $scope.languageSelected, $scope.genderSelected, $scope.corporateSelected,
+                                function (result, event) {
+                                    $scope.showSpinner = false;
+                                    if (event.status) {
+                                        if (result == null || result == undefined) {
+                                            $scope.noMenteesAvailable = true;
+                                            $scope.showTable = false;
+                                            $scope.showSpinner = false;
+                                            $scope.$apply();
+                                        } else {
+                                            $scope.mentorMenteeAssociationList = result;
+                                            $scope.noMenteesAvailable = false;
+                                        }
+
+                                        if ($scope.mentorMenteeAssociationList.length > 0) {
+                                            for (var i = 0; i < $scope.mentorMenteeAssociationList.length; i++) {
+                                                var mmAssociationDate = $scope.mentorMenteeAssociationList[i].CreatedDate;
+                                                var dateObject = new Date(mmAssociationDate);
+
+                                                var humanDateFormat = dateObject.toLocaleString();
+                                                $scope.mentorMenteeAssociationList[i].CreatedDate = humanDateFormat.split(",")[0];
+                                            }
+                                            $scope.showTable = true;
+                                        } else {
+                                            $scope.noMenteesAvailable = true;
+                                            $scope.showTable = false;
+                                        }
+
+                                        $scope.$apply();
+                                    } else if (event.type === 'exception') {
+                                        alert(event.message);
+                                    } else {
+                                        alert(event.message);
+                                    }
+                                    
+                                }, {
+                                    escape: true
+                                }
+                            );
+
+                         
+                       
+                    }
+                    /*  $scope.showMewntorList();  */
+                     $scope.searchMentorByString = function(){
+                        debugger;
+                         if($scope.searchString == undefined || $scope.searchString == ''){
+                         	return;
+                         }
+                         $scope.showSpinner = true;
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.getMentorsAvailable}',
+                            $scope.searchString,
+                            function(result,event){
+                                if(event.status){
+                                 	$scope.mentorList = result;  
+                                    $scope.searchString = '';
+                                    $scope.showSpinner = false;
+                                    $scope.$apply();
+                                }
+                                else if (event.type==='exception'){
+                                    alert(event.message);
+                                }else{
+                                    alert(event.message);
+                                }
+                            },
+                            {escape:true}
+                        );
+                         $scope.showSpinner = false;
+                    }  
+
+                    $scope.clear = function () {
+                        $scope.locationSelected = [];
+                        $scope.branchSelected = '';
+                        $scope.genderSelected = [];
+                        $scope.isSelected = true;
+                        $scope.startDate = '';
+                        $scope.endDate = '';
+                        $scope.noMenteesAvailable = false;
+                        $scope.countrySelected = '';
+                        $scope.languageSelected = [];
+                        $scope.showTable = false;
+                        $scope.mentorMenteeAssociationList = [];
+                    }
+
+                    $scope.autoMatchMentor = function () {
+                        debugger;
+                        if($scope.selection.length == 0){
+                        	Swal.fire(' select mentees to Multi-Match', '', 'info');
+                            return;
+                        }
+                         $scope.showMewntorList();
+                        document.getElementById('id01').style.display = 'block';
+                        document.getElementById('mentorsAvailable').style.display = 'none';
+                           /*  Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.MentorMenteeAdminPortal_Controller.getMentorDetails}',
+                                    $scope.countrySelected,$scope.locationSelected,$scope.languageSelected,
+                                    function(result,event){
+                                        if(event.status){
+                                            $scope.mentorList = result;
+                                            
+                                            console.log(result);
+                                            $scope.mentorList.sort(dynamicsort("load","asc"))
+                                        }
+                                        else if (event.type==='exception'){
+                                            alert(event.message);
+                                        }else{
+                                            alert(event.message);
+                                        }
+                                    },
+                                    {escape:true}
+                                );  */
+
+                    }
+
+                    $scope.mentorName = [];
+                    $scope.showMewntorList = function () {
+                        debugger;
+                        $scope.showSpinner = true;
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.getMentorDetails}',
+                            $scope.countrySelected, $scope.locationSelected, $scope.languageSelected, $scope.genderSelected,
+                            function (result, event) {
+                                if (event.status) {
+                                    $scope.showSpinner = false;
+                                    if (result != null) {
+                                        $scope.mentorList = result;
+                                        debugger;
+                                        console.log(result);
+                                        $scope.mentorList.sort(dynamicsort("load", "asc"));
+
+
+                                        for (var i = 0; i < $scope.mentorList.length; i++) {
+                                            $scope.mentorName.push({
+                                                label: $scope.mentorList[i].mentor.Name,
+                                                value: $scope.mentorList[i].mentor.Id
+                                            });
+                                        }
+                                        $scope.$apply();
+
+                                    } else {
+
+                                        Swal.fire('No Mentors Available', '', 'info');
+                                    }
+
+
+                                } else if (event.type === 'exception') {
+                                    alert(event.message);
+                                } else {
+                                    alert(event.message);
+                                }
+                                
+                            }, {
+                                escape: true
+                            }
+                        );
+
+                    }
+
+
+                    $scope.all = false;
+                    $scope.checkAll = false;
+                    $scope.selection = [];
+                    $scope.addItemsTobeReturn = function (studentDetails) {
+                        //$scope.selectedValues.push(studentDetails);
+
+                        var idx = $scope.selection.indexOf(studentDetails);
+                        debugger;
+                        // Is currently selected
+
+                        if ($scope.checkAll) {
+                            if (idx > -1) {
+                                $scope.selection.splice(idx, 1);
+                            } else {
+                                $scope.selection.push(studentDetails);
+                            }
+                        } else {
+                            if (idx > -1) {
+                                $scope.selection.splice(idx, 1);
+                            } else {
+                                $scope.selection.push(studentDetails);
+                            }
+
+                        }
+
+
+                    }
+                    $scope.checkAll;
+                    
+                    $scope.selectAllCheckbox = function () {
+                        debugger;
+                        if ($scope.checkAll == true) {
+                            $scope.checked = true;
+                            $scope.selection = [];
+                            $scope.selection = $scope.mentorMenteeAssociationList;
+                            /*   for (var i = 0; i < $scope.mentorMenteeAssociationList.length; i++) {
+                                $scope.selection.push($scope.mentorMenteeAssociationList[i])
+                            }  */
+                            //$scope.selection.push($scope.mentorMenteeAssociationList) ;
+                        }
+                        if ($scope.checkAll == false) {
+                            $scope.checked = false;
+                            $scope.selection = [];
+                        }
+
+                    }
+					
+                    $scope.complete = function (index) {
+
+                        $("#tags" + index).autocomplete({
+                            source: function (request, response) {
+                                response($scope.mentorName);
+                            },
+                            select: function (event, ui) {
+                                //alert(2);
+                                $("#tags" + index).val(ui.item.label);
+                                $("#tags" + index).attr("data-id", ui.item.value);
+                                return false;
+                            }
+                        });
+                    }
+                    $scope.saveMentorMatch = function () {
+                        debugger;
+                        $scope.showSpinner = true;
+                        //alert(index);
+                        console.log($scope.selection);
+                        // I need to run loop as many times as there are records in selection var
+                        for (var i = 0; i < $scope.selection.length; i++) {
+                            console.log($('#tags' + i.toString()).attr("data-id"));
+                            $scope.selection[i].Mentor__c = $('#tags' + i.toString()).attr("data-id");
+                            delete $scope.selection[i]["CreatedDate"];
+                            delete $scope.selection[i]["$$hashKey"];
+                        }
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.saveMentorMenteeAssociation}',
+                            $scope.selection,
+                            function (result, event) {
+                                $scope.showSpinner = false;
+                                if (event.status) {
+                                   Swal.fire(
+                                        '',
+                                        'Mentor matched successfully!',
+                                        'success'
+                                    )
+                                    for(var i=0;i<$scope.mentorMenteeAssociationList.length;i++){
+                                        if($scope.mentorMenteeAssociationList[i].Id == $scope.selectedMenteeforMatching[0].Id){
+                                        	$scope.mentorMenteeAssociationList.splice(i,1);   
+                                            $scope.$apply();
+                                        }
+                                    }
+                                    document.getElementById('mentorsAvailable').style.display='none';
+                                } else if (event.type === 'exception') {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                } else {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                }
+                            }, {
+                                escape: true
+                            }
+                        );
+
+
+                    }
+                    
+                    $scope.selectedMenteeforMatching = [] ;
+                    $scope.selectedMenteeForMatching = function(mentee){
+                    	debugger;
+                        $scope.showMewntorList();
+                        $scope.selectedMenteeforMatching.push(mentee);
+                        document.getElementById('mentorsAvailable').style.display='block';
+                    
+                    }
+                    
+                    $scope.matchMentor = function(mentor){
+           
+                    	debugger;
+                            $scope.selectedMenteeforMatching[0].Mentor__c = mentor.mentor.Id;
+                            delete $scope.selectedMenteeforMatching[0]["CreatedDate"];
+                            delete $scope.selectedMenteeforMatching[0]["$$hashKey"];
+                         Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.saveMentorMenteeAssociation}',
+                            $scope.selectedMenteeforMatching,
+                            function (result, event) {
+                                $scope.showSpinner = false;
+                                if (event.status) {
+                                    Swal.fire(
+                                        '',
+                                        'Mentor matched successfully!',
+                                        'success'
+                                    )
+                                    for(var i=0;i<$scope.mentorMenteeAssociationList.length;i++){
+                                        if($scope.mentorMenteeAssociationList[i].Id == $scope.selectedMenteeforMatching[0].Id){
+                                        	$scope.mentorMenteeAssociationList.splice(i,1);   
+                                            $scope.$apply();
+                                        }
+                                    }
+                                    document.getElementById('mentorsAvailable').style.display='none';
+                                } else if (event.type === 'exception') {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                } else {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                }
+                            }, {
+                                escape: true
+                            });
+
+
+                    }
+                    
+                    $scope.matchMultiMentee = function(mentor){
+                        
+                         debugger;
+                        $scope.showSpinner = true;
+                        //alert(index);
+                        console.log($scope.selection);
+                        
+                        // I need to run loop as many times as there are records in selection var
+                        for (var i = 0; i < $scope.selection.length; i++) {
+                            $scope.selection[i].Mentor__c = mentor.mentor.Id ;
+                            delete $scope.selection[i]["CreatedDate"];
+                            delete $scope.selection[i]["$$hashKey"];
+                        }
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.saveMentorMenteeAssociation}',
+                            $scope.selection,
+                            function (result, event) {
+                                $scope.showSpinner = false;
+                                $scope.$apply();
+                                if (event.status) {
+                                    
+                                    for(var i=0;i<$scope.mentorMenteeAssociationList.length;i++){
+                                        for(var j=0;j<$scope.selection.length;j++){
+                                            if($scope.mentorMenteeAssociationList[i].Id == $scope.selection[j].Id){
+                                                $scope.mentorMenteeAssociationList.splice(i,1);   
+                                                $scope.$apply();
+                                            }
+                                            
+                                        }
+                                       
+                                    }
+                                    document.getElementById('id01').style.display='none'
+                                    Swal.fire(
+                                        '',
+                                        'Mentors matched successfully!',
+                                        'success'
+                                    )
+                                    $scope.$apply();
+                                } else if (event.type === 'exception') {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                } else {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                }
+                                
+                            }, {
+                                escape: true
+                            }
+                        );
+
+
+                    }
+                    
+                    $scope.searchByFfeId = function(){
+                    	debugger;
+                    	$scope.ffeuID;
+                        
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.searchByFfeId}',
+                            $scope.ffeuID,
+                            function (result, event) {
+                                $scope.showSpinner = false;
+                                if (event.status) {
+                                        if (result == null || result == undefined) {
+                                            $scope.noMenteesAvailable = true;
+                                            $scope.showTable = false;
+                                            $scope.showSpinner = false;
+                                            $scope.$apply();
+                                            return;
+                                        } else {
+                                            $scope.mentorMenteeAssociationList = result;
+                                            $scope.noMenteesAvailable = false;
+                                        }
+
+                                        if ($scope.mentorMenteeAssociationList.length > 0) {
+                                            for (var i = 0; i < $scope.mentorMenteeAssociationList.length; i++) {
+                                                var mmAssociationDate = $scope.mentorMenteeAssociationList[i].CreatedDate;
+                                                var dateObject = new Date(mmAssociationDate);
+
+                                                var humanDateFormat = dateObject.toLocaleString();
+                                                $scope.mentorMenteeAssociationList[i].CreatedDate = humanDateFormat.split(",")[0];
+                                            }
+                                            $scope.showTable = true;
+                                        } else {
+                                            $scope.noMenteesAvailable = true;
+                                            $scope.showTable = false;
+                                        }
+
+                                        $scope.$apply();
+                                    } 
+                                else if (event.type === 'exception') {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                } else {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                }
+                            }, {
+                                escape: true
+                            }
+                        );
+                    }
+                    
+                    
+                    $scope.searchByCorp = function(){
+                    	debugger;
+                    	$scope.corprate;
+                        
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.searchBycorprate}',
+                            $scope.corprate,
+                            function (result, event) {
+                                $scope.showSpinner = false;
+                                if (event.status) {
+                                        if (result == null || result == undefined) {
+                                            $scope.noMenteesAvailable = true;
+                                            $scope.showTable = false;
+                                            $scope.showSpinner = false;
+                                            $scope.$apply();
+                                            return;
+                                        } else {
+                                            $scope.mentorMenteeAssociationList = result;
+                                            $scope.noMenteesAvailable = false;
+                                        }
+
+                                        if ($scope.mentorMenteeAssociationList.length > 0) {
+                                            for (var i = 0; i < $scope.mentorMenteeAssociationList.length; i++) {
+                                                var mmAssociationDate = $scope.mentorMenteeAssociationList[i].CreatedDate;
+                                                var dateObject = new Date(mmAssociationDate);
+
+                                                var humanDateFormat = dateObject.toLocaleString();
+                                                $scope.mentorMenteeAssociationList[i].CreatedDate = humanDateFormat.split(",")[0];
+                                            }
+                                            $scope.showTable = true;
+                                        } else {
+                                            $scope.noMenteesAvailable = true;
+                                            $scope.showTable = false;
+                                        }
+
+                                        $scope.$apply();
+                                    } 
+                                else if (event.type === 'exception') {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                } else {
+                                    Swal.fire('Some error, please try again', '', 'info');
+                                }
+                            }, {
+                                escape: true
+                            }
+                        );
+                    }
+                    
+                    $scope.getMentors = function(){
+						$scope.showMewntorList();   
+                        document.getElementById('mentorsAvailable').style.display='block';
+                    }
+                    $scope.selectedCorp='';
+                    $scope.corporateInModel='';
+                    $scope.filterMentorsOncorp = function(){
+                       debugger;
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.MentorMenteeAdminPortal_Controller.searchByCorp}',
+                            $scope.corporateInModel.trim(),
+                            function(result,event){
+                                if(event.status){
+                                 	$scope.mentorList = result;  
+                                    $scope.$apply();
+                                }
+                                else if (event.type==='exception'){
+                                    alert(event.message);
+                                }else{
+                                    alert(event.message);
+                                }
+                            },
+                            {escape:true}
+                        );
+                    
+
+                    }
+
+
+                });
+            
+            </script>
+        </head>
+        <body ng-controller="fundAllocation">
+            <div class="loadingSection" id="spinner" ng-if="showSpinner">
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+            <!--div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+                <div style="float:right;position: relative;top: 35px;">
+                    <a href="/home/home.jsp">
+                        <apex:image url="{!$Resource.home}" styleClass="logo"/>
+                    </a>
+                </div>
+                </div-->
+             <nav class="navbar fixed-top navbar-light bg-light navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <apex:image url="{!$Resource.FFEbanner}" width="50%" height="50%"/>
+                    </a>
+                    <a href="/home/home.jsp">
+                        <apex:image url="{!$Resource.home}" styleClass="logo"/>
+                    </a>
+                </div>
+            </nav>
+                <div class="headermenuSelection">
+                <h3 style="margin:10px;color:#fff;" align="center">
+                    Mentor Allocation
+                </h3>
+                </div>
+                <div class="searchCol" >
+                        
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10" style="margin-left:10%;">
+                            <div class="row">
+                                
+                                <div class="col-md-6">
+                                    <h3 > 
+                                        Language
+                                    </h3>
+                                    <md-input-container class="mdCont" >
+                                        <md-select ng-model="languageSelected" multiple="true" style="border: 1px solid #ccc;" md-on-close="">
+                                            <md-optgroup >
+                                                <md-button class="buttonDropdown"  layout-fill='' ng-if="isSelectedAppl" value="all" ng-click="cours()">Select All</md-button >
+                                                <md-button class="buttonDropdown" layout-fill='' ng-if="!isSelectedAppl" value="all" ng-click="cours()">Deselect All</md-button>
+                                                <md-option ng-value="language" ng-repeat="language in languagePickListValues">{{language}}</md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                                     <div class="col-md-6">
+                                    <h3 > 
+                                        Branch
+                                    </h3>
+                                    <md-input-container class="mdCont" >
+                                        <md-select  ng-model="branchSelected" style="border: 1px solid #ccc;" ng-change="">
+                                            <md-optgroup >
+                                                <md-option ng-value="status.label" ng-repeat="status in branchPicklistValues">{{status.label}}</md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                                
+                                <div class="searchRow">
+                                    <div class="searchCol">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3 >
+                                        Gender
+                                    </h3>
+                                    <md-input-container class="mdCont" >
+                                        <md-select  ng-model="genderSelected" multiple="true" style="border: 1px solid #ccc;"  md-on-close="">
+                                            <md-select-header class="demo-select-header">
+                                                <input ng-model="searchLoc" type="search" class="demo-header-searchbox md-text"  />
+                                            </md-select-header>
+                                            <md-optgroup >
+                                                <md-button class="buttonDropdown" ng-if="isSelectedApp2" layout-fill='' value="all" ng-click="gender()">Select All</md-button >
+                                                <md-button class="buttonDropdown" ng-if="!isSelectedApp2" layout-fill='' value="all" ng-click="gender()">Deselect All</md-button>
+                                                <md-option ng-value="gender" ng-repeat="gender in genderPickListValues">{{gender}}</md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                                <div class="col-md-6">
+                                    <h3 >
+                                        Sponsered Donors
+                                    </h3>
+                                    <!--md-input-container class="mdCont" >
+                                        <md-select  ng-model="corporateSelected" style="border: 1px solid #ccc;">
+                                            <md-optgroup >
+                                                <md-option ng-value="corporate.label" ng-repeat="corporate in corporatePicklistValues">{{corporate.label}}</md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container-->
+                                    <div class="input-group" style="width:90%;">
+                                        <input class="form-control border-secondary py-2" type="search" placeholder="search by corporate" ng-model="corprate"/>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" ng-click="searchByCorp()">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6"></div>
+                                
+                                <div class="col-md-6">
+                                    <h3 >
+                                        Enter FFEUID
+                                    </h3>
+                                    
+                                    <div class="input-group" style="width:90%;">
+                                        <input class="form-control border-secondary py-2" type="search" placeholder="search by FFEUID" ng-model="ffeuID"/>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="button" ng-click="searchByFfeId()">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" >
+                                <div class="col-md-4">
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="searchRow" align="center" style="margin-top:5%;">
+                                <input type="button" value="Search" class="buttons"  ng-click="searchStudents();"/>
+                                <input type="button" value="Clear" class="buttons"  ng-click="clear();"/>
+                            </div>
+                            <div ng-show="showTable">
+                                <hr/>
+                                <table class="table styled-table" style="">
+                                    
+                                    <thead style="background-color: #2e3192;color: #ffffff;">
+                                    <th ><input type="checkbox" ng-model="checkAll" ng-click="selectAllCheckbox()" style="float: left;"/>Multimatch</th>
+                                    <th >SNo</th>
+                                    <th>Mentee</th>
+                                    <th>Current Year</th>
+                                    <th>Applied Date</th>
+                                    <th>Program</th>
+                                        <th>status</th>
+                                        <th>Branch</th>
+                                        <th>Language</th>
+                                        <th>Match Mentor</th>
+                                    </thead>
+									<tbody>
+                                    <tr ng-repeat="x in mentorMenteeAssociationList">
+                                        <td style="text-align: -webkit-center;">
+                                            <!--input type="checkbox" name="options" id=""  ng-checked="isChecked" aria-labelledby="check-select-all-label column-group-header" ng-model="addValues" ng-click="addItemsTobeReturn($index)"/-->
+                                            <!--input type="checkbox" ng-checked="x.select" ng-click="addItemsTobeReturn(x)"/-->
+                                            <input
+                                                   type="checkbox"
+                                                   name="selectedFruits[]"
+                                                   value="{{x.mentee_del__r.Name}}"
+                                                   ng-checked="checked"
+                                                   ng-click="addItemsTobeReturn(x)"
+                                                   multiple="true"
+                                                   />
+                                        </td>
+                                        <td style="text-align: -webkit-center;">{{$index + 1}} </td>
+                                        <td style="text-align:left;">{{x.mentee_del__r.Name}}</td>
+                                        <td>{{x.mentee_del__r.Current_year__c}}</td>
+                                        <td>{{x.CreatedDate}}</td>
+                                        <td>{{x.Modules__c}}</td>
+                                        <td>{{x.Status__c}}</td>
+                                        <td>{{x.mentee_del__r.Branch_Stream__c}}</td>
+                                        <td>{{x.mentee_del__r.Spoken_Languages__c}}</td>
+                                        <td style="text-align: -webkit-center;"> <!--input type="text" id="" ng-model="x.Mentor__c" style="width: 75%;"/-->   <button type="button" class="btn btn-warning btn-circle btn-sm" ng-Click="selectedMenteeForMatching(x)"><i class="fa fa-plus" style="font-size:18px"></i></button></td>
+                                    </tr>
+                                    </tbody>
+                                    
+                                </table>
+                                <div class="searchRow" align="center" style="margin-top:3%;">
+                                    <input type="button" value="Multimatch" class="buttons"  ng-click="autoMatchMentor()"/>
+                                    <input type="button" value="Mentors" class="buttons" ng-click="getMentors()" />
+                                </div>
+                            </div>
+                            <div ng-if="noMenteesAvailable" style="font-weight: 900;font-size: large;text-align: center;margin-top: 2%;">No Mentee's Available for assignment</div>
+                        </div>
+                        <div class="col-md-1"></div>
+                <div class="w3-container">
+                    <div id="id01" class="w3-modal">
+                        <div class="w3-modal-content">
+                            <header class="w3-container w3-teal" style="">
+                            <span onclick="document.getElementById('id01').style.display='none'" 
+                                class="w3-button w3-display-topright">&times;</span>
+                            <h2>Match Mentor</h2>
+                            </header>
+                            <div class="w3-container">
+                           
+                                <div class="row" style="margin-top:2%">
+                                    <div class="col-md-3">
+                                        <label class="form-control-label">Search</label><br/>
+                                        <input type="text" class="form-control" name="search" placeholder="Search.." ng-model="filterName"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                         <label class="form-control-label">Filter by Corporate</label><br/>
+                                <select class="form-control" style="width:50%;" ng-model="corporateInModel" ng-change="filterMentorsOncorp()">
+                                    <option ng-repeat="corporate in allCorporates" >
+                                    {{corporate}}
+                                    </option>
+                                </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        
+                                        <label class="form-control-label">Search Mentor</label><br/>
+                                        <input class="form-control" type="text" placeholder="search Mentor" ng-model="searchString" style="display:inline;float:left;width: 80%;"/>
+                                        <button class="btn btn-outline-secondary" style="display:inline;float:left" type="button" ng-click="searchMentorByString()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>       
+                                </div>
+                               
+                                <table class="table styled-table" style="margin-top:4%;word-wrap: break-word; table-layout:fixed;width: 100%;">
+                                    <thead style="background-color: #2e3192;color: #ffffff;">
+                                        
+                                        <th>SNo</th>
+                                        <th>Mentor</th>
+                                        <th>Language</th>
+                                        <th>Corporate</th>
+                                        <th>Gender</th>
+                                        <th>Branch</th>
+                                        <th>No. of Mentees</th>
+                                        <th>Match</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="x in mentorList | filter:filterName" >  
+                                            <td>{{$index + 1}}</td>
+                                            <td style="text-align:left;">{{x.mentor.Name}}</td>
+                                            <td>{{x.mentor.Spoken_Languages__c}}</td>
+                                            <td>{{x.mentor.Corporate__c}}</td>
+                                            <td>{{x.mentor.Gender__c}}</td>
+                                            <td>{{x.mentor.Branch_Areas_of_Practice_Study__c}}</td>
+                                            <td>{{x.load}}</td>
+                                            <td style="text-align: -webkit-center;"><input type="button" value="Match" class="btn btn-primary d-flex justify-content-center d-md-table mx-auto" style="background-color: #F39C12;" ng-click="matchMultiMentee(x)"/></td>
+                                        </tr>
+                                    </tbody>
+                                    
+                            </table>
+                            <div class="searchRow" align="center" style="margin-top:3%;margin-bottom: 3%;">
+                                <!--input type="button" value="Save" class="buttons"  ng-click="saveMentorMatch()"/>
+                                <input type="button" value="Cancel" class="buttons"  onclick="document.getElementById('id01').style.display='none'"/-->
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- mentor Detail popup -->
+                <div class="w3-container">
+                    <div id="mentorsAvailable" class="w3-modal">
+                        <div class="w3-modal-content">
+                            <header class="w3-container w3-teal" style="">
+                            <span onclick="document.getElementById('mentorsAvailable').style.display='none'" 
+                                class="w3-button w3-display-topright">&times;</span>
+                            <h2>Mentor Available</h2>
+                            </header>
+                           
+                            <div class="w3-container">
+                                 <div class="row" style="margin-top:2%">
+                                    <div class="col-md-3">
+                                        <label class="form-control-label">Search</label><br/>
+                                        <input type="text" class="form-control" name="search" placeholder="Search.." ng-model="filterMentor"/>
+                                    </div>
+                                     <div class="col-md-4">
+                                         <label class="form-control-label">Filter by Corporate</label><br/>
+                                         <select class="form-control" style="width:50%;" ng-model="corporateInModel" ng-change="filterMentorsOncorp()">
+                                             <option ng-repeat="corporate in allCorporates" >
+                                                 {{corporate}}
+                                             </option>
+                                         </select>
+                                     </div>
+                                    <div class="col-md-5">
+                                       
+                                        <label class="form-control-label">Search Mentor</label><br/>
+                                        <input class="form-control" type="text" placeholder="search Mentor" ng-model="searchString" style="display:inline;float:left;width: 80%;"/>
+                                        <button class="btn btn-outline-secondary" style="display:inline;float:left" type="button" ng-click="searchMentorByString()">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                       
+                                    </div>       
+                                </div>
+                                
+                                <div class="table-wrapper-scroll-y my-custom-scrollbar">    
+                                    <table class="table styled-table" style="margin-top:4%;word-wrap: break-word; table-layout:fixed;width: 100%;">
+                                        <thead style="background-color: #2e3192;color: #ffffff;">
+                                            <th >SNo</th>
+                                            <th>Mentor</th>
+                                            <th>Language</th>
+                                            <th>Corporate</th>
+                                            <th>Gender</th>
+                                            <th>Branch</th>
+                                            <th>No. of Mentees</th>
+                                            <th>Match Mentor</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="x in mentorList | filter:filterMentor">
+                                                <td>{{$index + 1}}</td>
+                                                <td style="text-align:left;">{{x.mentor.Name}}</td>
+                                                <td>{{x.mentor.Spoken_Languages__c}}</td>
+                                                <td>{{x.mentor.Corporate__c}}</td>
+                                                <td>{{x.mentor.Gender__c}}</td>
+                                                <td>{{x.mentor.Branch_Areas_of_Practice_Study__c}}</td>
+                                                <td>{{x.load}}</td>
+                                                <td style="text-align: -webkit-center;"><input type="button" value="Match"  class="btn btn-primary d-flex justify-content-center d-md-table mx-auto" style="background-color: #F39C12;"  ng-click="matchMentor(x)"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </body>
+    </html>
+</apex:page>

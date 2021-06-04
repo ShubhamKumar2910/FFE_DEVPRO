@@ -1,0 +1,107 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="MentorDetailPageController">
+    <head>
+         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>  
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <style>
+			            
+           table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 3%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+    text-align: center;
+  padding: 8px;
+}
+        .download {
+            background-color: DodgerBlue;
+            border: none;
+            color: white;
+            padding: 5px 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .download:hover {
+         background-color: RoyalBlue;
+         }  
+            </style>
+    </head>
+    <body ng-app="mentorProgramApp" ng-controller="mentorProgramController">
+        <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+            </div>
+        <div class="styled-table" ng-show="programDetails">
+                  <button type="button" class="btn btn-primary" style="margin-left:20%" ng-click="previous()">Back</button>
+
+                                                                       <table class="styled-table">
+                                                                       
+                                                                       <td class ="styled-table">SNo</td>                                              
+                                                                       <td class ="styled-table">Programme</td>
+                                                                       <td class ="styled-table">Curriculam</td>
+                                                                       <td class ="styled-table">Apply</td>
+                                                                       
+                                                                       
+                                                                       <tr ng-repeat="x in programDetails">
+                                                                       <td class ="styled-table">{{$index + 1}}</td>
+                                                                       <td class ="styled-table">{{x.programmeRec.Name}}</td>
+                                                                       <td class ="styled-table">{{x.programmeRec.curriculum__c}}
+                                                                       <button class="download" ng-click="download(x.attId)" ng-if="x.attId !=''"><i class="fa fa-download"></i> Download</button>
+                                                                       </td>
+                                                                       <td><button class="download" ng-click="apply(x.programmeRec.Id)" >Apply</button></td>
+                                                                       
+                                                                       
+                                                                       </tr>
+                                                                       </table>
+                                                                       </div>
+        <script>
+		var app = angular.module('mentorProgramApp', []);  
+        app.controller('mentorProgramController', function($scope) {
+            debugger;
+             $scope.getprogramDetail = function(){
+                    debugger;
+                    
+                    $scope.programDetails =[];
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.MentorDetailPageController.getProgramDetails}',
+                        function(result,event){
+                            if(event.status){
+                                $scope.programDetails=result;
+                                $scope.$apply();
+                            }
+                            else if (event.type==='exception'){
+                                alert(event.message);
+                            }else{
+                                alert(event.message);
+                            }
+                        },
+                        {escape:true}
+                    );
+                }
+             $scope.getprogramDetail();
+               
+            $scope.download = function(attIds){
+                    //alert(attIds);
+                    //alert('{!baseURL}');
+                //  var baseURL = window.location.origin+'/apex';
+;
+                    var attlocation ='https://ffe--devpro--c.documentforce.com/servlet/servlet.FileDownload?file='+attIds;
+                    window.open(attlocation,'_blank');
+                }
+            
+            $scope.previous = function(){
+            	let mainURL = window.location.origin+'/apex';
+        		window.location.replace(mainURL + "/MentorPortal");
+            }
+        });
+        </script>
+        </body>
+    
+</apex:page>

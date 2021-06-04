@@ -1,0 +1,7 @@
+<apex:page standardController="Mentor_Mentee_Association__c" recordSetVar="records">
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!selected}" var="record">
+            <apex:column value="{!record.Name}" />
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

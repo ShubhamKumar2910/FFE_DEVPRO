@@ -1,0 +1,508 @@
+html{
+    font-size: 10pt !important;
+}
+body{
+    font-family: 'Source Sans Pro', sans-serif;
+    color:#373c44;
+    background: #fff;
+    width: 90% !important;
+    margin: 0 auto !important;
+    margin-left:5% !important;
+}
+.materialIcons{
+    width:18px;
+    cursor:pointer;
+}
+input,textarea{
+    font-family: 'Source Sans Pro', sans-serif;
+}
+.header{
+    width:100%;
+    float:left;
+    background-color:#4c4c4c;
+    
+}
+.headerTags{
+    color:#ffad41;
+}
+.row{
+    width: 47%;
+    float: left;
+    padding: 1%;
+}
+.formTags,.tagnames{
+    margin:0;
+    padding:0px 0px;
+    color: #032559;
+    font-size:10pt;
+}
+.inputfileds{
+    width: 90%;
+    float: left;
+    min-height: 30px;
+    border: 1px solid rgba(99, 97, 121, 0.49);
+    border-radius: 5px;
+    padding: 0;
+    resize:none;
+    padding-left: 8px;
+}
+.inputfiledsSelect{
+    width: 90%;
+    float: left;
+    min-height: 32px;
+    border: 1px solid rgba(99, 97, 121, 0.49);
+    border-radius: 5px;
+    padding: 0;
+    padding-left: 8px;
+}
+.inputfiledsmdSelect{
+    width: 90%;
+    float: left;
+    min-height: 32px;
+    border-radius: 5px;
+    padding: 0;
+}
+.formDiv {
+    width: 97%;
+    float: left;
+    margin-bottom: 30px;
+    margin-left: 1.5%;
+    border: 2px solid #032559;
+    padding-bottom: 15px;
+}
+.formheadings{
+    width: 100%;
+    float: left;
+    margin: 0;
+    padding: 10px 0px 10px 0;
+    background: #032559;
+    color: #fff;
+}
+.rowsHistoryDiv>.historyTable:nth-child(even) {background: #eee}
+.radioInputs{
+    float: left;
+    margin-top: 6px;
+}
+.buttonsdiv{
+    width:100%;
+    float:left;
+    margin-bottom:30px;
+}
+.buttons{
+    border-radius:3px;
+    height: 30px;
+    color: #fff;
+    font-size: 11pt;
+    border: none;
+    cursor: pointer;
+    min-width: 10%;
+    background: #ff793c;
+    max-width:100%;
+}
+.logo{
+    float:left;
+}
+.banner{
+    float: left;
+    width: 90%;
+    position: fixed;
+    top: 0px;
+    left: 5%;
+    z-index:111;
+    background:#fff;
+}
+.headermenuSelection ul li{
+    padding: 10px 2px;
+    color: rgb(84,84,80);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.8em;
+    cursor: pointer;
+    outline: none;
+    text-align: center;
+    display: inline-block;
+    outline: none;
+}
+.headermenuSelection ul {
+    list-style-type: none;
+    color: #000;
+    margin: 0PX 0PX 0PX 0PX;
+    font-size:large;
+}
+
+.headermenuSelection {
+    float: left;
+    background: #032559;
+    width: 90%;
+    margin: 0 auto;
+    position: fixed;
+    margin-top: 112px;
+    z-index: 111;
+    left: 5%;
+    top: 0;
+    
+}
+.headermenuSelection ul li a{
+    padding: 10px 30px;
+    text-decoration:none;
+    font-weight: bold;
+    color: rgb(84,84,80);
+    cursor: pointer;
+    outline: none;
+    color:#fff;
+    font-size:11pt;
+    
+}
+.headermenuSelection ul li a:hover {
+    color: #f8d308;
+}
+.headermenuSelection ul li:hover {
+    color: #f8d308;
+}
+.common {
+    position:relative;
+    top:150px;
+    //overflow: auto;
+    width: 97%;
+    margin: 0 auto;
+    border-top: none;
+    padding: 0 20px;
+    margin-top: 30px;
+}
+.active {
+    background: #ff793c;
+}
+
+.historyTable{
+    margin: 10px 0;
+    float:left;
+    width:100%;
+    table-layout:fixed;
+    border: 1px solid #dddddd;
+    border-collapse: collapse;
+    background: #fff;
+}
+.rowsHistory th, .rowsHistory td{
+    word-wrap: break-word;
+    border: 1px solid #dddddd;
+    padding: 8px 4px;
+    font-size: 10pt;
+}
+.rowsHistory th{
+    color: #fff;
+}
+.currencyDiv{
+    margin-bottom:20px;
+}
+.searchDiv{
+    margin-top:150px;
+    margin-bottom:25px;
+    background: #fff;
+    padding-bottom:10px;
+}
+.searchDiv, .searchRow{
+    float:left;
+    width:100%;
+}
+
+.searchCol{
+    float: left;
+    width: 45%;
+    padding: 1% 2%;
+}
+.searchColPopup{
+    float:left;
+    width:45%;
+}
+.searchTags{
+    float:left;
+    margin-right:10px;
+    color: #032559;
+    font-size:11pt;
+}
+.searchTagsPopup{
+    float:left;
+    margin-right:10px;
+    color: #032559;
+    font-size:10pt;
+    min-width: 40%;
+}
+.searchRadio{
+    float: left;
+    margin-top: 16px;
+}
+.tableHeading{
+    float: left;
+    width: 100%;
+    color: #ff793c;
+}
+.searchFields{
+    min-width:40%;
+}
+.studentAllocationPopUp{
+    width: 87%;
+    margin: 0 auto;
+    position: fixed;
+    top: 50px;
+    z-index: 130;
+    background: #fff;
+    left: 5%;
+    box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+    min-height: 200px;
+    max-height: 520px;
+    overflow: auto;
+    padding: 20px;
+    border-radius: 0px 10px 10px 10px;
+    
+}
+.studentAllocationPopUpExtraDonors{
+    width: 87%;
+    margin: 0 auto;
+    position: fixed;
+    top: 50px;
+    z-index: 141;
+    background: #fff;
+    left: 5%;
+    box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+    min-height: 200px;
+    max-height: 520px;
+    overflow: auto;
+    padding: 20px;
+	border-radius: 0px 10px 10px 10px;    
+}
+.background{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    opacity: 0.2;
+    background: #000;
+    top: 0;
+    z-index: 129;
+    left:0;
+}
+.backgroundForExtraDonor{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    opacity: 0.5;
+    background: #000;
+    top: 0;
+    z-index:140;
+    left:0;
+}
+.titleHead{
+    margin-top: 125px;
+}
+.inputfileds:-moz-read-only {
+    background-color: #eee;
+}
+
+.inputfileds:read-only { 
+    background-color: #eee;
+}
+
+/*.tdInput :read-only { 
+    background-color: #eee;
+}*/
+
+.inputfileds:disabled { 
+    background-color: #eee;
+}
+textarea:-moz-read-only { 
+    background-color: #eee;
+}
+
+textarea:read-only { 
+    background-color: #eee;
+}
+.buttons:disabled { 
+    cursor: not-allowed;
+    color:#ccc;
+}
+.inputfiledsSelect:disabled{
+    background-color: #eee;
+}
+md-datepicker[disabled] .md-datepicker-input-container {
+    border-bottom-color: transparent;
+    background: #eee;
+    margin: 0;
+    width: 100%;
+}
+.loadingBackground{
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: #F6F6F6;
+    z-index: 11111;
+    opacity: 0.7;
+    top: 0px;
+    left:0;
+    bottom:0;
+    right:0;
+    
+}
+.loading{
+    top: 50%;
+    left: 50%;
+    margin: -50px 0px 0px -50px;
+    z-index: 111111;
+    position: fixed;
+}
+.tdInput{
+    max-width: 100%;
+    min-height: 25px;
+    border: 1px solid rgba(99, 97, 121, 0.49);
+    border-radius: 5px;
+}
+.mdCont{
+    margin: 0;
+    width: 76%;
+    margin-top: 0px !important;
+    padding: 9px 9px;
+}
+.mdContPopup{ 
+    margin: 0;
+    width: 50%;
+    margin-top: 0px !important;
+    padding: 2px 2px;
+}
+.thRow{
+    background: #032559;
+}
+.error{
+    color: rgb(255, 0, 0);
+    float: left;
+    display:block;
+    width:100%;
+}
+input[type=number]{
+    text-align:right;
+}
+.tdInputSelection{
+    min-width: 80%;
+    max-width: 80%;
+}
+.imagesLogin{
+    width: 43%;
+    float: left;
+    padding:3%;
+}
+
+.loginDiv {
+    width: 40%;
+    float: left;
+    position: relative;
+    top: 155px;
+    left: 27%;
+    min-height: 300px;
+    border: 1px solid #ccc;
+}
+.or-container{
+    text-align: center;
+    margin: 0;
+    margin-bottom: 10px;
+    clear: both;
+    color: #6a737c;
+}
+.or-hr{
+    margin-bottom: 0;
+    position: relative;
+    top: 19px;
+    height: 0;
+    border: 0;
+    border-top: 1px solid #e4e6e8;
+}
+hr {
+    border: 0;
+    color: #9fa6ad;
+    background-color: #9fa6ad;
+    height: 1px;
+    margin-bottom: 20px;
+}
+#or{
+    display: inline-block;
+    position: relative;
+    padding: 10px;
+    background-color: #FFF;
+}
+.buttonDiv{
+    width:100%;
+    float:left;
+    padding-bottom: 40px;
+}
+.sweet-alert button.cancel{
+    background-color:#ff793c !important;
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+    body{
+        font-size:12px;
+    }
+}
+.logout{
+    float: right;
+    padding-top: 27px;
+    padding-right: 23px;
+}
+.buttonDropdown{
+    padding: 0 12px;
+    margin: 0 0px;
+    width: 100%;
+    text-transform: none;
+    text-align:left;
+    background-color:#ff793c !important;
+    color:#fff;
+}
+.closePopUp{
+    position: fixed;
+    width: 2.5%;
+    /* text-decoration: none !important; */
+    /* font-size: 17px !important; */
+    /* float: left; */
+    margin-left: -30px;
+    margin-top: -36px;
+    border-radius: 100%;
+    /* padding: 0; */
+    background: #032559;
+    outline: none;
+}
+.closeIcon{
+    width: 25px;
+    margin-left: 5px;
+    margin-top: 3px;
+}
+.tags{
+    color: #f38b05
+}
+ng-form{
+    float: left;
+    background: #fff;
+    width:100%;
+}
+.headersHistory {
+    width: 89.85%;
+}
+.switchPages{
+    width: 100%;
+}
+
+.renewalPopup {
+    width: 60%;
+    margin: 0 auto;
+    position: fixed;
+    top: 8%;
+    z-index: 130;
+    background: #fff;
+    left: 20%;
+    box-shadow: 0px 0px 16px rgba(0,0,0,0.85);
+    min-height: 125px;
+    max-height: 520px;
+    overflow: auto;
+    padding: 20px;
+    border-radius: 10px;
+}
+.readInput{
+    background:#eee;
+}
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset;
+}

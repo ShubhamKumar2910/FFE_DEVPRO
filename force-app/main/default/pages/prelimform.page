@@ -1,0 +1,972 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="AP_Student_Application_CTRL">
+    <html ng-app="preApplication">
+        <title>Preliminary Application</title>
+        <head>
+            <link rel="stylesheet" href="{!URLFOR($Resource.fontfamilyStyles)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sweetalertscss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.angularMaterialCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.sliderCss)}" />
+            <link rel="stylesheet" href="{!URLFOR($Resource.ffeCss)}" />
+            <script src="{!$Resource.angular_min}">
+            </script>
+            <script src="{!$Resource.angular_route}">
+            </script>
+            <script src="{!$Resource.angular_animate}">
+            </script>
+            <script src="{!$Resource.angular_aria}">
+            </script>
+            <script src="{!$Resource.angular_msg}">
+            </script>
+            <script src="{!$Resource.angularMaterialJs}">
+            </script>
+            <script src="{!$Resource.sweetalertsJs}">
+            </script>
+            <script src="{!$Resource.prelimform}">
+            </script>
+            <script>
+            var StudentprofileURL      = '{!$Setup.System_Details__c.Student_Profile_URL__c}';
+            var DocumnetUploadMessage  = '{!$Label.DocumnetUploadMessage}';
+            var FacilitatorErrorMessage  = '{!$Label.Facilitator_Error}';
+            function isNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(charCode == undefined){
+                    return false;
+                }
+                else if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                    else if (charCode > 31 && (charCode < 48 || charCode > 57 ))  {
+                        return false;
+                    }
+                return true;
+            }
+            function run(field) {
+                setTimeout(function() {
+                    var regex = /\d*\.?\d?/g;
+                    field.value = regex.exec(field.value);
+                    
+                }, 0);
+            }
+            
+            function isChar(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if(!((charCode >= 65 && charCode <= 90 ) || (charCode >= 97 && charCode <= 122 )) && (charCode != 32 && charCode != 0 ))  {
+                    return false;
+                }
+                
+                return true;
+            }
+            function isAlphaNumber(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if(evt.key=="Delete" || evt.key=="Backspace"){
+                    return true;
+                }
+                else if((charCode > 47 && charCode<58 ) || (charCode > 64 && charCode<91 ) || (charCode > 96 && charCode<123 ))  {
+                    return true;
+                }
+                
+                return false;
+            }
+            
+            var APGenderPickLstValues   = {!APGenderPickLstValues};
+            var APtypePickLstValues     = {!APtypePickLstValues};
+            var listOfStates            = {!listOfStates};
+            var studentCourse           = {!studentCourse};
+            var studentBranch           = {!studentBranch};
+            var studentLawBranch        = {!studentLawBranch};
+            var occupationlist          = {!occupationList};
+            var accomTypesList          = {!accomTypesList};
+            var btechYearList           = {!btechYearList};
+            var MtechYearList           = {!MtechYearList};
+            var MbbsYearList            = {!MbbsYearList};
+            var entranceTests           = {!entranceTests};
+            var mediumOfInstruction     = {!mediumOfInstruction};
+            var listOfExamBoards        = {!listOfExamBoards};
+            var windowClose             = "{!JSENCODE($Label.Scholarship_application_window_closed_msg)}";  
+            var isPrelimAvailable       = {!isPrelimAvailable};
+            //Added Scholarship Criteria Values - Sumit Gaurav - 11-June-2020
+            var maxAnnualFamilyIncome   = {!$Setup.Scholarship_Criteria__c.Max_Annual_Family_Income__c};
+            var minPercentageForHS      = {!$Setup.Scholarship_Criteria__c.Min_12th_Percentage__c};
+            var minusYear               = {!$Setup.Scholarship_Criteria__c.HS_Year_of_Passing_Less_than__c};
+            if(!isPrelimAvailable || isPrelimAvailable== 'false'){
+                swal({title:'',text:windowClose});
+                location.replace("http://www.ffe.org");
+            }
+            
+            </script>
+            <script>
+            function openCity(evt, cityName) {
+                
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(cityName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+            </script>
+            <style>
+                input[type=search] {
+                width: 98%;
+                border: 1px solid #ccc;
+                height: 30px;
+                padding: 2px;
+                outline: none;
+                }
+                .studentDatailsDiv{
+                position:relative;
+                top:166px;
+                }
+                .md-icon-button+.md-datepicker-input-container {
+                background: #fff;
+                }
+                .md-datepicker-input-container{
+                width: 98%;
+                height: 30px;
+                margin: 0;
+                padding: 0;
+                border-bottom-width: 0px
+                }
+                .md-datepicker-input{
+                margin-top: 7px;
+                pointer-events: none;
+                }
+                .md-datepicker-triangle-button.md-button.md-icon-button{
+                margin-top: 8px;
+                margin-right: 11px;
+                }
+                .md-datepicker-button{
+                display:none;
+                }
+                ng-form{
+                background: #fff;
+                }
+                .mdContPopup{ 
+                margin: 0;
+                width: 100%;
+                margin-top: 0px !important;
+                padding: 2px 2px;
+                }
+                .rowabout{
+                width:91.5%;
+                }
+                .rowabout textarea{
+                width:100%;
+                }
+                body {font-family: Arial;}
+                
+                /* Style the tab */
+                .tab {
+                overflow: hidden;
+                border: 0px solid #ccc;
+                background: #032559;
+                }
+                
+                /* Style the buttons inside the tab */
+                .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 17px;
+                }
+                
+                /* Change background color of buttons on hover */
+                .tab button:hover {
+                background-color: #ddd;
+                }
+                
+                /* Create an active/current tablink class */
+                .tab button.active {
+                background-color: #ccc;
+                }
+                
+                /* Style the tab content */
+                .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border: 0px solid #ccc;
+                border-top: none;
+                margin-top: 160px;
+                }
+                .headermenuSelection ul li {
+                color: #ffffff;
+                }
+                
+            </style>
+        </head>
+        <body ng-controller="preapplication" id="myContainerDiv">
+            <div class="banner" align="center">
+                <a href="http://www.ffe.org/" target="_blank"  >
+                    <apex:image url="{!$Resource.FFEbanner}" styleClass="logo"/>
+                </a>
+            </div>
+        </body>
+        <div class="headermenuSelection">
+            <div class="tab">
+                <!-- <button class="tablinks" onclick="openCity(event, 'MandatoryDocs')">Mandatory Documents</button>
+<button class="tablinks" onclick="openCity(event, 'PrelimForm')">Prelim Form</button> -->
+                <ul style="width:60%;float:left;">
+                    <li onclick="openCity(event, 'MandatoryDocs')" class="tablinks active">Scholarship Information</li>
+                    <li onclick="openCity(event, 'PrelimForm')" class="tablinks">Prelim Form</li>
+                </ul>
+            </div>
+        </div>
+        <div id="MandatoryDocs" class="tabcontent" style="display:block">
+            <div class="formDiv">
+                <h4 class="formheadings" align="center" style="font-size:15px;">
+                    Eligibility Criteria     
+                </h4>
+                <div class="row">
+                    <p>
+                        Please refer to the section Academic Eligibility at the link: <a href="https://ffe.org/scholars/" target="_blank">https://ffe.org/scholars</a> 
+                    </p> 
+                    
+                </div>
+            </div>
+            <div class="formDiv">
+                <h4 class="formheadings" align="center" style="font-size:15px;">
+                    List of Mandatory Documents      
+                </h4>
+                <div class="row" style="width:95% !important">
+                    <ul>
+                        <li>X and XII Marks sheet</li>
+                        <li>Bonafide Certificate from College</li>
+                        <li>Rank Certificate </li>
+                        <li>Counselling Letter for Seat Allotment</li>
+                        <li>Family Income Certificate or Salary Slip (for 3 Months) or IT Return form</li>
+                        <li>Tuition/Hostel/Mess paid receipts</li>
+                        <li>Statement of Estimated Expenses from College</li>
+                        <li>Bank Passbook copy for Bank Account details confirmation</li>
+                        <!-- Changes made by sumit -->
+                        <li>e-Aadhaar or scanned copy of your original Aadhaar<p style="font-size:12px"><b>Note:</b><br/>
+                            e-Aadhaar: Go to <a href="https://eaadhaar.uidai.gov.in/#/" style = "color:orange">https://eaadhaar.uidai.gov.in/#/</a> and download the e-Aadhaar which is password protected. Please scan this document and upload so <b>that it is no longer password protected</b>.
+                            <b>
+                                (OR)
+                            </b>
+                            Scan your original Aadhaar in PDF format and upload. You can use the Microsoft Office Lens – PDF scanner app available in Google Play Store or other scanning apps to scan the copy of your Aadhaar.
+                            </p></li>
+                    </ul>
+                </div>
+            </div>
+            <div align="center"  style="font-weight: bold;">
+                
+                <p>
+                    Thank you for your interest in FFE. FFE reserves the right to award the scholarship. Your application will be reviewed as per policy.
+                </p>
+            </div>
+        </div>
+        
+        <div id="PrelimForm" class="tabcontent">
+            <h4 class="formheadings" align="center" style="font-size:15px;">
+                Preliminary Application Form For FFE Scholarships     
+            </h4>
+            <div ng-switch="indexValueStudent" style="position: relative;top: 50px;" >
+                <ng-form name="studentForm" novalidate="true" ng-switch-when='0' style="float:left;">
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            General Information      
+                        </h4>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                First Name:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="fName" ng-model="student.FirstName"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.fName.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.fName.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Last Name:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="userLastName" ng-model="student.LastName"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.userLastName.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.userLastName.$invalid)&& showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Gender:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" name="gender" ng-model="student.Gender__c" required='true'>
+                                <option ng-repeat="gender in APGenderPickLstValues" value='{{gender}}'>{{gender}}</option>
+                            </select>
+                            <span ng-show="formInvalid && studentForm.gender.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.gender.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Email:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="userEmail" ng-model="student.Email"  class="inputfileds" ng-change="valid(student.Email)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.userEmail.$invalid" class="error">This is required.</span>
+                            <span class="error" ng-show="(!(studentForm.userEmail.$invalid) && invalidEmail)">Invalid email address</span>
+                            <span ng-show="!(formInvalid && studentForm.userEmail.$invalid) && !(!(studentForm.userEmail.$invalid) && invalidEmail) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Mobile No:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="userMobile" ng-model="student.MobilePhone"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="11" minlength="10" />
+                            <span ng-show="formInvalid && studentForm.userMobile.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.userMobile.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Phone No:
+                            </h4>
+                            <input type="text" name="userPhone" ng-model="student.Phone"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="11" minlength="6"/>
+                            <span ng-show="(!(formInvalid && studentForm.userPhone.$error.minlength) && showSpace)" class="error">&nbsp;</span>
+                            <span ng-show="(formInvalid && studentForm.userPhone.$error.minlength) || (formInvalid &&studentForm.userPhone.$error.maxlength)" class="error">Phone Number length should be between 6-11 digits</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Aadhaar No:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="userAadhar" ng-model="student.Aadhar_number__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="12" minlength="12" />
+                            <span ng-show="formInvalid && studentForm.userAadhar.$invalid" class="error">&nbsp;Enter your 12 digit Aadhaar number.</span>
+                            <!--span ng-show="(formInvalid && studentForm.userAadhar.$error.minlength) || (formInvalid &&studentForm.userAadhar.$error.maxlength)" class="error">Adhar Number length should be 12 digits</span-->
+                        </div>
+                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Date Of Birth:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <md-datepicker class="inputfiledsSelect" type="date" ng-model="student.Birthdate" required="true" name="userDob" id="mydate" md-max-date='todate' onkeydown="return false"></md-datepicker>
+                            <!--input type="date" name="userDob" ng-model="student.Birthdate"  class="inputfileds" required='true'/-->
+                            <span ng-show="dobError" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.userDob.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Accomodation Type:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" name="accomoType" ng-model="student.FFE_Accomodation_Type__c " required='true'>
+                                <option ng-repeat="accomType in accomTypes" value='{{accomType}}'>{{accomType}}</option>
+                            </select>
+                            <span ng-show="formInvalid && studentForm.accomoType.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.accomoType.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        
+                        <div class="row" style="width:100%;">
+                            <h4 class="tagnames" style="float:left;color: #ff793c;">
+                                Referred by Facilitator?:
+                            </h4>
+                            <input type="checkbox" name="userDob" ng-model="$parent.isReferred"  class="" />
+                        </div>
+                        <div class="row" ng-if="isReferred">
+                            <h4 class="tagnames" >
+                                Facilitator ID:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Refered_by_Facilitator_Id__c" ng-model="student.Refered_by_Facilitator_Id__c"  class="inputfileds" onpaste="return isAlphaNumber(event)" onkeypress="return isAlphaNumber(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.Refered_by_Facilitator_Id__c.$invalid" class="error">If you are not refered by facilitator, please uncheck above.</span>
+                            <span ng-show="!(formInvalid && studentForm.Refered_by_Facilitator_Id__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                            <div >
+                                <input type="submit" style="position: relative;top: 11px;left: 0px;" value="Verify Facilitator" class="buttons"  ng-click="CheckFacilitator(1)"/>
+                            </div>
+                        </div>
+                        <div class="row" ng-if="isFacilitatorTrue==true && isReferred && student.Refered_by_Facilitator_Name__c!=''">
+                            <h4 class="tagnames" >
+                                Facilitator Name:<!--span style="color:#ff0000">*</span-->
+                            </h4>
+                            <input type="text" name="Refered_by_Facilitator_Name__c" ng-model="student.Refered_by_Facilitator_Name__c"  class="inputfileds" readonly='true'/>
+                            <!--span ng-show="formInvalid && studentForm.Refered_by_Facilitator_Name__c.$invalid" class="error"></span!-->
+                            <span ng-show="!(formInvalid && studentForm.Refered_by_Facilitator_Name__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                    </div>
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Student’s Address
+                        </h4>
+                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Permanent Address:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <textarea  name="stMailAdd" class="inputfileds" required="true"  ng-model="student.MailingStreet" style="min-height:98px;"></textarea>
+                            <span ng-show="formInvalid && studentForm.stMailAdd.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.stMailAdd.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Permanent Pin Code:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="stmailPin" ng-model="student.MailingPostalCode"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' minlength="6" maxlength="6"/>
+                            <span ng-show="formInvalid && studentForm.stmailPin.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.stmailPin.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Permanent State:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" name="stmailState" ng-model="student.MailingState" required='true' ng-change="getCities(student.MailingState)">
+                                <option ng-repeat="listOfState in listOfStates" value='{{listOfState.Label}}'>{{listOfState.Label}}</option>
+                            </select>
+                            <span ng-show="formInvalid && studentForm.stmailState.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.stmailState.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Permanent City:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" name="stmailCity" ng-model="student.MailingCity" required='true' ng-disabled="student.MailingState==undefined || student.MailingState==''">
+                                <option ng-repeat="listOfCitie in listOfCities" value='{{listOfCitie.City__c}}'>{{listOfCitie.City__c}}</option>
+                            </select>
+                            <span ng-show="formInvalid && studentForm.stmailCity.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.stmailCity.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                    </div>
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Family Information
+                        </h4>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Father's Name:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="fatherName" ng-model="student.Father_Name__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.fatherName.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.fatherName.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Mother's Name:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="motherName" ng-model="student.Mother_Name__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.motherName.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.motherName.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Father's Age:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="fAge" ng-model="student.Father_Age__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="3"/>
+                            <span ng-show="formInvalid && studentForm.fAge.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.fAge.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Mother's Age:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="mAge" ng-model="student.Mother_Age__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="3"/>
+                            <span ng-show="formInvalid && studentForm.mAge.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.mAge.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>  
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Father's Education:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="fEdu" ng-model="student.Father_Education__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.fEdu.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.fEdu.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Mother's Education:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="mEdu" ng-model="student.Mother_Education__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formInvalid && studentForm.mEdu.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.mEdu.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Father's Occupation:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" name="fOccup" ng-model="student.Father_Occupation__c" required='true'>
+                                <option ng-repeat="occup in occupations" value='{{occup}}'>{{occup}}</option>
+                            </select>
+                            <span ng-show="formInvalid && studentForm.fOccup.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.fOccup.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Mother's Occupation:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select class="inputfiledsSelect" name="mOccup" ng-model="student.Mother_Occupation__c" required='true'>
+                                <option ng-repeat="occup in occupations" value='{{occup}}'>{{occup}}</option>
+                            </select>
+                            <span ng-show="formInvalid && studentForm.mOccup.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.mOccup.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div> 
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Parent's Mobile No:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Parent_Mobile__c" ng-model="student.Parent_Mobile__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="11" minlength="10" />
+                            <span ng-show="formInvalid && studentForm.Parent_Mobile__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.Parent_Mobile__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Parent's Phone No:<span></span>
+                            </h4>
+                            <input class="inputfileds" name="Parent_Phone__c" ng-model="student.Parent_Phone__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="11"/>
+                            <span ng-show="showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Annual Family Income:<span style="color:#ff0000">*</span> 
+                            </h4>
+                            <input type="text" name="income" ng-model="student.Annual_Family_Income__c"  class="inputfileds" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" required='true' maxlength="8"/>
+                            <span ng-show="formInvalid && studentForm.income.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.income.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                    </div> 
+                    <div class="formDiv" >
+                        <h4 class="formheadings" align="center">
+                            About Yourself and Family
+                        </h4>
+                        <div class="row rowabout">
+                            <h4 class="formTags" >
+                                What is your ambition in life?
+                            </h4>
+                            <textarea  name="What_is_your_ambition_in_life__c" class="inputfileds"  ng-model="student.What_is_your_ambition_in_life__c" style="min-height:98px;" ng-readonly="editFileds"></textarea>
+                        </div>
+                        <div class="row rowabout">
+                            <h4 class="formTags" >
+                                Who has inspired you the most until now? Why did you select this person?
+                            </h4>
+                            <textarea  name="Who_has_inspired_you_the_most_until_now__c" class="inputfileds"  ng-model="student.Who_has_inspired_you_the_most_until_now__c" style="min-height:98px;" ng-readonly="editFileds"></textarea>
+                        </div>
+                        <div class="row rowabout">
+                            <h4 class="formTags" >
+                                Tell us some things about yourself, your strengths/weaknesses, interests/hobbies:
+                            </h4>
+                            <textarea  name="Tell_us_some_things_about_yourself__c" class="inputfileds"  ng-model="student.Tell_us_some_things_about_yourself__c" style="min-height:98px;" ng-readonly="editFileds"></textarea>
+                        </div>
+                        <div class="row rowabout">
+                            <h4 class="formTags" >
+                                How would you describe your family’s income/living conditions?
+                            </h4>
+                            <textarea  name="Describe_your_family_s_income__c" class="inputfileds"  ng-model="student.Describe_your_family_s_income__c" style="min-height:98px;" ng-readonly="editFileds"></textarea>
+                        </div>
+                        <div class="row rowabout">
+                            <h4 class="formTags" >
+                                When you start earning, in what ways do you think you could help others?
+                            </h4>
+                            <textarea  name="When_you_start_earning_how_you_help__c" class="inputfileds"  ng-model="student.When_you_start_earning_how_you_help__c" style="min-height:98px;" ng-readonly="editFileds"></textarea>
+                        </div>
+                    </div>
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Other Details
+                        </h4>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Receiving Full AICTE/Fee Waiver from Gvt:
+                            </h4>
+                            <select class="inputfiledsSelect" name="Receiving_Full_AICTE_OtherTution_Fee_Wa__c" ng-model="application.Receiving_Full_AICTE_OtherTution_Fee_Wa__c" >
+                                <option value='true'>Yes</option>
+                                <option value='false' selected="true">No</option>
+                            </select>
+                            <div class="row" ng-if="application.Receiving_Full_AICTE_OtherTution_Fee_Wa__c=='true'">
+                                <h4 class="tagnames" >
+                                    If Yes How much?(AICTE/Fee Waiver from Govt):<span style="color:#ff0000">*</span>
+                                </h4>
+                                <input type="text" name="If_Yes_How_much_AICTE_Fee_from_Govt__c" ng-model="application.If_Yes_How_much_AICTE_Fee_from_Govt__c"  class="inputfileds"  required="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="10"/>
+                                <span ng-show="formInvalid && studentForm.If_Yes_How_much_AICTE_Fee_from_Govt__c.$invalid" class="error">This is required.</span>
+                                <span ng-show="!(formInvalid && studentForm.If_Yes_How_much_AICTE_Fee_from_Govt__c.$invalid) && showSpace" class="error">&nbsp;</span>  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Scholarship/Financial Asst Other Than FFE?:
+                            </h4>
+                            <select class="inputfiledsSelect" name="SchlrShp_FinancialAsst_Other_Than_FFE__c" ng-model="application.SchlrShp_FinancialAsst_Other_Than_FFE__c" >
+                                <option value='true'>Yes</option>
+                                <option value='false' selected="true">No</option>
+                            </select>
+                        </div>
+                        <div class="row" ng-if="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'">
+                            <h4 class="tagnames" >
+                                If Yes How much?(Other Source):<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="If_Yes_How_much_Other_Source__c" ng-model="application.If_Yes_How_much_Other_Source__c"  class="inputfileds"  required="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="10"/>
+                            <span ng-show="formInvalid && studentForm.If_Yes_How_much_Other_Source__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.If_Yes_How_much_Other_Source__c.$invalid) && showSpace" class="error">&nbsp;</span>  
+                        </div>
+                        <div class="row" ng-if="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'">
+                            <h4 class="tagnames" >
+                                Assistance Source?:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Assistance_Source__c" ng-model="application.Assistance_Source__c"  class="inputfileds"  required="application.SchlrShp_FinancialAsst_Other_Than_FFE__c=='true'" onpaste="return isChar(event)" onkeypress="return isChar(event)" />
+                            <span ng-show="formInvalid && studentForm.Assistance_Source__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formInvalid && studentForm.Assistance_Source__c.$invalid) && showSpace" class="error">&nbsp;</span>  
+                        </div>
+                        
+                    </div>
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Login Information
+                        </h4>
+                        <div style="width:100%;float:left">
+                            <div class="row">
+                                <h4 class="formTags" >
+                                    Do you have Google login:
+                                </h4>
+                                <div class="radioInputs">
+                                    <input type="radio" name="Glogin" ng-model="student.Do_you_have_Google_login__c" ng-value="true" class="" ng-change='gValue(donor.Do_you_have_Google_login__c)'/>Yes
+                                    <input type="radio" name="Glogin" ng-model="student.Do_you_have_Google_login__c" ng-value="false" class="" ng-change='gValue(donor.Do_you_have_Google_login__c)'/>No
+                                </div>
+                            </div>
+                            <div class="row" ng-if="student.Do_you_have_Google_login__c">
+                                <h4 class="formTags" >
+                                    Google Email Id:<span style="color:#ff0000">*</span>
+                                </h4>
+                                <input type="text" name="gmail" class="inputfileds" ng-model="student.Google_login_ID__c" ng-change="valid(student.Google_login_ID__c)" required="true"/>
+                                <span ng-show="formInvalid && studentForm.gmail.$invalid" class="error">This is required.</span>
+                                <span class="error" ng-show="(!(gmailvalidation.gmail.$invalid) && invalidGmail)">Invalid gmail address</span>
+                                <span class="error" ng-show="notGmail">Please Enter your gmail Id</span>
+                            </div>
+                        </div>
+                        <div style="width:100%;float:left">
+                            <div class="row">
+                                <h4 class="formTags" >
+                                    Do you have Facebook login:
+                                </h4>
+                                <div class="radioInputs">
+                                    <input type="radio" name="Flogin" ng-model="student.Do_you_have_Facebook_login__c" ng-value="true" class="" ng-change='fbValue(donor.Do_you_have_Facebook_login__c)'/>Yes
+                                    <input type="radio" name="Flogin" ng-model="student.Do_you_have_Facebook_login__c" ng-value="false" class="" ng-change='fbValue(donor.Do_you_have_Facebook_login__c)'/>No
+                                </div>
+                            </div> 
+                            <div class="row" ng-if="student.Do_you_have_Facebook_login__c">
+                                <h4 class="formTags" >
+                                    Email Id used for Facebook:<span style="color:#ff0000">*</span>
+                                </h4>
+                                <input type="text" name="fmail" class="inputfileds" ng-model="student.Facebook_login_ID__c" ng-change="valid(student.Facebook_login_ID__c)" required="true"/>
+                                <span ng-show="formInvalid && studentForm.fmail.$invalid" class="error">This is required.</span>
+                                <span class="error" ng-show="(!(emailvalidation.fmail.$invalid) && invalidFEmail)">Invalid email address</span>
+                            </div>
+                        </div>
+                        <div style="width:100%;float:left">
+                            <div class="row">
+                                <h4 class="formTags" >
+                                    Are you a member of LinkedIn group "FFEConnect":
+                                </h4>
+                                <div class="radioInputs">
+                                    <input type="radio" name="Llogin" ng-model="student.Do_you_have_Linkedin_Profile__c" ng-value="true" class="" ng-change='lValue(donor.Do_you_have_Linkedin_Profile__c)'/>Yes
+                                    <input type="radio" name="Llogin" ng-model="student.Do_you_have_Linkedin_Profile__c" ng-value="false" class="" ng-change='lValue(donor.Do_you_have_Linkedin_Profile__c)'/>No
+                                </div>
+                            </div> 
+                            <div class="row" ng-if="student.Do_you_have_Linkedin_Profile__c">
+                                <h4 class="formTags" >
+                                    LinkedIn ID:<span style="color:#ff0000">*</span>
+                                </h4>
+                                <input type="text" name="lmail" class="inputfileds" ng-model="student.Linkedin_Profile_Link__c " ng-change="valid(student.Linkedin_Profile_Link__c)" required="true"/>
+                                <span ng-show="formInvalid && studentForm.lmail.$invalid" class="error">This is required.</span>
+                            </div>
+                            <div class="row" ng-if="student.Do_you_have_Linkedin_Profile__c == false">
+                                <p>
+                                    Please join this LinkedIn group - <a href="https://www.linkedin.com/in/ffe-connect-686252ab" target="_blank">FFE Connect</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="buttonsdiv" align="center" ng-if='!hideButtons'>
+                        <input type="button" value="Next" class="buttons"  ng-click="next(1);"/>
+                    </div>
+                </ng-form>
+                <ng-form name="studentCourse"  ng-switch-when='1'  style="float:left">
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Previous Academic Record
+                        </h4>
+                        <br/>
+                        <span style="color:#ff0000"> *System calculates the percentage for CGPA marks</span>
+                        <table class="historyTable " style="margin-top: 0;margin-bottom:25px;margin-top:25px">
+                            <thead>
+                                <tr class="rowsHistory thRow">
+                                    <th>Examination</th>
+                                    <th>Examination Board</th>
+                                    <th>Year of Passing</th>
+                                    <th>Marks Obtained</th>
+                                    <th>Max Marks(Out of)</th>
+                                    <th>Percent</th>
+                                    <th>Medium of Instruction</th>
+                                    <th>Type</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody> 
+                                <tr align="center" class="rowsHistory">
+                                    <td>SSLC (Class Xth)<span style="color:#ff0000">*</span></td>
+                                    <td>
+                                        <!--  <select class="inputfiledsSelect" name="Xth_ExamBoard__c" ng-model="student.Xth_ExamBoard__c" required='true' ng-change="getBoardMaxMarks_X10(student.Xth_ExamBoard__c)"> -->
+                                        <select class="inputfiledsSelect" name="Xth_ExamBoard__c" ng-model="student.Xth_ExamBoard__c" required='true'>
+                                            <option ng-repeat="type in listOfExamBoards" value="{{type}}">{{type}}</option>
+                                        </select>
+                                        <span ng-show="formCourseInvalid && studentCourse.Xth_ExamBoard__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.Xth_ExamBoard__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td> 
+                                    <td>
+                                        <input class="tdInput" type="text" name="X10th_Year_Passed__c" ng-model="student.X10th_Year_Passed__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="4" required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10th_Year_Passed__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10th_Year_Passed__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" type="text" name="X10th_Marks_Obtained__c" ng-model="student.X10th_Marks_Obtained__c" ng-focus-out = "setMaxMarks_X10(student.X10th_Marks_Obtained__c)" ng-change="setMaxMarks_X10(student.X10th_Marks_Obtained__c)" onpaste="return run(this)" onkeypress="return run(this)" maxlength="4" required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10th_Marks_Obtained__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10th_Marks_Obtained__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <!-- <td>
+<input class="tdInput" type="text" name="X10th_Maximum_Marks__c" ng-model="student.X10th_Maximum_Marks__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="4" required='true'/>
+<span ng-show="formCourseInvalid && studentCourse.X10th_Maximum_Marks__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formCourseInvalid && studentCourse.X10th_Maximum_Marks__c.$invalid) && showSpace" class="error">&nbsp;</span>
+</td> -->
+                                    <td>
+                                        <input class="tdInput" type="text" name="X10th_Maximum_Marks__c" ng-model="student.X10th_Maximum_Marks__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-readonly="maxMarks10_readOnly" required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10th_Maximum_Marks__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10th_Maximum_Marks__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" type="text" name="X10TH__c" ng-value="calc(student.X10th_Marks_Obtained__c,student.X10th_Maximum_Marks__c)" ng-readonly="true"/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10TH__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10TH__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    
+                                    
+                                    <td>
+                                        <select style="min-width:90%;" ng-model="student.X10th_Medium_Of_Instruction__c" class="tdInput" required='true' name="X10th_Medium_Of_Instruction__c">
+                                            <option ng-repeat="type in mediumOfInstruction" value="{{type}}">{{type}}</option>
+                                        </select>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10th_Medium_Of_Instruction__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10th_Medium_Of_Instruction__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    
+                                    
+                                    <td>
+                                        <select ng-model="student.X10th_Type__c" class="tdInput" required='true' name="X10th_Type__c">
+                                            <option ng-repeat="type in APtypePickLstValues" value="{{type}}">{{type}}</option>
+                                        </select>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10th_Type__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10th_Type__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                        
+                                    </td>
+                                </tr>
+                                <tr align="center" class="rowsHistory">
+                                    <td>HS School / PUC / Inter (Class XIIth)<span style="color:#ff0000">*</span></td>
+                                    <td>
+                                        <!-- <select class="inputfiledsSelect" name="X12th_ExamBoard__c" ng-model="student.X12th_ExamBoard__c" required='true' ng-change="getBoardMaxMarks_X12(student.X12th_ExamBoard__c)"> -->
+                                        <select class="inputfiledsSelect" name="X12th_ExamBoard__c" ng-model="student.X12th_ExamBoard__c" required='true'>
+                                            <option ng-repeat="type in listOfExamBoards" value="{{type}}">{{type}}</option>
+                                        </select> 
+                                        <span ng-show="formCourseInvalid && studentCourse.X12th_ExamBoard__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X12th_ExamBoard__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td> 
+                                    <td>
+                                        <input class="tdInput" type="text" name="X12th_Year_Passed__c" ng-model="student.X12th_Year_Passed__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="4" required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X12th_Year_Passed__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X12th_Year_Passed__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" type="text" name="X12th_Marks_Obtained__c" ng-model="student.X12th_Marks_Obtained__c"  ng-focus-out ="setMaxMarks_X12(student.X12th_Marks_Obtained__c)" ng-change="setMaxMarks_X12(student.X12th_Marks_Obtained__c)" onpaste="return run(this)" onkeypress="return run(this)" maxlength="4" required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X12th_Marks_Obtained__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X12th_Marks_Obtained__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <!-- <td>
+<input class="tdInput" type="text" name="X12th_Maximum_Marks__c" ng-model="student.X12th_Maximum_Marks__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength="4" required='true'/>
+<span ng-show="formCourseInvalid && studentCourse.X12th_Maximum_Marks__c.$invalid" class="error">This is required.</span>
+<span ng-show="!(formCourseInvalid && studentCourse.X12th_Maximum_Marks__c.$invalid) && showSpace" class="error">&nbsp;</span>
+</td> -->
+                                    <td>
+                                        <input class="tdInput" type="text" name="X12th_Maximum_Marks__c" ng-model="student.X12th_Maximum_Marks__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" ng-readonly="maxMarks12_readOnly" required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X12th_Maximum_Marks__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X12th_Maximum_Marks__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" type="text" name="X12th__c" ng-value="calc_HS(student.X12th_Marks_Obtained__c,student.X12th_Maximum_Marks__c)" ng-readonly="true"/>
+                                        <span ng-show="formCourseInvalid && studentCourse.X12th__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X12th__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <select style="min-width:90%;" ng-model="student.X12th_Medium_Of_Instruction__c" class="tdInput" required='true' name="X12th_Medium_Of_Instruction__c">
+                                            <option ng-repeat="type in mediumOfInstruction" value="{{type}}">{{type}}</option>
+                                        </select>
+                                        <span ng-show="formCourseInvalid && studentCourse.X12th_Medium_Of_Instruction__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X12th_Medium_Of_Instruction__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <select ng-model="student.X12th_Type__c" class="tdInput" required='true' name="X12th_Type__c">
+                                            <option ng-repeat="type in APtypePickLstValues" value="{{type}}">{{type}}</option>
+                                        </select>
+                                        <span ng-show="formCourseInvalid && studentCourse.X10th_Type__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.X10th_Type__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Entrance Test Record
+                        </h4>
+                        <p style="float: left;">
+                            Note: a) JEE (Main &amp; AIPMT students must enter their Overall All India Rank (Not their State or Category Rank).<br/> 
+                            b) JEE (Advanced) students must enter their General Merit Rank (Not their Category Rank).<br/>
+                            c) Tamil Nadu students must select TNEA as their entrance test and enter their TNEA Counseling Marks &amp; Rank.<br/>
+                        </p>
+                        <table class="historyTable " style="margin-top: 0;margin-bottom:25px;margin-top:25px">
+                            <thead>
+                                <tr class="rowsHistory thRow">
+                                    <th> Name of Entrance Test</th>
+                                    <th>Exam Taken In Year</th>
+                                    <th>Marks Obtained</th>
+                                    <th>Maximum Marks(Out of)</th>
+                                    <th>Rank</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr align="center" class="rowsHistory">
+                                    <td>
+                                        <select ng-model="student.Entrance_Test_Name__c " class="tdInput" required='true' name="Entrance_Test_Name__c">
+                                            <option ng-repeat="entranceTest in entranceTests" value="{{entranceTest.Entrance_Test_Name__c}}">{{entranceTest.Entrance_Test_Name__c}}</option>
+                                        </select>
+                                        <span ng-show="formCourseInvalid && studentCourse.Entrance_Test_Name__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.Entrance_Test_Name__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" name="Entrance_Exam_Taken_In_Year__c" type="text" ng-model="student.Entrance_Exam_Taken_In_Year__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength='4' required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.Entrance_Exam_Taken_In_Year__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.Entrance_Exam_Taken_In_Year__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" name="Entrance_Test_Marks__c"  type="text" ng-model="student.Entrance_Test_Marks__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength='4' required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.Entrance_Test_Marks__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.Entrance_Test_Marks__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" name="Entrance_Exam_Maximum_Marks__c" type="text" ng-model="student.Entrance_Exam_Maximum_Marks__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength='4' required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.Entrance_Exam_Maximum_Marks__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.Entrance_Exam_Maximum_Marks__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                    <td>
+                                        <input class="tdInput" name="Entrance_Test_Rank__c" type="text" ng-model="student.Entrance_Test_Rank__c" onpaste="return isNumber(event)" onkeypress="return isNumber(event)" maxlength='7' required='true'/>
+                                        <span ng-show="formCourseInvalid && studentCourse.Entrance_Test_Rank__c.$invalid" class="error">This is required.</span>
+                                        <span ng-show="!(formCourseInvalid && studentCourse.Entrance_Test_Rank__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row" ng-if="student.Entrance_Test_Name__c=='Others'">
+                            <h4 class="tagnames" >
+                                If Others Specify:
+                            </h4>
+                            <input type="text" name="etcOther" ng-model="student.Other_Entrance_Test__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/>
+                            <span ng-show="formCourseInvalid && studentCourse.etcOther.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.etcOther.$invalid) && showSpace" class="error">&nbsp;</span>
+                            
+                        </div>
+                    </div>
+                    <div class="formDiv">
+                        <h4 class="formheadings" align="center">
+                            Course/College Particulars
+                        </h4>                        
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Course:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select ng-model="student.Course__c" class="inputfiledsSelect" required='true' name="course">
+                                <option ng-repeat="studentCourse in studentCourses" value="{{studentCourse}}">{{studentCourse}}</option>
+                            </select>
+                            <span ng-show="formCourseInvalid && studentCourse.course.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.course.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                Year in which studying:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select ng-model="application.Year__c" class="inputfiledsSelect" required='true' name="yearStud">
+                                <option ng-repeat="yr in btechYearList" value="{{yr}}" ng-if="student.Course__c=='BE/B.Tech'">{{yr}}</option>
+                                <option ng-repeat="yr in MbbsYearList" value="{{yr}}" ng-if="student.Course__c=='MBBS'">{{yr}}</option>
+                                <option ng-repeat="yr in MtechYearList" value="{{yr}}" ng-if="student.Course__c=='Integrated MTech'">{{yr}}</option>
+                                <option ng-repeat="yr in btechYearList" value="{{yr}}" ng-if="student.Course__c=='BPharm'">{{yr}}</option>
+                                <option ng-repeat="yr in MtechYearList" value="{{yr}}" ng-if="student.Course__c=='Law'">{{yr}}</option>
+                            </select>
+                            <span ng-show="formCourseInvalid && studentCourse.yearStud.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.yearStud.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row" ng-if="student.Course__c!='MBBS' && student.Course__c!='BPharm' && student.Course__c!='BA LLB' ">
+                            <h4 class="tagnames" >
+                                Branch:<span style="color:#ff0000">*</span>
+                            </h4>
+                            <select ng-model="student.Branch_Stream__c" class="inputfiledsSelect" required="student.Course__c!='MBBS'" name="branch" ng-disabled="student.Course__c=='MBBS'">
+                                <option ng-repeat="studentBranch in studentBranchs" value="{{studentBranch}}" ng-if="student.Course__c=='BE/B.Tech' || student.Course__c=='Integrated MTech'">{{studentBranch}}</option>
+                                 <option ng-repeat="studentBranch in studentLawBranchs" value="{{studentBranch}}" ng-if="student.Course__c=='Law'">{{studentBranch}}</option>
+                            </select>
+                            <span ng-show="formCourseInvalid && studentCourse.branch.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.branch.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row" ng-if="student.Branch_Stream__c=='Other' && student.Course__c !='MBBS'">
+                            <h4 class="tagnames" >
+                                Branch (Other):<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="Branch_Other__c" ng-model="student.Branch_Other__c"  class="inputfileds" required='true' onpaste="return isChar(event)" onkeypress="return isChar(event)"/>
+                            <span ng-show="formCourseInvalid && studentCourse.Branch_Other__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.Branch_Other__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row">
+                            <h4 class="tagnames" >
+                                College Name:<span style="color:#ff0000">*&nbsp;<span style="font-size:10pt;">(If college is not found, type Other.)</span></span>
+                            </h4>
+                            <md-input-container class="mdContPopup inputfiledsmdSelect">
+                                <md-select class="inputfiledsSelect" ng-model="student.College_Name__c" name="college" style="border: 1px solid #ccc;" ng-change="changeCollege(student.College_Name__c)" required='true'>
+                                    <md-select-header class="demo-select-header">
+                                        <input ng-model="clg" ng-keydown="$event.stopPropagation()" type="search" class="demo-header-searchbox md-text" ng-change="getCollege(clg)"/>
+                                    </md-select-header>
+                                    <md-optgroup>  
+                                        <md-option ng-value="college.Id" ng-repeat="college in colleges">{{college.Name}}</md-option>
+                                    </md-optgroup>
+                                </md-select>
+                            </md-input-container>
+                            <!--input type="text" name="college" ng-model="student.College_Name__c"  class="inputfileds" onpaste="return isChar(event)" onkeypress="return isChar(event)" required='true'/-->
+                            <span ng-show="formCourseInvalid && studentCourse.college.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.college.$invalid) && showSpace" class="error">&nbsp;</span>
+                        </div>
+                        <div class="row" ng-if="collegeOther">
+                            <h4 class="tagnames" >
+                                College Name(Other):<span style="color:#ff0000">*</span>
+                            </h4>
+                            <input type="text" name="College_Other__c" ng-model="student.College_Other__c"  class="inputfileds" required='true' onpaste="return isChar(event)" onkeypress="return isChar(event)"/>
+                            <span ng-show="formCourseInvalid && studentCourse.College_Other__c.$invalid" class="error">This is required.</span>
+                            <span ng-show="!(formCourseInvalid && studentCourse.College_Other__c.$invalid) && showSpace" class="error">&nbsp;</span>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="buttonsdiv" align="center" ng-if='hideButtons' style="margin-bottom:140px;">
+                        
+                        <input type="button" ng-if="$parent.isReferred" value="Next" class="buttons"  ng-click="submit();"/>
+                        <input type="button" ng-if="!$parent.isReferred" value="Submit" class="buttons"  ng-click="submit();"/>
+                        <input type="button" value="Previous" class="buttons" ng-click="previous(0);"/>
+                    </div>
+                </ng-form>
+            </div>
+            
+            <div class="loadingSection" ng-show="loading" >
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.loading}" styleClass="loading" />
+                </div>
+            </div>
+        </div>
+        
+        
+    </html>
+</apex:page>

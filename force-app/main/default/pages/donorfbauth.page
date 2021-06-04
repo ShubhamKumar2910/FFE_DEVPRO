@@ -1,0 +1,2 @@
+<apex:page showHeader="false" sidebar="false" controller="DN_DonorProfile_CTRL" action="{!redirectDonorPagefoFB}">
+</apex:page>

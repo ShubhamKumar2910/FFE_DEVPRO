@@ -1,0 +1,24 @@
+<apex:page contentType="application/vnd.ms-excel#Fund_Utilization_For__{!financialYear}.xls" controller="FundUtilizationController" cache="true" readOnly="true">
+    
+    
+    <apex:pageBlock >
+        <apex:pageblockTable value="{!fundutilizationList}" var="v" >
+            <apex:column headerValue="FFE UID">{!v.Application__r.FFE_UID__c}</apex:column>
+            <apex:column headerValue="Name of Scholar">{!v.Application__r.Student_Name_for_Email__c}</apex:column>
+            
+            <apex:column headerValue="Course Year">{!v.Application__r.Year__c}</apex:column>
+            
+            <apex:column headerValue="Course">{!v.Application__r.Course__c}</apex:column>
+            <apex:column headerValue="Branch">{!v.Application__r.Branch__c}</apex:column>
+            <apex:column headerValue="Scholarship Amount">{!v.Application__r.Amount_Requested__c}</apex:column>
+            <apex:column headerValue="Fund Utilization No.">{!v.Name}</apex:column>
+            <apex:column headerValue="Business Account Utilization: BAU No.">{!v.Business_Account_Utilization__r.Name}</apex:column>
+            <apex:column headerValue="Date Created">{!v.Business_Account_Utilization__r.Date__c}</apex:column>
+            <apex:column headerValue="Donor Name">{!v.Application__r.Donor_Name__c}</apex:column>
+            <apex:column headerValue="Bank Ref.">{!v.Business_Account_Utilization__r.Bank_Txn_ID__c}</apex:column>          
+            <apex:column headerValue="Remarks"></apex:column>
+            
+        </apex:pageblockTable>
+    </apex:pageBlock>  
+    
+</apex:page>

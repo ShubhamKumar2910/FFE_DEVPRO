@@ -1,0 +1,129 @@
+<apex:page showheader="false" sidebar="false" standardstylesheets="false" doctype="html-5.0">
+    <style>
+        .inputfiledsSelect,.inputfileds{
+        width: 99%;
+        }
+        .row{
+        width:99%;
+        padding:1%;
+        }
+        .uploadDocsDiv{
+        float: left;
+        width: 100%;
+        }
+        
+        .rowsHistory th {
+        color: #000;
+        }
+        
+    </style>
+    <div ng-init="showTabcontent(2);getAttachedFiles();" ng-if="!facilitaorInputDone" style="background:#fff">
+        <ng-form name="regForm">
+            <div class="row">
+                <h4 class="formTags" >
+                    Have you been able to visit the student's house?<!--span style="color:#ff0000">*</span-->
+                </h4>
+                <select name="Have_you_visited_the_students_house__c" class="inputfiledsSelect" ng-model="facilitator.Have_you_visited_the_student_s_house__c">
+                    <option value="" label="--Select--" selected="true"/>
+                    <option value='true'>Yes</option>
+                    <option value='false'>No</option>
+                </select>
+                <!--span ng-show="formInvalidFaci && regForm.Have_you_visited_the_students_house__c.$invalid" class="error">This is required.</span-->
+            </div> 
+            <div class="row">
+                <h4 class="formTags" >
+                    Have you met the student's parent(s)?<!--span style="color:#ff0000">*</span-->
+                </h4>
+                <select name="Have_you_met_the_student_s_Parent_s__c" class="inputfiledsSelect" ng-model="facilitator.Have_you_met_the_student_s_parent_s__c"   >
+                    <option value="" label="--Select--" selected="true"/>
+                    <option value='true'>Yes</option>
+                    <option value='false'>No</option>
+                </select>
+                <!--span ng-show="formInvalidFaci && regForm.Have_you_met_the_student_s_Parent_s__c.$invalid" class="error">This is required.</span-->
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Has the student provided satisfactory justification on the amounts asked by him/her for the college fees, hostel mess charges, transport charges, books stationery and uniform?<!--span style="color:#ff0000">*</span-->
+                </h4>
+                <select name="Has_student_provided_Justification__c"  class="inputfiledsSelect" ng-model="facilitator.Has_student_provided_Justification__c"    >
+                    <option value="" label="--Select--" selected="true"/>
+                    <option value='true'>Yes</option>
+                    <option value='false'>No</option>
+                </select>
+                <!--span ng-show="formInvalidFaci && regForm.Has_student_provided_Justification__c.$invalid" class="error">This is required.</span-->
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Are you convinced about the genuineness of the critical financial need of the student's family and that the student truly deserves a scholarship from FFE?<!--span style="color:#ff0000">*</span-->
+                </h4>
+                <select name="Student_truly_deserves_a_scholarship__c"  class="inputfiledsSelect" ng-model="facilitator.Student_truly_deserves_a_scholarship__c"    >
+                    <option value="" label="--Select--" selected="true"/>
+                    <option value='true'>Yes</option>
+                    <option value='false'>No</option>
+                </select>
+                <!--span ng-show="formInvalidFaci && regForm.Student_truly_deserves_a_scholarship__c.$invalid" class="error">This is required.</span-->
+            </div>
+            <div class="row">
+                <h4 class="formTags" >
+                    Please comment on parent's education, occupation, family background and gross family income and wealth/assets, if any.<!--span style="color:#ff0000">*</span-->
+                </h4>
+                <textarea  name="Please_Comment_on_Parent_s_Background__c" class="inputfileds"   ng-model="facilitator.Please_Comment_on_Parent_s_Backgroun__c" style="min-height:98px;padding:0px;"></textarea>
+                <!--span ng-show="formInvalidFaci && regForm.Please_Comment_on_Parent_s_Background__c.$invalid" class="error">This is required.</span-->
+            </div>
+            <div class="formDiv " ng-if='facilitatorAttachements.length>0'>
+                <h4 class="formheadings" align="center">
+                    Uploaded Documents - Test
+                </h4>
+                <table style="width:100%;margin-top: 0;margin-bottom:25px;margin-top:25px;table-layout: fixed;border-collapse: collapse;">
+                    <thead>
+                        <tr class="rowsHistory" style="color:#ccc;">
+                            <th>S.No.</th>
+                            <th>Uploaded Date</th>
+                            <th>Document Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tr align="center" class="rowsHistory" ng-repeat="attachemt in facilitatorAttachements">
+                        <td>{{$index+1}}</td>
+                        <td>{{attachemt.CreatedDate | date:"dd/MM/yyyy"}}</td>
+                        <td>{{attachemt.Name}}</td>
+                        <td>
+                            <a href="/application/servlet/servlet.FileDownload?file={{attachemt.Id}}" class="material-icons"  style="text-decoration:none;font-size:19px" target="_blank">
+                                <apex:image url="{!$Resource.viewIcon}" styleClass="materialIcons"/>
+                            </a>
+                            <span style=" position: relative;
+                                         top: -2px;
+                                         font-size: 23pt;
+                                         ">|</span>
+                            <input type="button" title="Click this to replace the uploaded file." value="Replace" class="buttons" ng-click="replace(attachemt,uploadForFacilitator)" style="position: relative;top: -5px;"/>   
+                            
+                        </td>
+                        
+                    </tr> 
+                </table>
+            </div>
+            <div class="formDiv" ng-if='!(facilitatorAttachements.length>0)'>
+                <h4 class="formheadings" align="center">
+                    Upload document     
+                </h4>
+                <div class="uploadDocsDiv">
+                    <div class="row" style="width:47%;">
+                        <input type="file" name="doc1" class="inputfileds" id="fileUpload2" required="true" valid-file='true'/>
+                        <p style="color:#ff0000;font-size: 15px">
+                            (Please upload documents provided by your facilitator before submitting.)
+                        </p>
+                    </div>
+                    <div class="row" align="right" style="width:48%;">         
+                        <input type="button" value="Upload" class="buttons"  ng-click="documentUpload(activeAppli.Id,'fileUpload2',uploadForFacilitator,'','');"/>
+                    </div>
+                </div>
+            </div>
+        </ng-form>
+        <div class="buttonsdiv" align="center"> 
+            <input type="button" value="Submit" class="buttons" ng-click="savefacilitator();" ng-disabled="disableSubmitBtn"/> <br/>
+            <p style="color:#ff0000;font-size: 15px">
+                Note: System will not accept Re-submit of the Facilitator Remarks file once you click on the SUBMIT button. Ensure upload of the correct file.
+            </p>
+        </div>
+    </div>
+</apex:page>
